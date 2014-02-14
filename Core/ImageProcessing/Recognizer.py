@@ -1,6 +1,6 @@
 import cv2
-import PIL
 import numpy
+from Shapes import *
 
 def process_picture(image):
     image = PIL_to_cv(image)
@@ -14,7 +14,7 @@ def process_picture(image):
     for contour in contours:
         if cv2.arcLength(contour, True) > 100:
             simp = cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour, True), True)
-            if len(simp) == :
+            if len(simp) == Rectangle.corners:
 
             elif len(simp) == 3:
                 print 'triangle'
