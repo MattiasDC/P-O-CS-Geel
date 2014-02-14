@@ -1,3 +1,6 @@
+from Shapes import *
+
+
 class Grid(object):
     """
     Grid datastructure that stores the triangle grid used in the P&O project.
@@ -17,7 +20,18 @@ class Grid(object):
             grid_str = grid_file.read().replace('\n', '').strip(';')
             grid_rows = (row.split(',') for row in grid_str.split(';'))
 
-            convert = lambda x: tuple(x.split("$")) if (not x is "-") else None
+            def convert(x):
+                if x is "-":
+                    return None
+                colour, shape = x.split("$")
+
+                shape_map = {"rectangle": Rectangle,
+                             "star": Star,
+                             "heart": Heart,
+                             "ellipse": Ellipse}
+
+                return shape_map[shape](color=colour)
+
             points = list(map(convert, row) for row in grid_rows)
         return Grid(points)
 
