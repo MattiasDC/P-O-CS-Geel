@@ -30,9 +30,7 @@ class Shape(object):
 
 class Rectangle(Shape):
 
-    @property
-    def corners(self):
-        return 4
+    corners = 4
 
     def __init__(self, shape, color):
         super(Rectangle, self).__init__(shape, color)
@@ -40,9 +38,7 @@ class Rectangle(Shape):
 
 class Star(Shape):
 
-    @property
-    def corners(self):
-        return 10
+    corners = 10
 
     def __init__(self, shape, color):
         super(Star, self).__init__(shape, color)
@@ -50,9 +46,7 @@ class Star(Shape):
 
 class Heart(Shape):
 
-    @property
-    def corners(self):
-        return 2
+    corners = 2
 
     def __init__(self, shape, color):
         super(Heart, self).__init__(shape, color)
@@ -60,9 +54,7 @@ class Heart(Shape):
 
 class Ellipse(Shape):
 
-    @property
-    def corners(self):
-        return 0
+    corners = 0
 
     def __init__(self, shape, color):
         super(Ellipse, self).__init__(shape, color)
