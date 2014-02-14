@@ -1,6 +1,6 @@
 import cv2
 import numpy
-from Shapes import *
+from shapes import *
 
 def process_picture(image):
     image = PIL_to_cv(image)
