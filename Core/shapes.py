@@ -1,6 +1,6 @@
 class Shape(object):
 
-    """abstract class"""
+    """abstract class for shapes"""
     def __init__(self, shape, color):
         self._shape = shape
         self._color = color
