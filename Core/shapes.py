@@ -1,13 +1,8 @@
 class Shape(object):
 
     """abstract class for shapes"""
-    def __init__(self, shape, color):
-        self._shape = shape
+    def __init__(self, color):
         self._color = color
-
-    @property
-    def shape(self):
-        return self._shape
 
     @property
     def color(self):
@@ -16,15 +11,13 @@ class Shape(object):
     def __eq__(self, other):
         if self.__class__ != other.__class__:
             return False
-        elif self.shape == other.shape and self.shape == other.shape:
+        elif self.color == other.color:
             return True
 
     def __hash__(self):
         hsh = 0
-        for c in self.shape:
-            hsh = 101*hsh + ord(c)
         for c in self.color:
-            hsh = 31*hsh + ord(c)
+            hsh = 101*hsh + ord(c)
         return hsh
 
 
@@ -32,29 +25,29 @@ class Rectangle(Shape):
 
     corners = 4
 
-    def __init__(self, shape, color):
-        super(Rectangle, self).__init__(shape, color)
+    def __init__(self, color):
+        super(Rectangle, self).__init__(color)
 
 
 class Star(Shape):
 
     corners = 10
 
-    def __init__(self, shape, color):
-        super(Star, self).__init__(shape, color)
+    def __init__(self, color):
+        super(Star, self).__init__(color)
 
 
 class Heart(Shape):
 
     corners = 2
 
-    def __init__(self, shape, color):
-        super(Heart, self).__init__(shape, color)
+    def __init__(self, color):
+        super(Heart, self).__init__(color)
 
 
 class Ellipse(Shape):
 
     corners = 0
 
-    def __init__(self, shape, color):
-        super(Ellipse, self).__init__(shape, color)
+    def __init__(self, color):
+        super(Ellipse, self).__init__(color)
