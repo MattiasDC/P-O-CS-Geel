@@ -3,13 +3,13 @@ import numpy as np
 from PIL import Image
 from PIL import _imaging
 from shapes import *
-from time import time
 
-min_contour_length = 200
-canny_threshold1 = 50
+min_contour_length = 200    # The minimum length of the contour of a shape, used to filter
+canny_threshold1 = 50       # Thresholds for the canny edge detection algorithm
 canny_threshold2 = 130
-approx_precision = 0.005
-iterations = 1
+approx_precision = 0.005    # The approximation of the contour when using the Ramer-Douglas-Peucker algorithm
+iterations = 1              # The amount of iterations to dilate the edges to make the contours of the shapes closed
+max_offset_shape = 0.1      # The maximum offset for the shape recognition
 
 
 def process_picture(image):
@@ -31,13 +31,23 @@ def process_picture(image):
 
     #Filter small elements out of the contours
     contours = filter(lambda x: cv2.arcLength(x, True) > min_contour_length, contours)
-    #Approximate contours TODO is this necessary??
+    #Approximate contour with less points to smoothen the contour
     contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
-    shapes = []
+
     # TODO filter giant rectangle properly
-    for contour in contours[:-1]:
-        print contour.tolist()
-        cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 2)
+    for contour in contours:
+        values = {}
+        cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
+
+        values[cv2.matchShapes(contour, Rectangle.contour, 1, 0)] = Rectangle(None)
+        values[cv2.matchShapes(contour, Star.contour, 1, 0)] = Star(None)
+        values[cv2.matchShapes(contour, Heart.contour, 1, 0)] = Heart(None)
+        values[cv2.matchShapes(contour, Ellipse.contour, 1, 0)] = Ellipse(None)
+
+        minimum = min(values)
+        if minimum < max_offset_shape:
+            cv2.putText(gray_image, values.get(minimum).__class__.__name__, tuple(contour[0].tolist()[0]),
+                        cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
 
     return gray_image, dilated_edge_image
 
@@ -52,7 +62,7 @@ def find_center(contour):
 
 
 if __name__ == '__main__':
-    img = Image.open('C:\Users\Mattias\Desktop\star.png')
+    img = Image.open('C:\Users\Mattias\PycharmProjects\P-O-Geel-2\TestSuite\Images\\1.jpg')
     gray_with_contour, processed = process_picture(img)
     cv2.imwrite('testc.jpg', gray_with_contour)
     cv2.imwrite('testg.jpg', processed)
