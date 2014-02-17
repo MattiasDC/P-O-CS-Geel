@@ -7,7 +7,7 @@ from shapes import *
 min_contour_length = 200    # The minimum length of the contour of a shape, used to filter
 canny_threshold1 = 50       # Thresholds for the canny edge detection algorithm
 canny_threshold2 = 130
-approx_precision = 0.005    # The approximation of the contour when using the Ramer-Douglas-Peucker algorithm
+approx_precision = 0.005    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
 iterations = 1              # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_offset_shape = 0.1      # The maximum offset for the shape recognition
 
