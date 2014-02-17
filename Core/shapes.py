@@ -24,7 +24,7 @@ class Shape(object):
 class Rectangle(Shape):
 
     corners = 4
-    contour = [[0,0], []]
+    contour = [[0, 0], [0, 8.5], [5.5, 0], [5.5, 8.5]]
 
     def __init__(self, color):
         super(Rectangle, self).__init__(color)

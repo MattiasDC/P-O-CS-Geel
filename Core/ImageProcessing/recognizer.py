@@ -3,10 +3,14 @@ import numpy as np
 from PIL import Image
 from PIL import _imaging
 from shapes import *
+from time import time
 
 min_contour_length = 200
 canny_threshold1 = 50
 canny_threshold2 = 130
+approx_precision = 0.005
+iterations = 1
+
 
 def process_picture(image):
     gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
@@ -16,7 +20,7 @@ def process_picture(image):
 
     #Make lines thicker to make found edges of shapes closed
     element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-    dilated_edge_image = cv2.dilate(edge_image, element, iterations=1)
+    dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
 
     cv2.imwrite('testNotFlooded.jpg', dilated_edge_image)
     #Fill the rest of the image => result = black shapes, rest is white
@@ -24,32 +28,17 @@ def process_picture(image):
     cv2.imwrite('testFlooded.jpg', dilated_edge_image)
     #Find contours of black shapes
     contours, _ = cv2.findContours(dilated_edge_image, 1, 2)
-    print type(contours[0])
-
-    #Shapes have length greater than 200
-    for contour in contours:
-        print cv2.arcLength(contour, True)
 
     #Filter small elements out of the contours
     contours = filter(lambda x: cv2.arcLength(x, True) > min_contour_length, contours)
     #Approximate contours TODO is this necessary??
-    contours = map(lambda x: cv2.approxPolyDP(x, 0.01*cv2.arcLength(x, True), True), contours)
+    contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
     shapes = []
-
     # TODO filter giant rectangle properly
     for contour in contours[:-1]:
-        # to prevent detection of small shapes
-            #error possible = 1%
-        if len(contour) == Rectangle.corners:
-            print "Rec"
-            find_center(contour)
-            shapes.append(Rectangle(None))
-            cv2.drawContours(gray_image, [contour], 0, (0, 255, 0), 2)
-        elif len(contour) == Star.corners:
-            print "Star"
-            shapes.append(Rectangle(None))
-            cv2.drawContours(gray_image, [contour], 0, (0, 0, 255), 2)
+        print contour.tolist()
         cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 2)
+
     return gray_image, dilated_edge_image
 
 
@@ -63,7 +52,7 @@ def find_center(contour):
 
 
 if __name__ == '__main__':
-    img = Image.open('C:\Users\Mattias\PycharmProjects\P-O-Geel-2\TestSuite\Images\\1.jpg')
+    img = Image.open('C:\Users\Mattias\Desktop\star.png')
     gray_with_contour, processed = process_picture(img)
     cv2.imwrite('testc.jpg', gray_with_contour)
     cv2.imwrite('testg.jpg', processed)
