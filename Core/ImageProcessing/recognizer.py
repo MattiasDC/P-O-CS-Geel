@@ -1,39 +1,57 @@
 import cv2
 import numpy as np
 from PIL import Image
+from PIL import _imaging
 from shapes import *
 
+min_contour_length = 200
+canny_threshold1 = 50
+canny_threshold2 = 130
 
 def process_picture(image):
-    image = _PIL_to_cv(image)
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
 
-    thresh = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-    contours, _ = cv2.findContours(thresh, 1, 2)
+    #Find edges in image
+    edge_image = cv2.Canny(gray_image, canny_threshold1, canny_threshold2)
 
+    #Make lines thicker to make found edges of shapes closed
+    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    dilated_edge_image = cv2.dilate(edge_image, element, iterations=1)
+
+    cv2.imwrite('testNotFlooded.jpg', dilated_edge_image)
+    #Fill the rest of the image => result = black shapes, rest is white
+    cv2.floodFill(dilated_edge_image, None, (0, 0), 255)
+    cv2.imwrite('testFlooded.jpg', dilated_edge_image)
+    #Find contours of black shapes
+    contours, _ = cv2.findContours(dilated_edge_image, 1, 2)
+    print type(contours[0])
+
+    #Shapes have length greater than 200
+    for contour in contours:
+        print cv2.arcLength(contour, True)
+
+    #Filter small elements out of the contours
+    contours = filter(lambda x: cv2.arcLength(x, True) > min_contour_length, contours)
+    #Approximate contours TODO is this necessary??
+    contours = map(lambda x: cv2.approxPolyDP(x, 0.01*cv2.arcLength(x, True), True), contours)
     shapes = []
 
-    for contour in contours:
+    # TODO filter giant rectangle properly
+    for contour in contours[:-1]:
         # to prevent detection of small shapes
-        if cv2.arcLength(contour, True) > 100:
             #error possible = 1%
-            simp = cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour, True), True)
-            if len(simp) == Rectangle.corners:
-                print "Rec"
-                find_center(contour)
-                shapes.append(Rectangle(None))
-            elif len(simp) == Star.corners:
-                print "Star"
-                shapes.append(Rectangle(None))
+        if len(contour) == Rectangle.corners:
+            print "Rec"
+            find_center(contour)
+            shapes.append(Rectangle(None))
+            cv2.drawContours(gray_image, [contour], 0, (0, 255, 0), 2)
+        elif len(contour) == Star.corners:
+            print "Star"
+            shapes.append(Rectangle(None))
+            cv2.drawContours(gray_image, [contour], 0, (0, 0, 255), 2)
+        cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 2)
+    return gray_image, dilated_edge_image
 
-
-
-
-def _PIL_to_cv(pilImage):
-    """
-    Converts a PIL object to a BGR image for opencv
-    """
-    return np.asarray(pilImage)[:, :, ::-1]
 
 def find_center(contour):
     """
@@ -41,11 +59,11 @@ def find_center(contour):
     This method will find an approximation of the center of a contour.
     It will make a rectangle which fits in the contour and calculate the middle point of the rectangle.
     """
-
-    for point in contour:
-        print point
+    pass
 
 
 if __name__ == '__main__':
     img = Image.open('C:\Users\Mattias\PycharmProjects\P-O-Geel-2\TestSuite\Images\\1.jpg')
-    process_picture(img)
+    gray_with_contour, processed = process_picture(img)
+    cv2.imwrite('testc.jpg', gray_with_contour)
+    cv2.imwrite('testg.jpg', processed)
