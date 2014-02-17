@@ -58,7 +58,7 @@ def find_center(contour):
     This method will find an approximation of the center of a contour.
     It will make a rectangle which fits in the contour and calculate the middle point of the rectangle.
     """
-    pass
+    pass # TODO find centers + color?
 
 
 if __name__ == '__main__':
