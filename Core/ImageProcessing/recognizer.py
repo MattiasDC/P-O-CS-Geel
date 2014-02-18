@@ -5,17 +5,18 @@ from PIL import _imaging
 from shapes import *
 
 min_contour_length = 200    # The minimum length of the contour of a shape, used to filter
-canny_threshold1 = 50       # Thresholds for the canny edge detection algorithm
-canny_threshold2 = 130
+canny_threshold1 = 20       # Thresholds for the canny edge detection algorithm
+canny_threshold2 = 60
 approx_precision = 0.005    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
-iterations = 1              # The amount of iterations to dilate the edges to make the contours of the shapes closed
+iterations = 2              # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_offset_shape = 0.1      # The maximum offset for the shape recognition
+
 
 # TODO: hartjes zijn niet altijd gesloten, floodfill linksboven hoek, wat als Wit.., center bepalen door rechthoek
 # TODO: kleur bepalen uit center
 def process_picture(image):
     gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
-
+    gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
     #Find edges in image
     edge_image = cv2.Canny(gray_image, canny_threshold1, canny_threshold2)
 
@@ -32,13 +33,12 @@ def process_picture(image):
 
     #Filter small elements out of the contours
     contours = filter(lambda x: cv2.arcLength(x, True) > min_contour_length, contours)
-    #Approximate contour with less points to smoothen the contour
+    #Approximate contour with less points to smooth the contour
     contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
 
     # TODO filter giant rectangle properly
     for contour in contours:
         values = {}
-        cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
 
         values[cv2.matchShapes(contour, Rectangle.contour, 1, 0)] = Rectangle(None)
         values[cv2.matchShapes(contour, Star.contour, 1, 0)] = Star(None)
@@ -47,6 +47,7 @@ def process_picture(image):
 
         minimum = min(values)
         if minimum < max_offset_shape:
+            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
             cv2.putText(gray_image, values.get(minimum).__class__.__name__, tuple(contour[0].tolist()[0]),
                         cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
 
