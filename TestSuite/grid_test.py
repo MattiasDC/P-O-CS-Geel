@@ -1,4 +1,5 @@
 from grid import Grid
+from shapes import *
 from os import remove
 
 
@@ -12,10 +13,14 @@ def test_get_point():
     grid = Grid([[("red", "heart"), ("green", "oval")],
                  [("blue", "square"), ("white", "star")]])
 
-    assert grid.get_point(x=0, y=0) == ("red", "heart")
-    assert grid.get_point(x=1, y=0) == ("green", "oval")
-    assert grid.get_point(x=0, y=1) == ("blue", "square")
-    assert grid.get_point(x=1, y=1) == ("white", "star")
+    assert isinstance(grid.get_point(x=0, y=0), Heart)
+    assert grid.get_point(x=0, y=0).color == "red"
+    assert isinstance(grid.get_point(x=1, y=0), Ellipse)
+    assert grid.get_point(x=1, y=0).color == "green"
+    assert isinstance(grid.get_point(x=0, y=1), Rectangle)
+    assert grid.get_point(x=0, y=1).color == "blue"
+    assert isinstance(grid.get_point(x=1, y=1), Star)
+    assert grid.get_point(x=1, y=1).color == "white"
 
 
 #-----------------------------------------------------------------------------
@@ -65,7 +70,7 @@ def test_write_file():
         test_str = test.read()
     remove('./write_test.txt')
 
-    assert test_str == "red$heart,green$oval;\nblue$square,white$star;\n"
+    assert test_str == "red$heart,green$ellipse;\nblue$rectangle,white$star;\n"
 
 
 #-----------------------------------------------------------------------------
@@ -74,24 +79,36 @@ def test_write_file():
 def test_read_file1():
     grid = Grid.from_file("./test1.txt")
 
-    assert grid.get_point(x=0, y=0) == ("red", "heart")
-    assert grid.get_point(x=1, y=0) == ("green", "oval")
-    assert grid.get_point(x=0, y=1) == ("blue", "square")
-    assert grid.get_point(x=1, y=1) == ("white", "star")
+    assert isinstance(grid.get_point(x=0, y=0), Heart)
+    assert grid.get_point(x=0, y=0).color == "red"
+    assert isinstance(grid.get_point(x=1, y=0), Ellipse)
+    assert grid.get_point(x=1, y=0).color == "green"
+    assert isinstance(grid.get_point(x=0, y=1), Rectangle)
+    assert grid.get_point(x=0, y=1).color == "blue"
+    assert isinstance(grid.get_point(x=1, y=1), Star)
+    assert grid.get_point(x=1, y=1).color == "white"
 
 
 def test_read_file2():
     grid = Grid.from_file("./test2.txt")
 
-    assert grid.get_point(x=0, y=0) == ("red", "heart")
-    assert grid.get_point(x=1, y=0) == ("green", "oval")
-    assert grid.get_point(x=0, y=1) == ("blue", "square")
-    assert grid.get_point(x=1, y=1) == ("white", "star")
+    assert isinstance(grid.get_point(x=0, y=0), Heart)
+    assert grid.get_point(x=0, y=0).color == "red"
+    assert isinstance(grid.get_point(x=1, y=0), Ellipse)
+    assert grid.get_point(x=1, y=0).color == "green"
+    assert isinstance(grid.get_point(x=0, y=1), Rectangle)
+    assert grid.get_point(x=0, y=1).color == "blue"
+    assert isinstance(grid.get_point(x=1, y=1), Star)
+    assert grid.get_point(x=1, y=1).color == "white"
 
-    assert grid.get_point(x=0, y=2) == ("green", "oval")
-    assert grid.get_point(x=1, y=2) == ("red", "heart")
-    assert grid.get_point(x=0, y=3) == ("white", "star")
-    assert grid.get_point(x=1, y=3) == ("blue", "square")
+    assert isinstance(grid.get_point(x=0, y=2), Ellipse)
+    assert grid.get_point(x=0, y=2).color == "green"
+    assert isinstance(grid.get_point(x=1, y=2), Heart)
+    assert grid.get_point(x=1, y=2).color == "red"
+    assert isinstance(grid.get_point(x=0, y=3), Star)
+    assert grid.get_point(x=0, y=3).color == "white"
+    assert isinstance(grid.get_point(x=1, y=3), Rectangle)
+    assert grid.get_point(x=1, y=3).color == "blue"
 
 
 #-----------------------------------------------------------------------------

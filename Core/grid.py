@@ -16,6 +16,9 @@ class Grid(object):
 
     @classmethod
     def from_file(cls, path_to_grid_file):
+        """
+        Load a grid object from a file.
+        """
         with open(path_to_grid_file, 'r') as grid_file:
             grid_str = grid_file.read().replace('\n', '').strip(';')
             grid_rows = (row.split(',') for row in grid_str.split(';'))
@@ -37,6 +40,9 @@ class Grid(object):
 
     @classmethod
     def from_empty(cls, n_cols, n_rows):
+        """
+        Create an empty grid object.
+        """
         points = list(list(None for _ in range(n_cols)) for _ in range(n_rows))
         return Grid(points)
 
@@ -85,12 +91,17 @@ class Grid(object):
         """
         Save the grid to a file.
         """
+        cls_to_str = {Rectangle: "rectangle",
+                      Star: "star",
+                      Heart: "heart",
+                      Ellipse: "ellipse"}
+
         grid_str = ""
         for y in range(self.n_rows):
             for x in range(self.n_columns):
                 point = self.get_point(x=x, y=y)
                 if not point is None:
-                    grid_str += (point[0] + "$" + point[1])
+                    grid_str += (point.color + "$" + cls_to_str[type(point)])
                 else:
                     grid_str += "-"
                 grid_str += ","
