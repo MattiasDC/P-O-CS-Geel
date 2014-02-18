@@ -11,7 +11,8 @@ approx_precision = 0.005    # The approximation of the contour when using the Ra
 iterations = 1              # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_offset_shape = 0.1      # The maximum offset for the shape recognition
 
-
+# TODO: hartjes zijn niet altijd gesloten, floodfill linksboven hoek, wat als Wit.., center bepalen door rechthoek
+# TODO: kleur bepalen uit center
 def process_picture(image):
     gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
 
@@ -58,11 +59,11 @@ def find_center(contour):
     This method will find an approximation of the center of a contour.
     It will make a rectangle which fits in the contour and calculate the middle point of the rectangle.
     """
-    pass # TODO find centers + color?
+    pass
 
 
 if __name__ == '__main__':
-    img = Image.open('C:\Users\Mattias\PycharmProjects\P-O-Geel-2\TestSuite\Images\\1.jpg')
+    img = Image.open('C:\Users\Mattias\PycharmProjects\P-O-Geel-2\TestSuite\Images\\4.jpg')
     gray_with_contour, processed = process_picture(img)
     cv2.imwrite('testc.jpg', gray_with_contour)
     cv2.imwrite('testg.jpg', processed)
