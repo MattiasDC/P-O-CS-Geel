@@ -94,7 +94,6 @@ def find_shape_color(contour, image):
     center = find_center(contour)
     x, y, z = image.getpixel(center)
     _, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
-
     return colors[value]
 
 
