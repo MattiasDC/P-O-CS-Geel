@@ -2,12 +2,10 @@
 from threading import Thread
 from time import sleep
 from datetime import datetime
-import hardware.Camera as Cam
-import hardware.DistanceSensor as DistanceSensor
-from hardware.Motors import MotorControl
-from QRHandeling.QRParser import QRParser
-import QRHandeling.CommandController as CommandController
-from communication.NetworkConnection import PIServer
+import Hardware.Camera as Cam
+import Hardware.DistanceSensor as DistanceSensor
+from Hardware.Motors import MotorControl
+from Communication.NetworkConnection import PIServer
 from math import pow, sqrt, acos, degrees
 from values import *
 
@@ -17,22 +15,18 @@ class Core(object):
     _camera = None                  # The camera
 
     _motors = None                  # Motors (= MotorControl)
-    _qr_parser = None               # QR parser
-    _command_controller = None      # Command controller
 
     _handler = None                 # The handler for the connection
     _server = None                  # The server for the connection
 
 # ---------------------------------------------------------------------------------------------------------------------
+    _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
+    _stay_on_position_flag = None   # Flag to indicate the zeppelin should (try) to go to the goal position
 
-    _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay automatically on the same height
-    _camera_mode_flag = None        # False = dir mode; True = normal camera mode
-    _auto_mode_flag = None          # False = manual mode with arrow keys; True = automatically seeking for qr codes and
-                                    # execute them.
-    _stay_on_position_flag = None # Flag to indicate the zeppelin has a new position to move to.
+    _goal_position = None           # The goal position of the zeppelin
+    _current_position = None        # The current position of the zeppelin
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
-
     _goal_position = None           # The (x,y)- coordinate the zeppelin has to be at the moment
 
     _console = ""                   # String used to send info to the GUI
@@ -46,10 +40,6 @@ class Core(object):
     _prev_error_soft = 0            # Prev error for the PID software algorithm
     _prev_errors_soft = [0]*10      # List of integral values for PID software
     _prev_derivative_soft = 0       # Prev derivative to substitute misreadings (0 values)
-
-    _nr_exec_qr = 0                 # The number of executed qr command after the last time this value has been read
-                                    # by the GUI
-    _nr_exec_qr2 = 0                # Double buffer...
 
     def initialise(self):
         """
@@ -67,13 +57,6 @@ class Core(object):
         # Initialisation of the camera
         self._camera = Cam
         self._camera.initialise(self)
-        self.set_picture_mode(False)
-
-        # Initialise QR handling + CommandController
-        self._qr_parser = QRParser(self)
-        self._command_controller = CommandController
-        self._command_controller.initialise(self)
-        self.set_auto_mode(False)
 
         # Start the server
         self._start_server()
@@ -81,6 +64,12 @@ class Core(object):
         # Start height control
         self._goal_height = ground_height
         self.set_height_control(True)
+
+        # Get current position
+        self._get_initial_position()
+
+        # Navigation
+        self.set_navigation_mode(True)
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
 
@@ -114,7 +103,7 @@ class Core(object):
         #      + str(pid_derivative*derivative)
         return pid_error*error + pid_integral*integral + pid_derivative*derivative
 
-# ------------------------------------------ Control Commands ----------------------------------------------------------
+# ------------------------------------------ Navigation Control --------------------------------------------------------
         # TODO check this formulas
 
     def _navigation_thread(self):
@@ -128,29 +117,29 @@ class Core(object):
             direction = self.get_direction()
             angle = self._calculate_angle(start, finish, direction)
             pid_value = self._pid_moving(start, finish)
-            if angle >= 0 and angle <= 45:
+            if 0<= angle <= 45:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (45-angle)/45)
                 self._motors.motor2_pwm(pid_value)
-            elif angle > 45 and angle <=135:
+            elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
                 self._motors.motor1_pwm(pid_value * (angle-45) * -1/90)
                 self._motors.motor2_pwm(pid_value * (angle-135) * -1/90 * power_ratio)
-            elif angle > 135 and angle <= 180:
+            elif 135 < angle <= 180:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * -1)
                 self._motors.motor2_pwm(pid_value * (angle-135) * -1/45)
-            elif angle < 0 and angle >= -45:
+            elif -45 <= angle < 0:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value)
                 self._motors.motor2_pwm(pid_value * (45+angle)/45)
-            elif angle < -45 and angle >= -135:
+            elif -135 <= angle < -45:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/90 * power_ratio)
                 self._motors.motor2_pwm(pid_value * (angle+45) * 1/90)
-            elif angle < -135 and angle >= -180:
+            elif -180 <= angle < -1350:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/45)
                 self._motors.motor2_pwm(pid_value * -1)
@@ -218,50 +207,11 @@ class Core(object):
         self._console2 = self._console
         self._console = ""
 
-    def add_to_qr_nr(self):
-        """
-        Adds 1 to the nr of executed qr commands
-        """
-        self._nr_exec_qr += 1
-
-    def _clean_qr_exec_nr(self):
-        """
-        Resets the current nr of executed qr commands
-        """
-        self._nr_exec_qr2 = self._nr_exec_qr
-        self._nr_exec_qr = 0
-
-    def add_command(self, command):
-        """
-        Adds an command to the command handler to be executed
-        """
-        self._command_controller.add_to_queue(command)
-
-    def take_picture(self):
-        """
-        Take a picture with the camera
-        """
-        self._camera.take_picture()
-        return self._camera.get_last_picture()
-
-    def take_picture_from_file(self):
-        """
-        Take a picture from the dir
-        """
-        return self._camera.take_picture_from_file()
-
-    def take_parse_picture(self):
-        """
-        Takes a picture (dir or camera depending on the flag) and parses it
-        """
-        return self._qr_parser.take_picture()
-
     def quit_core(self):
         """
         Stops everything, console output still available. Zeppelin "lands"; Quit server should be called after this
         """
-
-        self._command_controller.stop_command_control()
+        self.set_navigation_mode(False)
 
         # Lands the zeppelin (they like that!)
         self.set_goal_height(ground_height)
@@ -294,13 +244,6 @@ class Core(object):
         """
         self._clean_console()
         return self._console2
-
-    def get_qr_exec_nr(self):
-        """
-        Returns the nr of executed commands (as string)
-        """
-        self._clean_qr_exec_nr()
-        return self._nr_exec_qr2
 
     def get_height(self):
         """
@@ -356,90 +299,15 @@ class Core(object):
         """
         return self._motors.get_motor2_status()
 
-    def get_last_qr_code(self):
+    def self._get_initial_position(self)
         """
-        Returns the last picked QR code from the last taken picture
+        Sets the current start position of the zeppelin
         """
-        return self._qr_parser.get_last_qr()
-
-    def get_last_qr_code_raw(self):
-        """
-        Returns all the decoded QR codes from the last take picture
-        """
-        return self._qr_parser.get_last_qr_raw()
-
-    def get_current_command(self):
-        """
-        Returns the command that is currently executed by the command controller
-        """
-        return self._command_controller.get_command()
-
-    def get_last_picture(self):
-        """
-        Returns the last taken picture as pil object
-        """
-        return self._camera.get_last_picture()
-
-    def get_last_qr_number(self):
-        """
-        Returns the number of the last parsed qr code
-        """
-        return self._qr_parser.get_last_number()
-
-    def get_last_qr_pil(self):
-        """
-        Returns the last parsed qr code, encoded as a new qr code (pil object is returned)
-        """
-        return self._qr_parser.get_last_qr_pil()
-
-    def get_camera_mode(self):
-        """
-        Returns the current camera mode flag
-        """
-        return self._camera_mode_flag
-
-    def get_auto_mode(self):
-        """
-        Returns the current auto mode flag
-        """
-        return self._auto_mode_flag
-
-    def get_height_mode(self):
-        """
-        Returns the current height mode flag
-        """
-        return self._stay_on_height_flag
+        # TODO
+        self._current_position = (0,0)
+        self._goal_position = (0,0)
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
-
-    def set_picture_mode(self, flag):
-        """
-        Changes the picture mode to the given argument (boolean, no check)
-        """
-        if flag is True:
-            self._camera_mode_flag = True
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Camera mode set to normal")
-        else:
-            self._camera_mode_flag = False
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Camera mode set to read from dir")
-
-    def set_auto_mode(self, mode):
-        """
-        Changes the mode of the zeppelin to auto or manual, no check on given argument (must be boolean)
-        """
-        if mode:
-            self._auto_mode_flag = True
-            self._command_controller.start_command_control()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous mode is activated")
-
-            # Searches for qr codes as long as there are  none found or the and auto mode is on
-            while self._auto_mode_flag & (self.take_parse_picture() is None):
-                sleep(1)
-
-        else:
-            self._auto_mode_flag = False
-            self._command_controller.stop_command_control()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Manual mode is activated")
 
     def set_goal_height(self, new_height):
         """
@@ -462,11 +330,11 @@ class Core(object):
             self._stay_on_height_flag = False
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
-    def set_goal_position(self, new_position):
+    def set_goal_position(self, (x,y)):
         """
         Sets a new position in (x,y)- coordinates
         """
-        self._goal_height = new_position
+        self._goal_height = (x,y)
 
     def set_navigation_mode(self, flag):
         if flag:
@@ -481,6 +349,6 @@ if __name__ == "__main__":
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
     core.initialise()
-    core._goal_height = 50
+    self.set_goal_height(130)
 
 # ---------------------------------------------------------------------------------------------------------------------
