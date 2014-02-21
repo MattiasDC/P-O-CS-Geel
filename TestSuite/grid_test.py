@@ -1,6 +1,8 @@
-from grid import Grid
-from shapes import *
 from os import remove
+
+import Grid
+from Shapes import *
+
 
 
 #-----------------------------------------------------------------------------

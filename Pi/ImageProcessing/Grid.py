@@ -1,4 +1,4 @@
-from shapes import *
+from Shapes import *
 
 
 class Grid(object):

@@ -43,5 +43,3 @@ max_width = 1944
 
 # ------------------------------- Network
 port = 10000                   # The port used in the connection
-
-error_correction_code = 'L'     # H L, ...

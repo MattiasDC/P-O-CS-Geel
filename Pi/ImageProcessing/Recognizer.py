@@ -1,9 +1,8 @@
-import cv2
-import numpy as np
-from PIL import Image
-from PIL import _imaging
-from shapes import *
 from time import time
+from PIL import Image
+import cv2
+from Shapes import *
+
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
 max_contour_factor = 0.8
