@@ -60,7 +60,7 @@ class MotorControl(object):
         #The total duration of one duty cycle
         total_time = 1/software_frequency
         #The duration of the motor-movement in one duty cycle
-        up_time = math.abs(total_time*pwm/100)
+        up_time = abs(total_time*pwm/100)
 
         if (pwm >= 0 and pwm <= 100):
             #Let the motor turn for the up_time
@@ -91,7 +91,7 @@ class MotorControl(object):
         #The total duration of one duty cycle
         total_time = 1/software_frequency
         #The duration of the motor-movement in one duty cycle
-        up_time = math.abs(total_time*pwm/100)
+        up_time = abs(total_time*pwm/100)
 
         if (pwm >= 0 and pwm <= 100):
             #Let the motor turn for the up_time

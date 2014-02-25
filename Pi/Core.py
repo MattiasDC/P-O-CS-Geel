@@ -4,11 +4,11 @@ from time import sleep
 from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
-import ImageProcessing.Recognize as Recognizer
-import ImageProcessing.Positioner as Positioner
-import ImageProcessing.Grid as Grid
+#import ImageProcessing.Recognize as Recognizer
+#import ImageProcessing.Positioner as Positioner
+#import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
-from Communication.NetworkConnection import PIServer, CoreHandler
+#from Communication.NetworkConnection import PIServer, CoreHandler
 from math import pow, sqrt, acos, degrees
 from values import *
 
@@ -66,22 +66,22 @@ class Core(object):
         self._camera.initialise(self)
 
         # Start the server
-        self._start_server()
+        #self._start_server()
 
         # Sets the grid
-        self._grid = Grid.from_file         #TODO
+        #self._grid = Grid.from_file         #TODO
 
         # Start height control
-        self._goal_height = ground_height
-        self.set_height_control(True)
+        #self._goal_height = ground_height
+        #self.set_height_control(True)
 
         # Get current position
-        self._positioner = Positioner
-        self._positioner.set_core(self)
-        self._get_initial_position()
+        #self._positioner = Positioner
+        #self._positioner.set_core(self)
+        #self._get_initial_position()
 
         # Start navigation
-        self.set_navigation_mode(True)
+        #self.set_navigation_mode(True)
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
 
@@ -271,15 +271,21 @@ class Core(object):
         """
         Method for testing the frame
         """
-        self._motors.motor1_pwm(50)
-        self._motors.motor2_pwm(50)
+        self._motors._motor1.move_counterclockwise()
+        self._motors._motor2.move_counterclockwise()
+
 
     def move_backward(self):
         """
         Method for testing the frame
         """
-        self._motors.motor1_pwm(-50)
-        self._motors.motor2_pwm(-50)
+        self._motors._motor1.move_clockwise()
+        self._motors._motor2.move_clockwise()
+
+    def stop_moving(self):
+        self._motors._motor1.stop_moving()
+        self._motors._motor2.stop_moving()
+
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -404,12 +410,15 @@ if __name__ == "__main__":
     while True:
         c = raw_input()
 
-        if c[0] == "v":
+        if c == "v":
             core.move_forward()
 
-        elif c[0] == "a":
+        elif c == "a":
             core.move_backward()
 
-        elif c[0] == "s":
+        elif c == "s":
             core.stop_moving()
+
+        #else:
+        #    core.set_goal_height(int(c))
 # ---------------------------------------------------------------------------------------------------------------------
