@@ -3,13 +3,18 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/.idea" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Core" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pi" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/GUI" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TestSuite" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Core/ImageProcessing" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pi/ImageProcessing" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pi/Communication" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pi/Hardware" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pi/PiCamera" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Simulator" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TestSuite/Images" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 2.7.6 (/usr/bin/python2.7)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
