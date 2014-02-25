@@ -24,12 +24,6 @@ def initialise(core):
     _core = core
     _core_set = True
 
-
-def get_height():
-    """ Returns the current height  """
-    return _current_height
-
-
 def _get_height_list():
     measurements = []
     for i in range(samples):
@@ -123,3 +117,7 @@ def start():
 def get_status():
     global _enabled
     return _enabled
+
+def get_height():
+    """ Returns the current height  """
+    return _current_height

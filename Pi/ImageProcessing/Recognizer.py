@@ -92,7 +92,14 @@ def find_shape_color(contour, image):
     center = find_center(contour)
     x, y, z = image.getpixel(center)
     _, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
-    return colors[value]
+    return colors[value
+
+def get_current_position():
+    """
+    Returns the current position of the zeppelin in the frame (should only be used at startup)
+    """
+    #TODO
+    return (0,0)
 
 
 if __name__ == '__main__':

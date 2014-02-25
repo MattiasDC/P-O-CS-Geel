@@ -4,6 +4,7 @@ from time import sleep
 from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
+import ImageProcessing.Recognize as Recognizer
 from Hardware.Motors import MotorControl
 from Communication.NetworkConnection import PIServer
 from math import pow, sqrt, acos, degrees
@@ -18,6 +19,8 @@ class Core(object):
 
     _handler = None                 # The handler for the connection
     _server = None                  # The server for the connection
+
+    _imageprocessor = None          # The image processing module
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
@@ -67,9 +70,10 @@ class Core(object):
         self.set_height_control(True)
 
         # Get current position
+        self._imageprocessor = Recognizer
         self._get_initial_position()
 
-        # Navigation
+        # Start navigation
         self.set_navigation_mode(True)
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
@@ -304,13 +308,12 @@ class Core(object):
         """
         return self._motors.get_motor2_status()
 
-    def self._get_initial_position(self)
+    def _get_initial_position(self)
         """
         Sets the current start position of the zeppelin
         """
-        #TODO
-        self._current_position = (0,0)
-        self._goal_position = (0,0)
+        self._current_position = self._imageprocessor.get_current_position()
+        self._goal_position = self._current_position
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
 
@@ -339,7 +342,8 @@ class Core(object):
         """
         Sets a new position in (x,y)- coordinates
         """
-        self._goal_height = (x,y)
+        self._goal_position = (x,y)
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x,y)))
 
     def set_navigation_mode(self, flag):
         if flag:

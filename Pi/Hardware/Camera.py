@@ -26,10 +26,10 @@ def take_picture():
     _last_picture = None
     if _flag_initialised:
 
-        height = _core.get_height()
-        image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
-        image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
-        _camera.resolution = (image_height, image_width)
+        #height = _core.get_height()
+        #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
+        #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
+        _camera.resolution = (cam_resolution, cam_resolution)
         stream = io.BytesIO()
         _camera.capture(stream, format='jpeg')
         stream.seek(0)
