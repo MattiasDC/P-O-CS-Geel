@@ -130,6 +130,13 @@ class Core(object):
             direction = self.get_direction()
             angle = self._calculate_angle(start, finish, direction)
             pid_value = self._pid_moving(start, finish)
+
+            # The pwm value calculated with the pid method has a maximum and minimum boundary
+            if pid_value > pid_boundary:
+                pid_value = pid_boundary
+            elif pid_value < -pid_boundary:
+                pid_value = -pid_boundary
+
             if 0<= angle <= 45:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (45-angle)/45)
@@ -326,7 +333,7 @@ class Core(object):
         """
         return self._motors.get_motor2_status()
 
-    def _get_initial_position(self)
+    def _get_initial_position(self):
         """
         Sets the current start position of the zeppelin
         """
