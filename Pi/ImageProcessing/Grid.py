@@ -90,15 +90,14 @@ class Grid(object):
             return None
         return self._points[y][x]
 
-
     def get_neighbour_points(self, x=None, y=None, pos=None):
         if not pos is None:
             x = pos[0]
             y = pos[1]
 
-        neighbours = [(x,y-1), (x+1,y-1), (x+1, y), (x+1, y+1), (x, y+1), (x-1, y)]
+        neighbours = [(x, y-1), (x+1, y-1), (x+1, y), (x+1, y+1), (x, y+1), (x-1, y)]
 
-        return filter(lambda x: is_valid_position(x), neighbours)
+        return filter(lambda (a, b): self.is_valid_position(a, b), neighbours)
 
     #-------------------------------------------------------------------------
     # Methods
@@ -113,5 +112,3 @@ class Grid(object):
 
 if __name__ == '__main__':
     grid = Grid.from_file("./test1.txt")
-
-    grid.write_to_file("./test3.txt")
