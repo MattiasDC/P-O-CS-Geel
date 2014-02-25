@@ -15,30 +15,31 @@ class Grid(object):
     #-------------------------------------------------------------------------
     def __init__(self, points):
         self._points = points
-        self._nr = len(points)
 
     @classmethod
     def from_file(cls, path_to_grid_file):
         """
         Load a grid object from a file.
         """
+        shape_map = {"R": Rectangle,
+                             "S": Star,
+                             "H": Heart,
+                             "C": Ellipse}
+
+        color_map = {'W': 'white',
+                     'B': 'blue',
+                     'G': 'green',
+                     'R': 'red',
+                     'Y': 'yellow'}
+        points = list()
+
         with open(path_to_grid_file, 'r') as grid_file:
-            grid_str = grid_file.read().replace('\n', '').strip(';')
-            grid_rows = (row.split(',') for row in grid_str.split(';'))
+            for line in grid_file.readline.split('\n'):
+                row = list()
+                for shape in enumerate(line.split(',')):
+                    row.append(shape_map.get(shape[0])(color_map.get(shape[1])))
+                points.append(row)
 
-            def convert(x):
-                if x is "-":
-                    return None
-                colour, shape = x.split("$")
-
-                shape_map = {"rectangle": Rectangle,
-                             "star": Star,
-                             "heart": Heart,
-                             "ellipse": Ellipse}
-
-                return shape_map[shape](color=colour)
-
-            points = list(map(convert, row) for row in grid_rows)
         return Grid(points)
 
     @classmethod
@@ -85,33 +86,22 @@ class Grid(object):
         if not pos is None:
             x = pos[0]
             y = pos[1]
+        if not self.is_valid_position(x, y):
+            return None
         return self._points[y][x]
+
+    def get_neighbour_points(self, x=None, y=None, pos=None):
+        if not pos is None:
+            x = pos[0]
+            y = pos[1]
+
+        neighbours = [(x, y-1), (x+1, y-1), (x+1, y), (x+1, y+1), (x, y+1), (x-1, y)]
+
+        return filter(lambda (a, b): self.is_valid_position(a, b), neighbours)
 
     #-------------------------------------------------------------------------
     # Methods
     #-------------------------------------------------------------------------
-    def write_to_file(self, path_to_grid_file):
-        """
-        Save the grid to a file.
-        """
-        cls_to_str = {Rectangle: "rectangle",
-                      Star: "star",
-                      Heart: "heart",
-                      Ellipse: "ellipse"}
-
-        grid_str = ""
-        for y in range(self.n_rows):
-            for x in range(self.n_columns):
-                point = self.get_point(x=x, y=y)
-                if not point is None:
-                    grid_str += (point.color + "$" + cls_to_str[type(point)])
-                else:
-                    grid_str += "-"
-                grid_str += ","
-            grid_str = grid_str[:-1] + ";\n"
-
-        with open(path_to_grid_file, 'w') as grid_file:
-            grid_file.write(grid_str)
 
     def is_valid_position(self, x=None, y=None, pos=None):
         if not pos is None:
@@ -122,5 +112,3 @@ class Grid(object):
 
 if __name__ == '__main__':
     grid = Grid.from_file("./test1.txt")
-
-    grid.write_to_file("./test3.txt")
