@@ -2,6 +2,7 @@ from math import sqrt
 from ImageProcessing import Grid
 from ImageProcessing.Shapes import *
 from ImageProcessing import Recognizer
+from copy import deepcopy
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
@@ -55,15 +56,15 @@ def find_in_grid(shapes, grid):
 
     start_element = shapes[0][0]
 
-    for i in grid.n_rows:
-        for j in grid.n_columns:
+    for i in range(grid.n_rows):
+        for j in range(grid.n_columns):
             if grid.get_point(i, j).color == start_element.color:
                 found_patterns.append([((i, j), start_element)])
 
     def right_element(element, x, y):
-        if x != element:
-            return y
-        return x
+        if not element.__eq__(x):
+            return x
+        return y
 
     for pattern in found_patterns:
         old_pattern = pattern
@@ -73,13 +74,14 @@ def find_in_grid(shapes, grid):
             to_connect = filter(lambda x: not x in map(lambda (_, a): a, pattern), connected_to)
 
             neighbour_colors = map(lambda (x, y):
-                                   (grid.get_point(x, y).color, (x, y)), grid.get_neighbour_points(position))
+                                   (grid.get_point(x, y).color, (x, y)), grid.get_neighbour_points(pos=position))
 
             for shape in to_connect:
                 can_place_positions = map(lambda (x, pos): pos,
-                                          filter(lambda (x, pos): x.color == shape.color, neighbour_colors))
+                                          filter(lambda (x, pos): x == shape.color, neighbour_colors))
                 for place_position in can_place_positions:
-                    pattern = old_pattern.copy().append((place_position, shape))
+                    pattern = deepcopy(old_pattern)
+                    pattern.append((place_position, shape))
                     found_patterns.append(pattern)
 
         found_patterns.remove(old_pattern)
@@ -91,4 +93,4 @@ if __name__ == '__main__':
     grid = Grid.Grid.from_file('/home/nooby4ever/Desktop/grid.csv')
 
 
-    print find_in_grid([(Rectangle('white'), Heart('white')), (Rectangle('white'), Rectangle('yellow')), (Star('white'), Rectangle('yellow')), (Star('white'), Heart('white')), (Heart('white'), Rectangle('yellow'))], grid)
+    print find_in_grid([(Rectangle('white'), Rectangle('blue')), (Rectangle('white'), Rectangle('yellow'))], grid)

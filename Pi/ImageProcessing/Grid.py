@@ -21,10 +21,10 @@ class Grid(object):
         """
         Load a grid object from a file.
         """
-        shape_map = {"R": Rectangle,
-                             "S": Star,
-                             "H": Heart,
-                             "C": Ellipse}
+        shape_map = {'R': Rectangle,
+                     'S': Star,
+                     'H': Heart,
+                     'C': Ellipse}
 
         color_map = {'W': 'white',
                      'B': 'blue',
@@ -34,11 +34,13 @@ class Grid(object):
         points = list()
 
         with open(path_to_grid_file, 'r') as grid_file:
-            for line in grid_file.readline.split('\n'):
+            for line in grid_file.read().replace(" ", "").split('\n'):
                 row = list()
-                for shape in enumerate(line.split(',')):
-                    row.append(shape_map.get(shape[0])(color_map.get(shape[1])))
-                points.append(row)
+                for shape in line.split(','):
+                    if len(shape) == 2:
+                        row.append(shape_map.get(shape[1])(color_map.get(shape[0])))
+                if len(row) > 0:
+                    points.append(row)
 
         return Grid(points)
 
@@ -88,14 +90,14 @@ class Grid(object):
             y = pos[1]
         if not self.is_valid_position(x, y):
             return None
-        return self._points[y][x]
+        return self._points[x][y]
 
     def get_neighbour_points(self, x=None, y=None, pos=None):
         if not pos is None:
             x = pos[0]
             y = pos[1]
 
-        neighbours = [(x, y-1), (x+1, y-1), (x+1, y), (x+1, y+1), (x, y+1), (x-1, y)]
+        neighbours = [(x-1, y+1), (x, y+1), (x+1, y+1), (x+1, y), (x, y-1), (x-1, y)]
 
         return filter(lambda (a, b): self.is_valid_position(a, b), neighbours)
 
@@ -107,7 +109,7 @@ class Grid(object):
         if not pos is None:
             x = pos[0]
             y = pos[1]
-        return (0 <= x < self.n_columns) and (0 <= y < self.n_rows)
+        return (0 <= x < self.n_rows) and (0 <= y < self.n_columns)
 
 
 if __name__ == '__main__':

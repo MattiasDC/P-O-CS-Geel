@@ -24,16 +24,18 @@ class Shape(object):
         self._center = center
 
     def __eq__(self, other):
-        if self.__class__ != other.__class__:
+        if not isinstance(other, self.__class__):
             return False
         elif self.color == other.color:
             return True
+        return False
 
     def __hash__(self):
         hsh = 0
         for c in self.color:
             hsh = 101*hsh + ord(c)
         return hsh
+
 
 class Rectangle(Shape):
 
