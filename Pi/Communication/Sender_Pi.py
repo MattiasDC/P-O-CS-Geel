@@ -43,3 +43,15 @@ class Sender_Pi(object):
                       routing_key=routing_key,
                       body=message)
             return 'succes'
+
+    def sent_private(self, message):
+        if not self._connected:
+            return 'Not connected'
+        else:
+            routing_key = 'geel.private'
+            self._channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=message)
+            return 'succes'
+
+	
