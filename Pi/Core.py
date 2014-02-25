@@ -8,7 +8,7 @@ import ImageProcessing.Recognize as Recognizer
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
-from Communication.NetworkConnection import PIServer
+from Communication.NetworkConnection import PIServer, CoreHandler
 from math import pow, sqrt, acos, degrees
 from values import *
 
@@ -22,7 +22,7 @@ class Core(object):
     _handler = None                 # The handler for the connection
     _server = None                  # The server for the connection
 
-    _positioner = None              # Positionner
+    _positioner = None              # Positioner
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
@@ -70,7 +70,7 @@ class Core(object):
         self._start_server()
 
         # Sets the grid
-        self._grid = Grid.from_file(#TODO)
+        self._grid = Grid.from_file         #TODO
 
         # Start height control
         self._goal_height = ground_height
@@ -215,7 +215,7 @@ class Core(object):
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        while self.stay_on_position_flag = True:
+        while self.stay_on_position_flag == True:
             self._current_location = self._positioner.find_location(self._cam.take_picture())
             sleep(0.8)
 
@@ -375,10 +375,10 @@ class Core(object):
             self._stay_on_position_flag = True
             Thread(target=self._navigation_thread()).start()
             Thread(target=self._update_position_thread()).start()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonome navigation has started")
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonome navigation has stopped")
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -386,6 +386,6 @@ if __name__ == "__main__":
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
     core.initialise()
-    self.set_goal_height(130)
+    core.set_goal_height(130)
 
 # ---------------------------------------------------------------------------------------------------------------------
