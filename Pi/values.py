@@ -45,3 +45,7 @@ cam_resolution = 500            # The camera resolution
 
 # ------------------------------- Network
 port = 10000                   # The port used in the connection
+
+# ------------------------------- Server
+host = 'localhost'
+exchange = 'server'
