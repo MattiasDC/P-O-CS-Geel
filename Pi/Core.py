@@ -6,6 +6,7 @@ import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Recognize as Recognizer
 import ImageProcessing.Positioner as Positioner
+import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
 from Communication.NetworkConnection import PIServer
 from math import pow, sqrt, acos, degrees
@@ -21,12 +22,13 @@ class Core(object):
     _handler = None                 # The handler for the connection
     _server = None                  # The server for the connection
 
-    _imageprocessor = None          # The image processing
     _positioner = None              # Positionner
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
     _stay_on_position_flag = None   # Flag to indicate the zeppelin should (try) to go to the goal position
+
+    _grid = None                    # The grid
 
     _goal_position = None           # The goal position of the zeppelin
     _current_position = None        # The current position of the zeppelin
@@ -67,13 +69,16 @@ class Core(object):
         # Start the server
         self._start_server()
 
+        # Sets the grid
+        self._grid = Grid.from_file(#TODO)
+
         # Start height control
         self._goal_height = ground_height
         self.set_height_control(True)
 
         # Get current position
-        self._imageprocessor = Recognizer
         self._positioner = Positioner
+        self._positioner.set_core(self)
         self._get_initial_position()
 
         # Start navigation
@@ -200,6 +205,13 @@ class Core(object):
             angle *= -1         # angle is negative if the goal lies to the right of the current direction
         return angle
 
+# -------------------------------------------- Imageprocessing ---------------------------------------------------------
+
+    def _update_position_thread(self):
+        while self.stay_on_position_flag = True:
+            self._current_location = self._positioner.find_location(self._cam.take_picture())
+            sleep(0.8)
+
 # -------------------------------------------- Commands ----------------------------------------------------------------
 
     def add_to_console(self, line):
@@ -256,6 +268,9 @@ class Core(object):
         """
         self._clean_console()
         return self._console2
+
+    def get_grid(self):
+        return self._grid
 
     def get_height(self):
         """
@@ -352,6 +367,7 @@ class Core(object):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._navigation_thread()).start()
+            Thread(target=self._update_position_thread()).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonome navigation has started")
         else:
             self._stay_on_position_flag = False

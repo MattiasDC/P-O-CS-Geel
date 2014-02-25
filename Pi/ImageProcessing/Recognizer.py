@@ -21,9 +21,6 @@ colors = {(40, 70, 70): 'Green',
 shapes = [Rectangle, Star, Ellipse, Heart]
 
 def process_picture(image):
-    counter = 0
-
-
     #Filter giant rectangle of the image itself
     res_x, res_y = image.size
     max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
@@ -48,24 +45,27 @@ def process_picture(image):
     #Approximate contour with less points to smooth the contour
     contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
 
+    found_shapes = []
+
     for contour in contours:
         values = dict()
 
         color = find_shape_color(contour, image)
+        center = find_center(contour)
 
         #For each possible shape, calculate the matching
         for shape in shapes:
-            values[cv2.matchShapes(contour, shape.contour, 1, 0)] = shape(color)
+            values[cv2.matchShapes(contour, shape.contour, 1, 0)] = shape(color, center)
 
         #Get the best match and check if it is less than the max offset
         minimum = min(values)
         if minimum < max_shape_offset:
-            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
-            cv2.putText(gray_image, values.get(minimum).__class__.__name__ + ' ' + color, tuple(contour[0].tolist()[0]),
-                        cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
-            counter=+ 1
+            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
+            #cv2.putText(gray_image, values.get(minimum).__class__.__name__ + ' ' + color, tuple(contour[0].tolist()[0]),
+             #           cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            found_shapes.append(values.get(minimum))
 
-    return gray_image, dilated_edge_image, counter
+    return found_shapes
 
 
 def fill_image(image):
@@ -97,24 +97,17 @@ def find_shape_color(contour, image):
     _, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
     return colors[value]
 
-def get_current_position():
-    """
-    Returns the current position of the zeppelin in the frame (should only be used at startup)
-    """
-    #TODO
-    return (0,0)
 
-
-if __name__ == '__main__':
-    minres = (300, 300)
-    for i in range(120):
-        if i % 10 == 0:
-            minres = (minres[0]+100, minres[1]+100)
-        img = Image.open('/home/nooby4ever/Desktop/foto/' + str(minres[0]) + ' ' + str(i % 10))
-        start = time()
-        gray_with_contour, processed, counter = process_picture(img)
-        endtime = time() - start
-        print endtime, minres[0], counter
-        cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'z.jpg', gray_with_contour)
-        cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'other.jpg', processed)
-        print i
+# if __name__ == '__main__':
+#     minres = (300, 300)
+#     for i in range(120):
+#         if i % 10 == 0:
+#             minres = (minres[0]+100, minres[1]+100)
+#         img = Image.open('/home/nooby4ever/Desktop/foto/' + str(minres[0]) + ' ' + str(i % 10))
+#         start = time()
+#         gray_with_contour, processed, counter = process_picture(img)
+#         endtime = time() - start
+#         print endtime, minres[0], counter
+#         cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'z.jpg', gray_with_contour)
+#         cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'other.jpg', processed)
+#         print i

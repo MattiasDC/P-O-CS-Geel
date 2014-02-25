@@ -1,4 +1,5 @@
 import numpy as np
+from math import sqrt
 
 class Shape(object):
 
@@ -6,6 +7,9 @@ class Shape(object):
     def __init__(self, color, center):
         self._color = color
         self._center = center
+
+    def distance_to_other(self, shape):
+       return sqrt(abs(self.center[0] - shape.center[0])**2 + abs(self.center[1] - shape.center[1])**2)
 
     @property
     def color(self):

@@ -2,6 +2,8 @@ from Shapes import *
 
 
 class Grid(object):
+    _points = None          # The grid
+
     """
     Grid datastructure that stores the triangle grid used in the P&O project.
 
@@ -13,6 +15,7 @@ class Grid(object):
     #-------------------------------------------------------------------------
     def __init__(self, points):
         self._points = points
+        self._nr = len(points)
 
     @classmethod
     def from_file(cls, path_to_grid_file):
