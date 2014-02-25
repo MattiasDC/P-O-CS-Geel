@@ -12,6 +12,7 @@ pid_error = 2.3                 # 1.95;0.12;3.2/ 3      -> Origineel
 pid_integral = 1.2              # 2.3 1.2 5             -> goede
 pid_derivative = 5              # 4 0.38 6
                                 # 3.5 0.45 6            -> laatste test
+pid_boundary = 100              # TODO nog te testen
 
 # ------------------------------- Software PWM
 software_frequency = 50                 # Frequency of the duty cycle
