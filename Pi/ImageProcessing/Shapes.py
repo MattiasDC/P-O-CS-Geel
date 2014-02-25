@@ -2,6 +2,7 @@ import numpy as np
 
 
 class Shape(object):
+    center = None
 
     """abstract class for shapes"""
     def __init__(self, color):
@@ -22,6 +23,9 @@ class Shape(object):
         for c in self.color:
             hsh = 101*hsh + ord(c)
         return hsh
+
+    def setCenter(self, (x,y)):
+        self.center = (x,y)
 
 
 class Rectangle(Shape):

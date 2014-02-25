@@ -25,6 +25,7 @@ class Core(object):
 
     _goal_position = None           # The goal position of the zeppelin
     _current_position = None        # The current position of the zeppelin
+    _current_direction = None       # The direction of the zeppelin
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _goal_position = None           # The (x,y)- coordinate the zeppelin has to be at the moment
@@ -139,7 +140,7 @@ class Core(object):
                 # power ratio must be taken into account
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/90 * power_ratio)
                 self._motors.motor2_pwm(pid_value * (angle+45) * 1/90)
-            elif -180 <= angle < -1350:
+            elif -180 <= angle < -135:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/45)
                 self._motors.motor2_pwm(pid_value * -1)
@@ -212,12 +213,7 @@ class Core(object):
         Stops everything, console output still available. Zeppelin "lands"; Quit server should be called after this
         """
         self.set_navigation_mode(False)
-
-        # Lands the zeppelin (they like that!)
-        self.set_goal_height(ground_height)
-        while self.get_height() > (ground_height + 1):
-            sleep(1)
-        self.set_height_control(False)
+        self.land()
 
         self._sensor.stop()
         self._motors.stop()
@@ -236,6 +232,15 @@ class Core(object):
         self._handler = CoreHandler(self)
         self._server = PIServer(self._handler, self)
         self._server.start_server()
+
+    def land(self):
+        """
+        Lands the zeppelin and quits heightcontrol
+        """
+        self.set_goal_height(ground_height)
+        while self.get_height() > (ground_height + 1):
+            sleep(1)
+        self.set_height_control(False)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -261,7 +266,7 @@ class Core(object):
         """
         Returns the current position in (x,y) coordinates
         """
-        # TODO
+        return self._current_position
 
     def get_direction(self):
         """
@@ -303,7 +308,7 @@ class Core(object):
         """
         Sets the current start position of the zeppelin
         """
-        # TODO
+        #TODO
         self._current_position = (0,0)
         self._goal_position = (0,0)
 
@@ -340,8 +345,10 @@ class Core(object):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._navigation_thread()).start()
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonome navigation has started")
         else:
             self._stay_on_position_flag = False
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonome navigation has stopped")
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":

@@ -21,7 +21,6 @@ colors = {(50, 100, 0): 'Green',
 
 shapes = [Rectangle, Star, Ellipse, Heart]
 
-
 def process_picture(image):
     #Filter giant rectangle of the image itself
     res_x, res_y = image.size
