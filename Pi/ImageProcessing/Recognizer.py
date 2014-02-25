@@ -12,16 +12,18 @@ approx_precision = 0.005    # The approximation of the contour when using the Ra
 iterations = 2              # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_shape_offset = 0.1
 
-colors = {(50, 100, 0): 'Green',
-          (0, 50, 100): 'Blue',
-          (240, 210, 10): 'Yellow',
+colors = {(40, 70, 70): 'Green',
+          (40, 65, 110): 'Blue',
+          (220, 170, 90): 'Yellow',
           (255, 255, 255): 'White',
-          (0, 0, 0): 'Black',
-          (200, 0, 0): 'Red'}
+          (160, 30, 70): 'Red'}
 
 shapes = [Rectangle, Star, Ellipse, Heart]
 
 def process_picture(image):
+    counter = 0
+
+
     #Filter giant rectangle of the image itself
     res_x, res_y = image.size
     max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
@@ -61,8 +63,9 @@ def process_picture(image):
             cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
             cv2.putText(gray_image, values.get(minimum).__class__.__name__ + ' ' + color, tuple(contour[0].tolist()[0]),
                         cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            counter=+ 1
 
-    return gray_image, dilated_edge_image
+    return gray_image, dilated_edge_image, counter
 
 
 def fill_image(image):
@@ -92,7 +95,7 @@ def find_shape_color(contour, image):
     center = find_center(contour)
     x, y, z = image.getpixel(center)
     _, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
-    return colors[value
+    return colors[value]
 
 def get_current_position():
     """
@@ -103,15 +106,15 @@ def get_current_position():
 
 
 if __name__ == '__main__':
-    minres = (800, 800)
-    for i in range(70):
+    minres = (300, 300)
+    for i in range(120):
         if i % 10 == 0:
             minres = (minres[0]+100, minres[1]+100)
-        img = Image.open('C:\Users\Mattias\Desktop\Fotos\\' + str(minres[0]) + ' ' + str(i % 10) + '.jpg')
+        img = Image.open('/home/nooby4ever/Desktop/foto/' + str(minres[0]) + ' ' + str(i % 10))
         start = time()
-        gray_with_contour, processed = process_picture(img)
+        gray_with_contour, processed, counter = process_picture(img)
         endtime = time() - start
-        print endtime, minres
-        cv2.imwrite('C:\Users\Mattias\Desktop\Processed\\' + str(minres[0]) + ' ' + str(i % 10) + 'z.jpg', gray_with_contour)
-        cv2.imwrite('C:\Users\Mattias\Desktop\Processed\\' + str(minres[0]) + ' ' + str(i % 10) + 'other.jpg', processed)
+        print endtime, minres[0], counter
+        cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'z.jpg', gray_with_contour)
+        cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'other.jpg', processed)
         print i

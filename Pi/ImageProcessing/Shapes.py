@@ -1,16 +1,23 @@
 import numpy as np
 
-
 class Shape(object):
-    center = None
 
     """abstract class for shapes"""
-    def __init__(self, color):
+    def __init__(self, color, center):
         self._color = color
+        self._center = center
 
     @property
     def color(self):
         return self._color
+
+    @property
+    def center(self):
+        return self._center
+
+    @center.setter
+    def center(self, center):
+        self._center = center
 
     def __eq__(self, other):
         if self.__class__ != other.__class__:
@@ -24,18 +31,14 @@ class Shape(object):
             hsh = 101*hsh + ord(c)
         return hsh
 
-    def setCenter(self, (x,y)):
-        self.center = (x,y)
-
-
 class Rectangle(Shape):
 
     corners = 4
     contour = np.asarray([[[236, 1485]], [[253, 1483]], [[471, 1563]], [[470, 1584]], [[418, 1714]], [[405, 1717]],
                           [[181, 1637]], [[180, 1621]]])
 
-    def __init__(self, color):
-        super(Rectangle, self).__init__(color)
+    def __init__(self, color, center=None):
+        super(Rectangle, self).__init__(color, center)
 
 
 class Star(Shape):
@@ -44,8 +47,8 @@ class Star(Shape):
     contour = np.asarray([[[1184, 1583]], [[1183, 1670]], [[1262, 1704]], [[1181, 1735]], [[1175, 1820]],
                           [[1123, 1749]], [[1038, 1767]], [[1091, 1696]], [[1047, 1625]], [[1127, 1649]]])
 
-    def __init__(self, color):
-        super(Star, self).__init__(color)
+    def __init__(self, color, center=None):
+        super(Star, self).__init__(color, center)
 
 
 class Heart(Shape):
@@ -56,8 +59,8 @@ class Heart(Shape):
                           [[441, 991]], [[398, 1018]], [[378, 1026]], [[354, 1013]], [[299, 955]], [[277, 910]],
                           [[273, 863]], [[282, 844]]])
 
-    def __init__(self, color):
-        super(Heart, self).__init__(color)
+    def __init__(self, color, center=None):
+        super(Heart, self).__init__(color, center)
 
 
 class Ellipse(Shape):
@@ -67,5 +70,5 @@ class Ellipse(Shape):
                           [[870, 1316]], [[840, 1350]], [[805, 1367]], [[764, 1367]], [[730, 1355]], [[702, 1329]],
                           [[685, 1300]], [[680, 1267]], [[686, 1229]], [[715, 1190]]])
 
-    def __init__(self, color):
-        super(Ellipse, self).__init__(color)
+    def __init__(self, color, center=None):
+        super(Ellipse, self).__init__(color, center)

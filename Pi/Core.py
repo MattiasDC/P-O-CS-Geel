@@ -5,6 +5,7 @@ from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Recognize as Recognizer
+import ImageProcessing.Positioner as Positioner
 from Hardware.Motors import MotorControl
 from Communication.NetworkConnection import PIServer
 from math import pow, sqrt, acos, degrees
@@ -20,7 +21,8 @@ class Core(object):
     _handler = None                 # The handler for the connection
     _server = None                  # The server for the connection
 
-    _imageprocessor = None          # The image processing module
+    _imageprocessor = None          # The image processing
+    _positioner = None              # Positionner
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
@@ -71,6 +73,7 @@ class Core(object):
 
         # Get current position
         self._imageprocessor = Recognizer
+        self._positioner = Positioner
         self._get_initial_position()
 
         # Start navigation

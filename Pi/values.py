@@ -40,7 +40,7 @@ trig_gpio = 27                 # = 13 on the pi
 #max_height = 1944              # Normal 2592 -> set to 1944 to be square to let is fit in the GUI
 #base_width = 400               # Lowest possible resolution
 #max_width = 1944
-cam_resolution = 900            # The camera resolution
+cam_resolution = 500            # The camera resolution
 
 # ------------------------------- Network
 port = 10000                   # The port used in the connection
