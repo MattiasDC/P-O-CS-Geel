@@ -1,4 +1,6 @@
 from math import sqrt
+from ImageProcessing import Grid
+from ImageProcessing import Shapes
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
@@ -30,10 +32,10 @@ def interconnect_shapes(shapes):
     in the matrix. It filters out all other edges which are longer than factor_edge_max_edge*min_distance
     """
     if len(shapes) >= 2:
-        edges_and_distance = [shape1.distance_to_other(shape2), (shape1, shape2)
-                              for shape1 in shapes for shape2 in shapes if shape1.center < shape2.center]
+        edges_and_distance = [(shape1.distance_to_other(shape2), (shape1, shape2))
+        for shape1 in shapes for shape2 in shapes if shape1.center < shape2.center]
 
-        min_distance, _, _ = min(edges_and_distance)
+        min_distance, _ = min(edges_and_distance)
 
         connected_shapes = map(lambda (d, a, b): (a, b),
                                filter(lambda (d, a, b): d <= factor_edge_max_edge*min_distance, edges_and_distance))
@@ -42,10 +44,10 @@ def interconnect_shapes(shapes):
 
     return []
 
-def find_in_grid(shapes):
-    global _core
+def find_in_grid(shapes, grid):
+    #global _core
 
-    grid = _core.get_grid()
+    #grid = _core.get_grid()
     found_patterns = []
 
     start_element = shapes[0][0]
@@ -56,10 +58,32 @@ def find_in_grid(shapes):
                 found_patterns.append([((i, j), start_element)])
 
     for pattern in found_patterns:
+        old_pattern = pattern
         for pos, elem in pattern:
-            colors = map(lambda (x, y): if x != elem: y.color else x.color,
+            connected_to = map(lambda (x, y): if x != elem: y else x,
                         filter(lambda (x, y): x == elem or y == elem, shapes))
-            
+            to_connect = filter(lambda x: not (x, _) in pattern, connected_to)
+
+            neighbour_colors = map(lambda (x, y): (grid.get_point(x, y).color, (x, y)), grid.get_neighbour_points(pos))
+
+            for shape in to_connect:
+                can_place_positions= map(lambda (x, pos): pos,
+                                         filter(lambda (x, pos): x.color == shape.color, neigbour_colors))
+                for place_position in can_place_positions:
+                    pattern = old_pattern.copy().append((place_position, shape))
+                    found_patterns.append(pattern)
+
+        found_patterns.remove(old_pattern)
+
+    return found_patterns
+
+
+if __name__ == '__main__':
+    grid = Grid.from_file('/home/nooby4ever/Desktop/grid.csv')
+
+
+    print find_in_grid([(Rectangle('white'), Heart('white')), (Rectangle('white'), Rectangle('yellow')), (Star('white'), Rectangle('yellow')), (Star('white'), Heart('white')), (Heart('white'), Rectangle('yellow'))], grid)
+
 
 
 
