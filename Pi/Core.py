@@ -406,7 +406,6 @@ if __name__ == "__main__":
 
         if c[0] == "v":
             core.move_forward()
-            core.stop_moving()
 
         elif c[0] == "a":
             core.move_backward()
