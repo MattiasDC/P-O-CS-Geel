@@ -136,7 +136,7 @@ class Core(object):
             elif pid_value < -pid_boundary:
                 pid_value = -pid_boundary
 
-            if 0<= angle <= 45:
+            if 0 <= angle <= 45:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (45-angle)/45)
                 self._motors.motor2_pwm(pid_value)
@@ -187,13 +187,13 @@ class Core(object):
         return pid_error*error + pid_integral*integral + pid_derivative*derivative
 
     @staticmethod
-    def _calculate_distance_between(self, start, end):
+    def _calculate_distance_between(start, end):
         vector = end[0] - start[0], end[1] - start[1]
         distance = sqrt(pow(vector[0], 2) + pow(vector[1], 2))
         return distance
 
     @staticmethod
-    def _calculate_angle(self, start_point, destination_point, direction_point):
+    def _calculate_angle(start_point, destination_point, direction_point):
         vector_a = destination_point[0] - direction_point[0], destination_point[1] - direction_point[1]
         vector_b = direction_point[0] - start_point[0], direction_point[1] - start_point[1]
         vector_c = destination_point[0] - start_point[0], destination_point[1] - start_point[1]
@@ -214,8 +214,8 @@ class Core(object):
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        while self.stay_on_position_flag == True:
-            self._current_location = self._positioner.find_location(self._cam.take_picture())
+        while self._stay_on_position_flag:
+            self._current_position = self._positioner.find_location(self._camera.take_picture())
             sleep(0.8)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
@@ -274,7 +274,6 @@ class Core(object):
         self._motors._motor1.move_counterclockwise()
         self._motors._motor2.move_counterclockwise()
 
-
     def move_backward(self):
         """
         Method for testing the frame
@@ -320,7 +319,7 @@ class Core(object):
         """
         Returns a point in front of the current position  of the zeppelin in (x,y) coordinates
         """
-        # TODO
+        return self._current_direction
 
     def get_goal_position(self):
         """
@@ -382,12 +381,12 @@ class Core(object):
             self._stay_on_height_flag = False
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
-    def set_goal_position(self, (x,y)):
+    def set_goal_position(self, (x, y)):
         """
         Sets a new position in (x,y)- coordinates
         """
-        self._goal_position = (x,y)
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x,y)))
+        self._goal_position = (x, y)
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
 
     def set_navigation_mode(self, flag):
         if flag:
