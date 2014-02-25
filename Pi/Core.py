@@ -30,7 +30,6 @@ class Core(object):
 
     _grid = None                    # The grid
 
-    _goal_position = None           # The goal position of the zeppelin
     _current_position = None        # The current position of the zeppelin
     _current_direction = None       # The direction of the zeppelin
 
@@ -268,6 +267,20 @@ class Core(object):
             sleep(1)
         self.set_height_control(False)
 
+    def move_forward(self):
+        """
+        Method for testing the frame
+        """
+        self._motors.motor1_pwm(50)
+        self._motors.motor2_pwm(50)
+
+    def move_backward(self):
+        """
+        Method for testing the frame
+        """
+        self._motors.motor1_pwm(-50)
+        self._motors.motor2_pwm(-50)
+
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
         """
@@ -388,4 +401,16 @@ if __name__ == "__main__":
     core.initialise()
     core.set_goal_height(130)
 
+    while True:
+        c = raw_input()
+
+        if c[0] == "v":
+            core.move_forward()
+            core.stop_moving()
+
+        elif c[0] == "a":
+            core.move_backward()
+
+        elif c[0] == "s":
+            core.stop_moving()
 # ---------------------------------------------------------------------------------------------------------------------
