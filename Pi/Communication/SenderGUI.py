@@ -52,7 +52,7 @@ class SenderGUI(object):
         else:
             #Publish the message in format <z> to the exchange with our routing key
             routing_key = 'geel.hcommand.elevate'
-            message = z
+            message = str(z)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
@@ -66,7 +66,7 @@ class SenderGUI(object):
             return 'Not connected'
         else:
             routing_key = 'geel.lcommand.motor1'
-            message = value
+            message = str(value)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
@@ -80,7 +80,7 @@ class SenderGUI(object):
             return 'Not connected'
         else:
             routing_key = 'geel.lcommand.motor2'
-            message = value
+            message = str(value)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
@@ -94,7 +94,7 @@ class SenderGUI(object):
             return 'Not connected'
         else:
             routing_key = 'geel.lcommand.motor3'
-            message = value
+            message = str(value)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)

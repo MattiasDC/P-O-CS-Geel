@@ -48,7 +48,7 @@ class ReceiverPi(object):
 
 #Determines the behavior when a message is receiver
 #Still to be determined
-def _callback(ch, method, properties, body):
+def callback(ch, method, properties, body):
     print 'boodschap ontvangen'
     print body
 

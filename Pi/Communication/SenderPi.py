@@ -51,7 +51,7 @@ class SenderPi(object):
         else:
             #Publish the message in format <z> to the exchange with our routing key
             routing_key = 'geel.info.height'
-            message = z
+            message = str(z)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
@@ -59,12 +59,14 @@ class SenderPi(object):
 
     #Sent a private message to the server
     #Exact formatting must still be determined
+    #!!!!!Only ASCII-signs in message!!!!!
     def sent_private(self, message):
         if not self._connected:
             #No connection to a server, so the message can not be delivered
             return 'Not connected'
         else:
             routing_key = 'geel.private'
+            message = str(message)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
