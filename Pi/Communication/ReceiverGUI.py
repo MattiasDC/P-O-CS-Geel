@@ -1,7 +1,7 @@
 import pika
 from values import *
 
-class Receiver_Pi(object):
+class ReceiverGUI(object):
     #Flag to determine if the sender is connected to a receiver
     _connected = False
     #The connection used by the receiver
@@ -15,9 +15,9 @@ class Receiver_Pi(object):
 
     #Open a connection to the server (also sets the connected-flag to true)
     def open_connection(self):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(
         host=host))
-        self._channel = connection.channel()
+        self._channel = self._connection.channel()
         self._channel.exchange_declare(exchange='exchange',
                          type='topic')
         self.connected = True
@@ -28,26 +28,31 @@ class Receiver_Pi(object):
         self._connection.close()
         self._connected = False
 
-    #Wait for a new high-level command (infinite loop, so must be run in a separate thread)
-    #Difference between commands made in the callback-function
-    def receive_hcommand(self):
+    #Receive all the positions of the team determined by the parameter
+    #Infinite loop, so must be run in a separate thread
+    def receive(self):
         result = self._channel.queue_declare(exclusive=True)
         queue_name = result.method.queue
-        #Listen to the high-level commands
+        #Receive all the public information (height + position)
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key='geel.hcommand.*')
-        #Listen to the low-level commands
+                       routing_key='*.info.*')
+        #Receive all the private information of our team
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key='geel.lcommand.*')
-        self._channel.basic_consume(self._callback_hcommand,
+                       routing_key='geel.private.#')
+        self._channel.basic_consume(callback,
                       queue=queue_name,
                       no_ack=True)
         self._channel.start_consuming()
 
-    #Determines the behavior when a message is receiver
-    #Still to be determined
-    def _callback_hcommand(ch, method, properties, body):
-        print body
+
+#Determines the behavior when a message is received
+#Still to be determined
+def callback(ch, method, properties, body):
+    print 'boodschap ontvangen'
+    print body
+
+
+
 

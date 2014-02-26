@@ -2,7 +2,7 @@ import pika
 from values import *
 
 
-class Sender_GUI(object):
+class SenderGUI(object):
     #Flag to determine if the sender is connected to a server
     _connected = False
     #The connection used by the sender
@@ -38,7 +38,7 @@ class Sender_GUI(object):
         else:
             #Publish the message in format <x>,<y> to the exchange with our routing key
             routing_key = 'geel.hcommand.move'
-            message = x + ',' + y
+            message = str(x) + ',' + str(y)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
