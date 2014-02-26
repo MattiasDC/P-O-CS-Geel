@@ -1,6 +1,7 @@
 import pika
 from values import *
 
+#!!!!!Messages sent to an exchange with no receiver attached, will be lost!!!!!
 class SenderPi(object):
     #Flag to determine if the sender is connected to a server
     _connected = False
@@ -36,7 +37,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the message in format <x>,<y> to the exchange with our routing key
-            routing_key = 'geel.info.location'
+            routing_key = team + '.info.location'
             message = str(x) + ',' + str(y)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -50,7 +51,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the message in format <z> to the exchange with our routing key
-            routing_key = 'geel.info.height'
+            routing_key = team + '.info.height'
             message = str(z)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -65,7 +66,7 @@ class SenderPi(object):
             #No connection to a server, so the message can not be delivered
             return 'Not connected'
         else:
-            routing_key = 'geel.private'
+            routing_key = team + '.private'
             message = str(message)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,

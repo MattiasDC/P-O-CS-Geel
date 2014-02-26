@@ -14,9 +14,9 @@ def receive_thread():
 Thread(target=receive_thread).start()
 
 print'hier1'
-sleep(1)
+sleep(0.1)
 
-sender.height_command(10)
+sender.move_command(10,5)
 
 
 

@@ -1,7 +1,7 @@
 import pika
 from values import *
 
-
+#!!!!!Messages sent to an exchange with no receiver attached, will be lost!!!!!
 class SenderGUI(object):
     #Flag to determine if the sender is connected to a server
     _connected = False
@@ -37,7 +37,7 @@ class SenderGUI(object):
             return 'Not connected'
         else:
             #Publish the message in format <x>,<y> to the exchange with our routing key
-            routing_key = 'geel.hcommand.move'
+            routing_key = team + '.hcommand.move'
             message = str(x) + ',' + str(y)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -51,7 +51,7 @@ class SenderGUI(object):
             return 'Not connected'
         else:
             #Publish the message in format <z> to the exchange with our routing key
-            routing_key = 'geel.hcommand.elevate'
+            routing_key = team + '.hcommand.elevate'
             message = str(z)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -65,7 +65,7 @@ class SenderGUI(object):
              #No connection to a server, so the message can not be delivered
             return 'Not connected'
         else:
-            routing_key = 'geel.lcommand.motor1'
+            routing_key = team + '.lcommand.motor1'
             message = str(value)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -79,7 +79,7 @@ class SenderGUI(object):
              #No connection to a server, so the message can not be delivered
             return 'Not connected'
         else:
-            routing_key = 'geel.lcommand.motor2'
+            routing_key = team + '.lcommand.motor2'
             message = str(value)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -93,7 +93,7 @@ class SenderGUI(object):
              #No connection to a server, so the message can not be delivered
             return 'Not connected'
         else:
-            routing_key = 'geel.lcommand.motor3'
+            routing_key = team + '.lcommand.motor3'
             message = str(value)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,

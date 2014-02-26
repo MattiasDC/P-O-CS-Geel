@@ -1,6 +1,7 @@
 import pika
 from values import *
 
+#!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
 class ReceiverPi(object):
     #Flag to determine if the sender is connected to a receiver
     _connected = False
@@ -28,6 +29,7 @@ class ReceiverPi(object):
         self._connection.close()
         self._connected = False
 
+
     #Wait for a new high-level command (infinite loop, so must be run in a separate thread)
     #Difference between commands made in the callback-function
     def receive(self):
@@ -36,19 +38,30 @@ class ReceiverPi(object):
         #Listen to the high-level commands
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key='geel.hcommand.*')
+                       routing_key= team + '.hcommand.*')
         #Listen to the low-level commands
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key='geel.lcommand.*')
+                       routing_key= team + '.lcommand.*')
         self._channel.basic_consume(callback,
                       queue=queue_name,
                       no_ack=True)
         self._channel.start_consuming()
 
-#Determines the behavior when a message is receiver
+#Determines the behavior when a message is received
 #Still to be determined
 def callback(ch, method, properties, body):
-    print 'boodschap ontvangen'
-    print body
+    if (team + '.hcommand.move') in str(method.routing_key):
+        print 'ga naar'
+        print body
+    if (team + '.hcommand.elevate') in str(method.routing_key):
+        print 'ga naar hoogte'
+        print str(method.routing_key)
+        print body
+    if (team + '.lcommand') in str(method.routing_key):
+        print 'lcommand ontvangen'
+        print str(method.routing_key)
+        print body
+
+
 

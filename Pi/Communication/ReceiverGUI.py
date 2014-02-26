@@ -1,6 +1,7 @@
 import pika
 from values import *
 
+#!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
 class ReceiverGUI(object):
     #Flag to determine if the sender is connected to a receiver
     _connected = False
@@ -40,7 +41,7 @@ class ReceiverGUI(object):
         #Receive all the private information of our team
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key='geel.private.#')
+                       routing_key= team + '.private.#')
         self._channel.basic_consume(callback,
                       queue=queue_name,
                       no_ack=True)
