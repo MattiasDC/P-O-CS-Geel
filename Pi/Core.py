@@ -69,7 +69,7 @@ class Core(object):
         #self._start_server()
 
         # Sets the grid
-        #self._grid = Grid.from_file         #TODO
+        #self._grid = Grid.from_file()         #TODO
 
         # Start height control
         #self._goal_height = ground_height
@@ -165,9 +165,6 @@ class Core(object):
             sleep(pid_interval)
 
     def _pid_moving(self, start, finish):
-        """
-        Well we all know PID...
-        """
         error = self._calculate_distance_between(start, finish)
         integral = (sum(self._prev_errors_soft[1:]) + self._prev_error_soft) * pid_interval
         self._prev_errors_soft = self._prev_errors_soft[1:]
@@ -215,7 +212,7 @@ class Core(object):
 
     def _update_position_thread(self):
         while self._stay_on_position_flag:
-            self._current_position = self._positioner.find_location(self._camera.take_picture())
+            self._update_position(self._positioner.find_location(self._camera.take_picture()))
             sleep(0.8)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
@@ -267,6 +264,14 @@ class Core(object):
             sleep(1)
         self.set_height_control(False)
 
+    def _update_position(self, (x, y)):
+        """
+        Updates the current position, direction and sends it to the server
+        """
+        self._current_direction = (x, y) #TODO
+        self._current_position = (x, y)
+        #TODO send it to the server
+
     def move_forward(self):
         """
         Method for testing the frame
@@ -285,7 +290,6 @@ class Core(object):
         self._motors._motor1.stop_moving()
         self._motors._motor2.stop_moving()
 
-
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
         """
@@ -295,6 +299,9 @@ class Core(object):
         return self._console2
 
     def get_grid(self):
+        """
+        Returns the grid
+        """
         return self._grid
 
     def get_height(self):
