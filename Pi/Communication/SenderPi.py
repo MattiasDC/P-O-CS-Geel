@@ -2,6 +2,8 @@ import pika
 from values import *
 
 #!!!!!Messages sent to an exchange with no receiver attached, will be lost!!!!!
+
+#To use this class, just make an object and call the appropriate method
 class SenderPi(object):
     #Flag to determine if the sender is connected to a server
     _connected = False
@@ -10,8 +12,8 @@ class SenderPi(object):
     #The channel of the connection used by the sender
     _channel = None
 
-    #Initialise the sender (open the connection)
-    def __init__(self):
+    #Initialise the sender (open the connection and set the related core)
+    def __init__(self, core):
         self.open_connection()
 
     #Open a connection to the server (also sets the connected-flag to true)

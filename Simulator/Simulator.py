@@ -32,7 +32,10 @@ class VirtualZeppelin(object):
         self.set_height_control(True)
         self.set_navigation_mode(True)
 
-        #TODO start server
+        #Initialisation and start of the communication with the shared server
+        ReceiverPi.receive(self)
+        sleep (0.1)
+        self._senderPi = SenderPi()
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
     #TODO send it to the server

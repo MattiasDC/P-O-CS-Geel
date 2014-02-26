@@ -11,6 +11,8 @@ from Hardware.Motors import MotorControl
 #from Communication.NetworkConnection import PIServer, CoreHandler
 from math import pow, sqrt, acos, degrees
 from values import *
+import ReceiverPi
+import SenderPi
 
 
 class Core(object):
@@ -21,6 +23,9 @@ class Core(object):
 
     _handler = None                 # The handler for the connection
     _server = None                  # The server for the connection
+
+
+    _senderPi = None                #The sender-object used for sending messages to the server
 
     _positioner = None              # Positioner
 
@@ -68,6 +73,11 @@ class Core(object):
         # Start the server
         #self._start_server()
 
+        #Initialisation and start of the communication with the shared server
+        #ReceiverPi.receive(self)
+        #sleep (0.1)
+        #self._senderPi = SenderPi()
+
         # Sets the grid
         #self._grid = Grid.from_file()         #TODO
 
@@ -82,6 +92,8 @@ class Core(object):
 
         # Start navigation
         #self.set_navigation_mode(True)
+
+
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
 
@@ -388,7 +400,7 @@ class Core(object):
             self._stay_on_height_flag = False
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
-    def set_goal_position(self, (x, y)):
+    def set_goal_position(self, x, y):
         """
         Sets a new position in (x,y)- coordinates
         """

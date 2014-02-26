@@ -2,6 +2,8 @@ import pika
 from values import *
 
 #!!!!!Messages sent to an exchange with no receiver attached, will be lost!!!!!
+
+#To use this class, just make an object and call the appropriate method
 class SenderGUI(object):
     #Flag to determine if the sender is connected to a server
     _connected = False

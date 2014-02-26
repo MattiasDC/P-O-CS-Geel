@@ -1,7 +1,58 @@
 import pika
 from values import *
+#Comment this to run Test.py (gives an error because not all modules are installed)
+import Core
+from threading import Thread
+from time import sleep
+
+
+_core = None
+_receiver = None
+
+#Determines the behavior when a message is received
+#No check on exceptions
+def callback(ch, method, properties, body):
+    if (team + '.hcommand.move') in str(method.routing_key):
+        print 'ga naar'
+        print body
+        #position in format <x>,<y>, so parse first the correct values for the correct vales
+        body = str(body)
+        pos = body.find(',')
+        x = body[0:pos-1]
+        y = body[pos+1:len(body)-1]
+        #Set the new goal-position in the core-class
+        #Comment next statement to run Test.py (core not initialised properly)
+        _core.set_goal_position(int(x), int(y))
+    if (team + '.hcommand.elevate') in str(method.routing_key):
+        print 'ga naar hoogte'
+        print body
+        #Set the new goal-height in the core-class
+        #Comment next statement to run Test.py (core not initialised properly)
+        print _core
+        #_core.set_goal_height(int(body))
+    if (team + '.lcommand') in str(method.routing_key):
+        #We don't use low-level commands
+        print 'lcommand ontvangen'
+        #print str(method.routing_key)
+        #print body
+
+
+#Run this function (in the core) to start receiving messages
+#Starts a new thread (because receiving involves an infinite loop)
+def receive(core):
+    _core = core
+    _receiver = ReceiverPi()
+    t = Thread(target=receive_thread)
+    sleep(0.1)
+    t.start()
+
+
+#The receiving thread (starts the receive method of the ReceiverPi-class)
+def receive_thread():
+    _receiver.receive()
 
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
+
 class ReceiverPi(object):
     #Flag to determine if the sender is connected to a receiver
     _connected = False
@@ -11,7 +62,7 @@ class ReceiverPi(object):
     _channel = None
 
     #Initialise the receiver(open the connection)
-    def __init__(self):
+    def __init__(self, core):
         self.open_connection()
 
     #Open a connection to the server (also sets the connected-flag to true)
@@ -28,7 +79,6 @@ class ReceiverPi(object):
     def close_connection(self):
         self._connection.close()
         self._connected = False
-
 
     #Wait for a new high-level command (infinite loop, so must be run in a separate thread)
     #Difference between commands made in the callback-function
@@ -48,20 +98,9 @@ class ReceiverPi(object):
                       no_ack=True)
         self._channel.start_consuming()
 
-#Determines the behavior when a message is received
-#Still to be determined
-def callback(ch, method, properties, body):
-    if (team + '.hcommand.move') in str(method.routing_key):
-        print 'ga naar'
-        print body
-    if (team + '.hcommand.elevate') in str(method.routing_key):
-        print 'ga naar hoogte'
-        print str(method.routing_key)
-        print body
-    if (team + '.lcommand') in str(method.routing_key):
-        print 'lcommand ontvangen'
-        print str(method.routing_key)
-        print body
+
+
+
 
 
 

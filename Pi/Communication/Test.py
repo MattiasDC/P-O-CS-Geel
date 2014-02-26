@@ -6,7 +6,7 @@ from threading import Thread
 from time import sleep
 
 sender = SenderGUI()
-receiver = ReceiverPi()
+receiver = ReceiverPi(None)
 
 def receive_thread():
     receiver.receive()
@@ -16,7 +16,7 @@ Thread(target=receive_thread).start()
 print'hier1'
 sleep(0.1)
 
-sender.move_command(10,5)
+sender.height_command(5)
 
 
 
