@@ -2,13 +2,18 @@ import pika
 from values import *
 
 class Receiver_GUI(object):
+    #Flag to determine if the sender is connected to a receiver
     _connected = False
+    #The connection used by the receiver
     _connection = None
+    #The channel of the connection used by the receiver
     _channel = None
 
+    #Initialise the receiver(open the connection)
     def __init__(self):
         self.open_connection()
 
+    #Open a connection to the server (also sets the connected-flag to true)
     def open_connection(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
         host=host))
@@ -17,45 +22,35 @@ class Receiver_GUI(object):
                          type='topic')
         self.connected = True
 
+    #Close the connection (also sets the connected-flag to true)
+    #Must be called when program stops
     def close_connection(self):
         self._connection.close()
         self._connected = False
 
-    def receive_position(self, team):
+    #Receive all the positions of the team determined by the parameter
+    #Infinite loop, so must be run in a separate thread
+    def receive(self):
         result = self._channel.queue_declare(exclusive=True)
         queue_name = result.method.queue
+        #Receive all the public information (height + position)
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key=team + '*.info.location')
+                       routing_key='*.info.*'
+        #Receive all the private information of our team
+        self._channel.queue_bind(exchange=exchange,
+                       queue=queue_name,
+                       routing_key='geel.private.#'
         self._channel.basic_consume(self._callback,
                       queue=queue_name,
                       no_ack=True)
         self._channel.start_consuming()
 
-    def receive_height(self, team):
-        result = self._channel.queue_declare(exclusive=True)
-        queue_name = result.method.queue
-        self._channel.queue_bind(exchange=exchange,
-                       queue=queue_name,
-                       routing_key=team + '*.info.height')
-        self._channel.basic_consume(self._callback,
-                      queue=queue_name,
-                      no_ack=True)
-        self._channel.start_consuming()
 
-    def receive_private(self, team):
-        result = self._channel.queue_declare(exclusive=True)
-        queue_name = result.method.queue
-        self._channel.queue_bind(exchange=exchange,
-                       queue=queue_name,
-                       routing_key='geel.private.#')
-        self._channel.basic_consume(self._callback,
-                      queue=queue_name,
-                      no_ack=True)
-        self._channel.start_consuming()
-
+    #Determines the behavior when a message is received
+    #Still to be determined
     def _callback(ch, method, properties, body):
-        return body
+        print body
 
 
 
