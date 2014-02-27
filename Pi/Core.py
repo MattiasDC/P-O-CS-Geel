@@ -76,7 +76,7 @@ class Core(object):
         #Initialisation and start of the communication with the shared server
         #ReceiverPi.receive(self)
         #sleep (0.1)
-        #self._senderPi = SenderPi()
+        #self._senderPi = SenderPi.SenderPi()
 
         # Sets the grid
         #self._grid = Grid.from_file()         #TODO
@@ -400,7 +400,7 @@ class Core(object):
             self._stay_on_height_flag = False
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
-    def set_goal_position(self, x, y):
+    def set_goal_position(self, (x, y)):
         """
         Sets a new position in (x,y)- coordinates
         """
