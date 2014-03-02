@@ -34,7 +34,7 @@ class VirtualZeppelin(object):
 
         #Initialisation and start of the communication with the shared server
         ReceiverPi.receive(self)
-        sleep (0.1)
+        sleep(0.1)
         self._senderPi = SenderPi()
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
@@ -48,7 +48,7 @@ class VirtualZeppelin(object):
         sleep_interval = 1
 
         while self._stay_on_height_flag:
-            self._current_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10))
+            self._current_height = self._goal_height * (1 + ((randrange(diviation*2) - diviation) / 10))
             sleep(sleep_interval)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
@@ -111,12 +111,6 @@ class VirtualZeppelin(object):
         """
         self._clean_console()
         return self._console2
-
-    def get_grid(self):
-        """
-        Returns the grid
-        """
-        return self._grid
 
     def get_height(self):
         """

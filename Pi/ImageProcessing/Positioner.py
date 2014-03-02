@@ -89,6 +89,8 @@ def find_in_grid(shapes, grid):
     return found_patterns
 
 
+
+
 if __name__ == '__main__':
     grid = Grid.Grid.from_file('/home/nooby4ever/Desktop/grid.csv')
 

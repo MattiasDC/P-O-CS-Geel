@@ -53,6 +53,8 @@ class Core(object):
     _prev_errors_soft = [0]*10      # List of integral values for PID software
     _prev_derivative_soft = 0       # Prev derivative to substitute misreadings (0 values)
 
+    _position_update_interval = 0.8 # The interval where after imageprocssing is ran
+
     def initialise(self):
         """
         Initialised all the variables, and initialises all the hardware components
@@ -225,7 +227,7 @@ class Core(object):
     def _update_position_thread(self):
         while self._stay_on_position_flag:
             self._update_position(self._positioner.find_location(self._camera.take_picture()))
-            sleep(0.8)
+            sleep(self._position_update_interval)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
 
