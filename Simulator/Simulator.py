@@ -4,6 +4,8 @@ from datetime import datetime
 from math import sqrt
 from values import *
 from random import randrange
+import ReceiverPi
+import SenderPi
 
 
 class VirtualZeppelin(object):
@@ -18,6 +20,8 @@ class VirtualZeppelin(object):
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _current_height = 10
 
+    _senderPi = None
+
     _console = ""                   # String used to send info to the GUI
     _console2 = ""                  # Used as a double buffer to avoid conflict of simultaneous reading and writing
                                     # to the console
@@ -26,16 +30,16 @@ class VirtualZeppelin(object):
         """
         Initialised all the variables, and initialises all the hardware components
         """
+
         self._current_position = curr_pos
         self._goal_height = 50
 
-        self.set_height_control(True)
-        self.set_navigation_mode(True)
-
+        #self.set_height_control(True)
+        #self.set_navigation_mode(True)'
         #Initialisation and start of the communication with the shared server
         ReceiverPi.receive(self)
-        sleep(0.1)
-        self._senderPi = SenderPi()
+        sleep (0.1)
+        self._senderPi = SenderPi.SenderPi()
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
     #TODO send it to the server
@@ -48,7 +52,7 @@ class VirtualZeppelin(object):
         sleep_interval = 1
 
         while self._stay_on_height_flag:
-            self._current_height = self._goal_height * (1 + ((randrange(diviation*2) - diviation) / 10))
+            self._current_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10))
             sleep(sleep_interval)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
@@ -112,6 +116,12 @@ class VirtualZeppelin(object):
         self._clean_console()
         return self._console2
 
+    def get_grid(self):
+        """
+        Returns the grid
+        """
+        return self._grid
+
     def get_height(self):
         """
         Returns the current height in cm
@@ -152,6 +162,7 @@ class VirtualZeppelin(object):
         """
         Sets a new goal height (in cm)
         """
+        print "nieuwe doelhoogte"
         try:
             self._goal_height = new_height
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal height is set to: "
@@ -159,6 +170,8 @@ class VirtualZeppelin(object):
         except (ValueError, TypeError) as e:
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Error on new goal height "
                                 + str(new_height) + " " + str(e))
+
+
 
     def set_height_control(self, flag):
         if flag:
@@ -182,6 +195,7 @@ class VirtualZeppelin(object):
         """
         Sets a new position in (x,y)- coordinates
         """
+        print "nieuwe doelpositie"
         self._goal_position = (x, y)
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
 

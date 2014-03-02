@@ -13,7 +13,7 @@ class SenderPi(object):
     _channel = None
 
     #Initialise the sender (open the connection and set the related core)
-    def __init__(self, core):
+    def __init__(self):
         self.open_connection()
 
     #Open a connection to the server (also sets the connected-flag to true)

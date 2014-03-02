@@ -1,7 +1,8 @@
 import pika
 from values import *
 #Comment this to run Test.py (gives an error because not all modules are installed)
-import Core
+import Simulator
+#import Core
 from threading import Thread
 from time import sleep
 
@@ -18,18 +19,18 @@ def callback(ch, method, properties, body):
         #position in format <x>,<y>, so parse first the correct values for the correct vales
         body = str(body)
         pos = body.find(',')
-        x = body[0:pos-1]
-        y = body[pos+1:len(body)-1]
+        print body
+        x = body[0:pos]
+        y = body[pos+1:len(body)]
         #Set the new goal-position in the core-class
         #Comment next statement to run Test.py (core not initialised properly)
-        _core.set_goal_position(int(x), int(y))
+        _core.set_goal_position((int(x), int(y)))
     if (team + '.hcommand.elevate') in str(method.routing_key):
         print 'ga naar hoogte'
         print body
         #Set the new goal-height in the core-class
         #Comment next statement to run Test.py (core not initialised properly)
-        print _core
-        #_core.set_goal_height(int(body))
+        _core.set_goal_height(int(body))
     if (team + '.lcommand') in str(method.routing_key):
         #We don't use low-level commands
         print 'lcommand ontvangen'
@@ -40,8 +41,12 @@ def callback(ch, method, properties, body):
 #Run this function (in the core) to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
 def receive(core):
+    global _core
     _core = core
+    print _core
+    global _receiver
     _receiver = ReceiverPi()
+    print _receiver
     t = Thread(target=receive_thread)
     sleep(0.1)
     t.start()
@@ -49,6 +54,7 @@ def receive(core):
 
 #The receiving thread (starts the receive method of the ReceiverPi-class)
 def receive_thread():
+    global _receiver
     _receiver.receive()
 
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
@@ -62,7 +68,7 @@ class ReceiverPi(object):
     _channel = None
 
     #Initialise the receiver(open the connection)
-    def __init__(self, core):
+    def __init__(self):
         self.open_connection()
 
     #Open a connection to the server (also sets the connected-flag to true)
