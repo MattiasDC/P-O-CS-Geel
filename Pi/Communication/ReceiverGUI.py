@@ -1,5 +1,37 @@
 import pika
 from values import *
+#import the GUI-class which the callback-function must use here here
+#import GUI
+from threading import Thread
+from time import sleep
+
+#The GUI-object which the callback-function must use
+_GUI = None
+#The receiver-object for receiving messages
+_receiver = None
+
+#Determines the behavior when a message is received
+#Still to be determined
+def callback(ch, method, properties, body):
+    print 'boodschap ontvangen'
+    print body
+
+#Run this function to start receiving messages
+#Starts a new thread (because receiving involves an infinite loop)
+def receive(GUI):
+    global _GUI
+    _GUI = GUI
+    global _receiver
+    _receiver = ReceiverGUI()
+    t = Thread(target=receive_thread)
+    sleep(0.1)
+    t.start()
+
+
+#The receiving thread (starts the receive method of the ReceiverPi-class)
+def receive_thread():
+    global _receiver
+    _receiver.receive()
 
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
 class ReceiverGUI(object):
@@ -48,11 +80,7 @@ class ReceiverGUI(object):
         self._channel.start_consuming()
 
 
-#Determines the behavior when a message is received
-#Still to be determined
-def callback(ch, method, properties, body):
-    print 'boodschap ontvangen'
-    print body
+
 
 
 

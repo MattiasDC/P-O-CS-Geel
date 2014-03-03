@@ -6,11 +6,12 @@ import Simulator
 from threading import Thread
 from time import sleep
 
-
+#The core (or simulator) which the callback function must use
 _core = None
+#The receiver-object for receiving messages
 _receiver = None
 
-#Determines the behavior when a message is received
+#Determines the behavior when a message is received (calls the appropriate function in the core/simulator)
 #No check on exceptions
 def callback(ch, method, properties, body):
     if (team + '.hcommand.move') in str(method.routing_key):
@@ -34,19 +35,14 @@ def callback(ch, method, properties, body):
     if (team + '.lcommand') in str(method.routing_key):
         #We don't use low-level commands
         print 'lcommand ontvangen'
-        #print str(method.routing_key)
-        #print body
-
 
 #Run this function (in the core) to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
 def receive(core):
     global _core
     _core = core
-    print _core
     global _receiver
     _receiver = ReceiverPi()
-    print _receiver
     t = Thread(target=receive_thread)
     sleep(0.1)
     t.start()
