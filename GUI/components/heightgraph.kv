@@ -1,0 +1,44 @@
+<HeightGraph>
+    ylabel: 'Heigth (cm)'
+    xlabel: 'Time (s)'
+    y_grid_label: True
+    x_grid_label: True
+    padding: 10
+    xlog: False
+    ylog: False
+    x_grid: True
+    y_grid: True
+
+
+<HeightGraphWidget>
+    # ids of the internal widgets.
+    _height_graph: graph
+    size: (800,600)
+
+    y_n_ticks: 5
+    x_n_ticks: 5
+
+    FloatLayout:
+       # set position of the layout
+        pos: root.pos
+
+        # set size of the layout.
+        size: root.size
+
+        HeightGraph:
+            id: graph
+
+            pos_hint: {'top': .95, 'x': 0.03}
+            size_hint_y: 1.0
+            size_hint_x: 0.9
+
+            font_size: root.font_size
+
+            ymin: 0
+            ymax: root.max_height
+
+            xmin: -root.time_span
+            xmax: 0
+
+            x_ticks_major: root.x_ticks_major
+            y_ticks_major: root.y_ticks_major

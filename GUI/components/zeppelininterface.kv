@@ -1,0 +1,36 @@
+<ZeppelinInterfaceRoot>
+    #elements of the GUI.
+    balloon_properties: prop
+
+    #get position and size of the window.
+    center: self.window_center
+    size: (self.window_width, self.window_height)
+
+    #set background colour of the window.
+    canvas:
+        Color:
+            rgb: window_colour
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    #Actual layout of the application.
+    FloatLayout:
+        #set position of the layout
+        pos: (root.application_pos_x, root.application_pos_y)
+
+        #set size of the layout.
+        size: (root.application_width, root.application_height)
+
+        #set background colour of the application.
+        canvas.before:
+            Color:
+                rgb: background_colour
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BalloonProperties:
+            id: prop
+            pos_hint: properties_pos
+            size_hint: properties_size
