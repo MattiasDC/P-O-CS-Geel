@@ -3,7 +3,7 @@ from time import sleep
 from datetime import datetime
 from math import sqrt
 from values import *
-from random import randrange
+import random
 import ReceiverPi
 import SenderPi
 from math import copysign
@@ -52,11 +52,10 @@ class VirtualZeppelin(object):
         """
         Runs the _steady_on_height algorithm every second and updates the current speed
         """
-        diviation = 5
         sleep_interval = 1
 
         while self._stay_on_height_flag:
-            new_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10.0))
+            new_height = self._goal_height * (1 + random.uniform(-0.1, 0.1))
             self._current_height = new_height
             #self._senderPi.sent_height(new_height)
             sleep(sleep_interval)
