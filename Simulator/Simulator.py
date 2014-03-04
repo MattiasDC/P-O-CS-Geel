@@ -6,9 +6,7 @@ from values import *
 from random import randrange
 import ReceiverPi
 import SenderPi
-from math import atan2
-from math import cos
-from math import sin
+from math import copysign
 
 
 class VirtualZeppelin(object):
@@ -22,6 +20,8 @@ class VirtualZeppelin(object):
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _current_height = 10
+    _speed_x = 20  # cm/s
+    _speed_y = 20  # cm/s
 
     _senderPi = None
 
@@ -35,15 +35,15 @@ class VirtualZeppelin(object):
         Initialised all the variables, and initialises all the hardware components
         """
         #Initialisation and start of the communication with the shared server
-        self._senderPi = SenderPi.SenderPi()
-        self._senderPi.sent_private('Sender made')
-        ReceiverPi.receive(self)
-        sleep (0.1)
+        #self._senderPi = SenderPi.SenderPi()
+        #self._senderPi.sent_private('Sender made')
+        #ReceiverPi.receive(self)
 
         self._current_position = curr_pos
         self._goal_height = 50
+        self.set_goal_position((-200, -130))
 
-        #self.set_height_control(True)
+        self.set_height_control(True)
         self.set_navigation_mode(True)
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
@@ -58,35 +58,47 @@ class VirtualZeppelin(object):
         while self._stay_on_height_flag:
             new_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10.0))
             self._current_height = new_height
-            self._senderPi.sent_height(new_height)
+            #self._senderPi.sent_height(new_height)
             sleep(sleep_interval)
 
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 5
-        speed = 20  # cm/s
+        sleep_interval = 3
 
         while self._stay_on_position_flag:
-            # distance to goal < speed*sleep_interval -> goal reached
-            if sqrt(abs(self._current_position[0] - self._goal_position[0])**2 + abs(self._current_position[1] - self._goal_position[1])**2) < (speed*sleep_interval):
+            #new_position = old_position*speed
+            x = self._speed_x*sleep_interval + self._current_position[0]
+            y = self._speed_y*sleep_interval + self._current_position[1]
+            #At goal position: stop
+            if x == self._goal_position[0]:
+                self._speed_x = 0
+            #At goal position: stop
+            if y == self._goal_position[1]:
+                self._speed_y = 0
+            #Move away from goal for x (change direction)
+            if abs(self._current_position[0] - self._goal_position[0]) < abs(x - self._goal_position[0]):
+                self._speed_x = -self._speed_x
+            #Move over goal-position in x-direction (change of sign) => stop op goal-position
+            if (self._current_position[0] - self._goal_position[0]) > 0 and (x - self._goal_position[0]) < 0 :
+                self._speed_x = 0
                 x = self._goal_position[0]
+            #Move over goal-position in x-direction (change of sign) => stop op goal-position
+            if (self._current_position[0] - self._goal_position[0]) < 0 and (x - self._goal_position[0]) > 0:
+                self._speed_x = 0
+                x = self._goal_position[0]
+            #Move away from goal for y (change direction)
+            if abs(self._current_position[1] - self._goal_position[1]) < abs(y - self._goal_position[1]):
+                self._speed_y = -self._speed_y
+            #Move over goal-position in y-direction (change of sign) => stop op goal-position
+            if (self._current_position[1] - self._goal_position[1]) < 0 and (y - self._goal_position[1]) > 0:
+                self._speed_y = 0
                 y = self._goal_position[1]
-            else:
-            #Only move in y-direction
-                if self._current_position[0] == self._goal_position[0]:
-                    x = self._current_position[0]
-                    y = self._current_position[1] + speed*sleep_interval
-                    #Only move in y-direction
-                elif self._current_position[1] == self._goal_position[1]:
-                    x = self._current_position[1]
-                    y = self._current_position[0] + speed*sleep_interval
-                # take speed*sleep_interval off the distance -> calculate new pos
-                else:
-                    angle = atan2(float(self._current_position[1] - self._goal_position[1]), float(self._current_position[0] - self._goal_position[0]))
-                    x = ((speed*sleep_interval) * cos(angle)) + self._current_position[0]
-                    y = ((speed*sleep_interval) * sin(angle)) + self._current_position[1]
+            #Move over goal-position in y-direction (change of sign) => stop op goal-position
+            if (self._current_position[1] - self._goal_position[1]) > 0 and (y - self._goal_position[1]) < 0:
+                self._speed_y = 0
+                y = self._goal_position[1]
             self._update_position((x, y))
             sleep(sleep_interval)
 
@@ -119,7 +131,7 @@ class VirtualZeppelin(object):
         """
         self._current_direction = (x, y)        # TODO
         self._current_position = (x, y)
-        self._senderPi.sent_position(x, y)
+        #self._senderPi.sent_position(x, y)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -206,8 +218,10 @@ class VirtualZeppelin(object):
         Sets a new position in (x,y)- coordinates
         """
         self._goal_position = (x, y)
-        print 'nieuwe doelpositie'
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
+        self._speed_x = 20
+        self._speed_y = 20
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
