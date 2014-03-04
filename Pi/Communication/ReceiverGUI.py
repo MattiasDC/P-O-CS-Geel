@@ -14,7 +14,12 @@ _receiver = None
 #Still to be determined
 def callback(ch, method, properties, body):
     print 'boodschap ontvangen'
-    print body
+    if 'height' in method.method.routing_key:
+        print 'hoogte'
+        print body
+    if 'location' in method.method.routing_key:
+        print 'positie'
+        print body
 
 #Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)

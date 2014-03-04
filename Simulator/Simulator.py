@@ -26,23 +26,23 @@ class VirtualZeppelin(object):
     _console2 = ""                  # Used as a double buffer to avoid conflict of simultaneous reading and writing
                                     # to the console
 
+
     def initialise(self, curr_pos):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-
-        self._current_position = curr_pos
-        self._goal_height = 50
-
-        #self.set_height_control(True)
-        #self.set_navigation_mode(True)'
+        print 'hier'
         #Initialisation and start of the communication with the shared server
         ReceiverPi.receive(self)
         sleep (0.1)
         self._senderPi = SenderPi.SenderPi()
+        self._current_position = curr_pos
+        self._goal_height = 50
+
+        self.set_height_control(True)
+        self.set_navigation_mode(True)
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
-    #TODO send it to the server
 
     def _stay_on_height_thread(self):
         """
@@ -52,8 +52,11 @@ class VirtualZeppelin(object):
         sleep_interval = 1
 
         while self._stay_on_height_flag:
-            self._current_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10.0))
+            new_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10.0))
+            self._current_height = new_height
+            self._senderPi.sent_height(new_height)
             sleep(sleep_interval)
+
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
@@ -106,7 +109,7 @@ class VirtualZeppelin(object):
         """
         self._current_direction = (x, y)        # TODO
         self._current_position = (x, y)
-        #TODO send it to the server
+        self._senderPi.sent_position(x, y)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -162,7 +165,6 @@ class VirtualZeppelin(object):
         """
         Sets a new goal height (in cm)
         """
-        print "nieuwe doelhoogte"
         try:
             self._goal_height = new_height
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal height is set to: "
@@ -170,8 +172,6 @@ class VirtualZeppelin(object):
         except (ValueError, TypeError) as e:
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Error on new goal height "
                                 + str(new_height) + " " + str(e))
-
-
 
     def set_height_control(self, flag):
         if flag:
@@ -195,7 +195,6 @@ class VirtualZeppelin(object):
         """
         Sets a new position in (x,y)- coordinates
         """
-        print "nieuwe doelpositie"
         self._goal_position = (x, y)
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
 
