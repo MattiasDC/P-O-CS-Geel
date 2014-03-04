@@ -82,7 +82,7 @@ class Core(object):
         # Get current position
         self._positioner = Positioner
         self._positioner.set_core(self)
-        self._get_initial_position()
+        self._update_position(self._positioner.find_location(self._camera.take_picture()))
 
         # Start navigation
         self.set_navigation_mode(True)
@@ -244,12 +244,7 @@ class Core(object):
         self._sensor.stop()
         self._motors.stop()
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core has gracefully quited")
-
-    def quit_server(self):
-        """
-        Quits the server; this should be called as last function AFTER quit_core
-        """
-        self._server.stop_server()
+        #TODO exit rabbitMQ?
 
     def _start_server(self):
         """
@@ -343,13 +338,6 @@ class Core(object):
         Returns the status of motor2
         """
         return self._motors.get_motor2_status()
-
-    def _get_initial_position(self):
-        """
-        Sets the current start position of the zeppelin
-        """
-        self._current_position = self._positioner.get_current_position()
-        self._goal_position = self._current_position
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
 

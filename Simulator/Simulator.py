@@ -61,7 +61,6 @@ class VirtualZeppelin(object):
             self._senderPi.sent_height(new_height)
             sleep(sleep_interval)
 
-
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
     def _update_position_thread(self):
         sleep_interval = 0.8
