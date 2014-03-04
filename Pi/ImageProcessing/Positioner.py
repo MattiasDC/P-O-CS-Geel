@@ -2,7 +2,7 @@ from math import sqrt
 from ImageProcessing import Grid
 from ImageProcessing.Shapes import *
 from ImageProcessing import Recognizer
-from copy import deepcopy
+from copy import copy
 from time import time
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
@@ -74,12 +74,15 @@ def find_in_grid(shapes, grd):
     for c_point in points:
         for i in range(0, grd.n_rows):
             for j in range(0, grd.n_columns):
-                if not grd.get_point(i, j) is None and c_point.color == grd.get_point(i, j).color:
-                    c_point.possible_positions[(i, j)] = grd.get_neighbour_points(pos=(i, j))
+                if not grd.get_point(i, j) is None:
+                    if c_point.color == grd.get_point(i, j).color:
+                        c_point.possible_positions[(i, j)] = grd.get_neighbour_points(pos=(i, j))
 
-    solutions = reduce_solutions(points)
+    possible_points = reduce_solutions(points)
 
-    return build_patterns(solutions)
+    builded_color_patterns = build_patterns(possible_points)
+
+    find_closest_match(builded_color_patterns, color_points)
 
 
 def reduce_solutions(points):
@@ -109,29 +112,41 @@ def reduce_single_point(p, points):
 
 
 def build_patterns(solutions):
-    first_element = solutions[0]
-    solutions.remove(first_element)
 
-    possible_connections = connect_element(first_element, map(lambda x: [x], first_element.possible_positions.keys()))
+    patterns = map(lambda x: [(solutions[0], x)], solutions[0].possible_positions.keys())
+    element = solutions[0]
 
-    return possible_connections
+    def same_size_stop_condition(pats, size):
+        if False in map(lambda x: len(x) == size, pats):
+            return True
+        return False
 
+    while same_size_stop_condition(patterns, len(solutions)):
+        for current_pattern in patterns[:]:
+            if not len(current_pattern) == len(solutions):
+                patterns.remove(current_pattern)
+                for element, position_element in current_pattern:
+                    for neighbour in element.neighbours:
+                        for position_neighbour in neighbour.possible_positions.keys():
 
-def connect_element(element, patterns):
-    for color_point in patterns[:]:
-        patterns.remove(color_point)
-        for neighbour in element.neighbours:
-            for point in neighbour.possible_positions.keys():
-                if color_point in neighbour.possible_positions[point] and not color_point in patterns:
-                    patterns.extend(connect_element(color_point, patterns))
-    return patterns
+                            if position_element in neighbour.possible_positions[position_neighbour]\
+                                    and not neighbour in map(lambda (x, y): x, current_pattern):
+                                new_pattern = copy(current_pattern)
+                                new_pattern.append((neighbour, position_neighbour))
+                                patterns.append(new_pattern)
+
+    return list(set(map(tuple, map(sorted, patterns))))
 
 
 class ColorPoint(object):
 
-    def __init__(self, color, possible_positions=dict(), neighbours=set()):
+    def __init__(self, color, possible_positions=None, neighbours=None):
         self._color = color
+        if possible_positions is None:
+            possible_positions = dict()
         self._possible_positions = possible_positions
+        if neighbours is None:
+            neighbours = set()
         self._neighbours = neighbours
 
     @property
@@ -168,8 +183,8 @@ if __name__ == '__main__':
     grid = Grid.Grid.from_file('C:/Users/Mattias/Desktop/grid.csv')
 
     start_time = time()
-    s_1 = Star('Yellow', (5, 2))
-    s_2 = Ellipse('Blue', (5, 3))
-    result = find_in_grid([(Rectangle('Yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('White', (5, 4)))], grid)
+    s_1 = Star('yellow', (5, 2))
+    s_2 = Ellipse('blue', (5, 3))
+    result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grid)
     print result
     print str(time()-start_time)
