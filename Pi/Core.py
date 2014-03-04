@@ -4,14 +4,13 @@ from time import sleep
 from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
-import ImageProcessing.Recognizer as Recognizer
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
 from math import pow, sqrt, acos, degrees
 from values import *
-import ReceiverPi
-import SenderPi
+import Communication.ReceiverPi as ReceiverPi
+import Communication.SenderPi as SenderPi
 
 #TODO update direction in positioner
 
@@ -21,10 +20,6 @@ class Core(object):
     _camera = None                  # The camera
 
     _motors = None                  # Motors (= MotorControl)
-
-    _handler = None                 # The handler for the connection
-    _server = None                  # The server for the connection
-
 
     _senderPi = None                # The sender-object used for sending messages to the server
 
