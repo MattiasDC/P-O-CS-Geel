@@ -1,7 +1,5 @@
 import pika
 from values import *
-#import the GUI-class which the callback-function must use here here
-#import GUI
 from threading import Thread
 from time import sleep
 
@@ -15,11 +13,14 @@ _receiver = None
 #Still to be determined
 def callback(ch, method, properties, body):
     print 'boodschap ontvangen'
-    if 'height' in method.method.routing_key:
+    if 'height' in method.routing_key:
         print 'hoogte'
         print body
-    if 'location' in method.method.routing_key:
+    if 'location' in method.routing_key:
         print 'positie'
+        print body
+    if 'private' in method.routing_key:
+        print 'private'
         print body
 
 

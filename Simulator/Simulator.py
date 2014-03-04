@@ -19,11 +19,12 @@ class VirtualZeppelin(object):
     _current_direction = None       # The direction of the zeppelin
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
-    _current_height = 10
-    _speed_x = 20  # cm/s
-    _speed_y = 20  # cm/s
+    _current_height = 10            #The current height of the zeppelin
+    _speed_x = 20  # cm/s           #The current speed of the zeppelin in the x-direction
+    _speed_y = 20  # cm/s           #The current speed of the zeppelin in the y-direction
 
-    _senderPi = None
+    _senderPi_position = None       # The sender-object used for sending position-messages to the server
+    _senderPi_height = None         # The sender-object used for sending height-messages to the server
 
     _console = ""                   # String used to send info to the GUI
     _console2 = ""                  # Used as a double buffer to avoid conflict of simultaneous reading and writing
@@ -35,13 +36,12 @@ class VirtualZeppelin(object):
         Initialised all the variables, and initialises all the hardware components
         """
         #Initialisation and start of the communication with the shared server
-        #self._senderPi = SenderPi.SenderPi()
-        #self._senderPi.sent_private('Sender made')
-        #ReceiverPi.receive(self)
+        self._senderPi_position = SenderPi.SenderPi()
+        self._senderPi_height = SenderPi.SenderPi()
+        ReceiverPi.receive(self)
 
         self._current_position = curr_pos
         self._goal_height = 50
-        self.set_goal_position((-200, -130))
 
         self.set_height_control(True)
         self.set_navigation_mode(True)
@@ -57,14 +57,14 @@ class VirtualZeppelin(object):
         while self._stay_on_height_flag:
             new_height = self._goal_height * (1 + random.uniform(-0.1, 0.1))
             self._current_height = new_height
-            #self._senderPi.sent_height(new_height)
+            self._senderPi_height.sent_height(new_height)
             sleep(sleep_interval)
 
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 3
+        sleep_interval = 0.8
 
         while self._stay_on_position_flag:
             #new_position = old_position*speed
@@ -130,7 +130,7 @@ class VirtualZeppelin(object):
         """
         self._current_direction = (x, y)        # TODO
         self._current_position = (x, y)
-        #self._senderPi.sent_position(x, y)
+        self._senderPi_position.sent_position(x, y)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -218,8 +218,14 @@ class VirtualZeppelin(object):
         """
         self._goal_position = (x, y)
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
-        self._speed_x = 20
-        self._speed_y = 20
+        if x < self._current_position[0]:
+            self._speed_x = -20
+        else:
+            self._speed_x = 20
+        if y < self._current_position[1]:
+            self._speed_y = -20
+        else:
+            self._speed_y = 20
 
 
 # ---------------------------------------------------------------------------------------------------------------------

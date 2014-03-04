@@ -22,7 +22,8 @@ class Core(object):
 
     _motors = None                  # Motors (= MotorControl)
 
-    _senderPi = None                # The sender-object used for sending messages to the server
+    _senderPi_position = None       # The sender-object used for sending position-messages to the server
+    _senderPi_height = None         # The sender-object used for sending height-messages to the server
 
     _positioner = None              # Positioner
 
@@ -95,7 +96,7 @@ class Core(object):
         """
         while self._stay_on_height_flag:
             self._motors.set_pwm(self._pid())
-            self._senderPi.sent_height(self._sensor.get_height()*10)
+            self._senderPi_height.sent_height(self._sensor.get_height()*10)
             sleep(pid_interval)                             # time in seconds
 
     def _pid(self):
@@ -253,7 +254,8 @@ class Core(object):
         """
         ReceiverPi.receive(self)
         sleep(0.1)
-        self._senderPi = SenderPi.SenderPi()
+        self._senderPi_position = SenderPi.SenderPi()
+        self._senderPi_height = SenderPi.SenderPi()
 
     def land(self):
         """
@@ -270,7 +272,7 @@ class Core(object):
         """
         self._current_direction = (q, z)
         self._current_position = (x, y)
-        self._senderPi.sent_position(x*10, y*10)
+        self._senderPi_position.sent_position(x*10, y*10)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):

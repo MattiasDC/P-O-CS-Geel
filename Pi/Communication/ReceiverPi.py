@@ -13,12 +13,9 @@ _receiver = None
 def callback(ch, method, properties, body):
     global _core
     if (team + '.hcommand.move') in str(method.routing_key):
-        print 'ga naar'
-        print body
         #position in format <x>,<y>, so parse first the correct values for the correct vales
         body = str(body)
         pos = body.find(',')
-        print body
         x = body[0:pos]
         y = body[pos+1:len(body)]
         #Set the new goal-position in the core-class
@@ -30,11 +27,9 @@ def callback(ch, method, properties, body):
         _core.set_goal_height(int(body))
     if (team + '.lcommand') in str(method.routing_key):
         if 'motor1' in str(method.routing_key):
-
             #Set motor1 at the pwm-value determined by the message
             _core.set_motor1(int(body))
         if 'motor2' in str(method.routing_key):
-
             #Set motor2 at the pwm-value determined by the message
             _core.set_motor2(int(body))
         if 'motor3' in str(method.routing_key):
