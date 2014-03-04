@@ -222,7 +222,6 @@ class Core(object):
     def _update_position_thread(self):
         while self._stay_on_position_flag:
             self._update_position(self._positioner.find_location(self._camera.take_picture()))
-            self._navigation_thread()
             sleep(self._position_update_interval)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
@@ -270,7 +269,7 @@ class Core(object):
         Lands the zeppelin and quits heightcontrol
         """
         self.set_goal_height(ground_height)
-        while self.get_height() > (ground_height + 1):
+        while self.get_height() > (ground_height + 2):
             sleep(1)
         self.set_height_control(False)
 
@@ -359,6 +358,15 @@ class Core(object):
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
 
+    def set_motor1(self, pwm):
+        self._motors.motor1_pwm(pwm)
+
+    def set_motor2(self, pwm):
+        self._motors.motor2_pwm(pwm)
+
+    def set_motor3(self, pwm):
+        self._motors.set_pwm(pwm)
+
     def set_goal_height(self, new_height):
         """
         Sets a new goal height (in cm)
@@ -390,6 +398,7 @@ class Core(object):
     def set_navigation_mode(self, flag):
         if flag:
             self._stay_on_position_flag = True
+            Thread(target=self._navigation_thread()).start()
             Thread(target=self._update_position_thread()).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
