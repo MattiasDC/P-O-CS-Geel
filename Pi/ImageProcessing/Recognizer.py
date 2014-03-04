@@ -61,9 +61,9 @@ def process_picture(image):
         #Get the best match and check if it is less than the max offset
         minimum = min(values)
         if minimum < max_shape_offset:
-            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
-            #cv2.putText(gray_image, values.get(minimum).__class__.__name__ + ' ' + color, tuple(contour[0].tolist()[0]),
-             #           cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
+            cv2.putText(gray_image, values.get(minimum).__class__.__name__ + ' ' + color, tuple(contour[0].tolist()[0]),
+                        cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
             found_shapes.append(values.get(minimum))
 
     return found_shapes
@@ -99,7 +99,9 @@ def find_shape_color(contour, image):
     return colors[value]
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    img = Image.open("C:\Users\Mattias\Desktop\Fotos\900 6.jpg")
+    process_picture(img)
 #     minres = (300, 300)
 #     for i in range(120):
 #         if i % 10 == 0:

@@ -24,7 +24,8 @@ class Grid(object):
         shape_map = {'R': Rectangle,
                      'S': Star,
                      'H': Heart,
-                     'C': Ellipse}
+                     'C': Ellipse,
+                     'X': None}
 
         color_map = {'W': 'white',
                      'B': 'blue',
@@ -38,7 +39,10 @@ class Grid(object):
                 row = list()
                 for shape in line.split(','):
                     if len(shape) == 2:
-                        row.append(shape_map.get(shape[1])(color_map.get(shape[0])))
+                        if shape_map.get(shape[1]) is None:
+                            row.append(None)
+                        else:
+                            row.append(shape_map.get(shape[1])(color_map.get(shape[0])))
                 if len(row) > 0:
                     points.append(row)
 

@@ -26,7 +26,7 @@ class Shape(object):
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        elif self.color == other.color:
+        elif self.color == other.color and self.center == other.center:
             return True
         return False
 
@@ -34,6 +34,8 @@ class Shape(object):
         hsh = 0
         for c in self.color:
             hsh = 101*hsh + ord(c)
+        hsh = 31*hsh + self.center[0]
+        hsh = 31*hsh + self.center[1]
         return hsh
 
 
