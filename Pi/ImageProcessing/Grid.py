@@ -101,8 +101,10 @@ class Grid(object):
             x = pos[0]
             y = pos[1]
 
-        neighbours = [(x-1, y+1), (x, y+1), (x+1, y+1), (x+1, y), (x, y-1), (x-1, y)]
-
+        if x % 2 == 0:
+            neighbours = [(x, y-1), (x, y+1), (x-1, y-1), (x-1, y), (x+1, y), (x+1, y-1)]
+        else:
+            neighbours = [(x, y-1), (x, y+1), (x-1, y), (x-1, y+1), (x+1, y+1), (x+1, y)]
         return filter(lambda (a, b): self.is_valid_position(a, b), neighbours)
 
     #-------------------------------------------------------------------------
