@@ -1,8 +1,5 @@
 import pika
 from values import *
-#Comment this to run Test.py (gives an error because not all modules are installed)
-import Simulator
-#import Core
 from threading import Thread
 from time import sleep
 

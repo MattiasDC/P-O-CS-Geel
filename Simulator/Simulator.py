@@ -40,7 +40,6 @@ class VirtualZeppelin(object):
         self._grid = Grid
         self._grid = self._grid.from_file("/grid.csv")
 
-
         self._current_position = curr_pos
         self._goal_height = 50
 
@@ -85,6 +84,15 @@ class VirtualZeppelin(object):
             sleep(sleep_interval)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
+
+    def set_motor1(self, pwm):
+        pass
+
+    def set_motor2(self, pwm):
+        pass
+
+    def set_motor3(self, pwm):
+        pass
 
     def add_to_console(self, line):
         """
