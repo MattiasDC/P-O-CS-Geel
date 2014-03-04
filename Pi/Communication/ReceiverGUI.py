@@ -5,6 +5,7 @@ from values import *
 from threading import Thread
 from time import sleep
 
+
 #The GUI-object which the callback-function must use
 _GUI = None
 #The receiver-object for receiving messages
@@ -20,6 +21,7 @@ def callback(ch, method, properties, body):
     if 'location' in method.method.routing_key:
         print 'positie'
         print body
+
 
 #Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)

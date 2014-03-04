@@ -40,7 +40,7 @@ class SenderGUI(object):
         else:
             #Publish the message in format <x>,<y> to the exchange with our routing key
             routing_key = team + '.hcommand.move'
-            message = str(x) + ',' + str(y)
+            message = str(int(x)) + ',' + str(int(y))
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
@@ -54,7 +54,7 @@ class SenderGUI(object):
         else:
             #Publish the message in format <z> to the exchange with our routing key
             routing_key = team + '.hcommand.elevate'
-            message = str(z)
+            message = str(int(z))
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)
