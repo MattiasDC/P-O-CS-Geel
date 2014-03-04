@@ -8,6 +8,7 @@ factor_edge_max_edge = 1.5      # The factor which determines how long an edge b
                                 # with respect to the minimum edge
 _core = None                    # The core
 _imageprocessor = None          # The image processing
+_current_pos = None             # The current position, when a new position is calculated this becomes the prev position
 
 # Eens we onze resolutie hebben bepaalt en onze hoogte kennen, kunnen we exact de afstand tussen de middes uitrekenen.
 # Hierdoor is het mogelijk om de factor zeer nauwkeurig te bepalen.
@@ -18,6 +19,7 @@ def set_core(core):
 
     _core = core
     _imageprocessor = Recognizer
+
 
 def find_location(pil):
     global _core, _imageprocessor

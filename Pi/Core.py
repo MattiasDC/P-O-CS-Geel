@@ -4,15 +4,17 @@ from time import sleep
 from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
-#import ImageProcessing.Recognize as Recognizer
-#import ImageProcessing.Positioner as Positioner
-#import ImageProcessing.Grid as Grid
+import ImageProcessing.Recognize as Recognizer
+import ImageProcessing.Positioner as Positioner
+import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
-#from Communication.NetworkConnection import PIServer, CoreHandler
+from Communication.NetworkConnection import PIServer, CoreHandler
 from math import pow, sqrt, acos, degrees
 from values import *
 import ReceiverPi
 import SenderPi
+
+#TODO update direction in positioner
 
 
 class Core(object):
@@ -25,7 +27,7 @@ class Core(object):
     _server = None                  # The server for the connection
 
 
-    _senderPi = None                #The sender-object used for sending messages to the server
+    _senderPi = None                # The sender-object used for sending messages to the server
 
     _positioner = None              # Positioner
 
@@ -81,24 +83,22 @@ class Core(object):
         #self._senderPi = SenderPi.SenderPi()
 
         # Sets the grid
-        #self._grid = Grid.from_file()         #TODO
+        self._grid = Grid
+        self._grid = self._grid.from_file("/grid.csv")
 
         # Start height control
-        #self._goal_height = ground_height
-        #self.set_height_control(True)
+        self._goal_height = ground_height
+        self.set_height_control(True)
 
         # Get current position
-        #self._positioner = Positioner
-        #self._positioner.set_core(self)
-        #self._get_initial_position()
+        self._positioner = Positioner
+        self._positioner.set_core(self)
+        self._get_initial_position()
 
         # Start navigation
-        #self.set_navigation_mode(True)
-
-
+        self.set_navigation_mode(True)
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
-
     def _stay_on_height_thread(self):
         """
         Runs the _steady_on_height algorithm every second and updates the current speed
@@ -227,6 +227,7 @@ class Core(object):
     def _update_position_thread(self):
         while self._stay_on_position_flag:
             self._update_position(self._positioner.find_location(self._camera.take_picture()))
+            self._navigation_thread()
             sleep(self._position_update_interval)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
@@ -278,31 +279,13 @@ class Core(object):
             sleep(1)
         self.set_height_control(False)
 
-    def _update_position(self, (x, y)):
+    def _update_position(self, (x, y), (q, z)):
         """
         Updates the current position, direction and sends it to the server
         """
-        self._current_direction = (x, y) #TODO
+        self._current_direction = (q, z)
         self._current_position = (x, y)
         #TODO send it to the server
-
-    def move_forward(self):
-        """
-        Method for testing the frame
-        """
-        self._motors._motor1.move_counterclockwise()
-        self._motors._motor2.move_counterclockwise()
-
-    def move_backward(self):
-        """
-        Method for testing the frame
-        """
-        self._motors._motor1.move_clockwise()
-        self._motors._motor2.move_clockwise()
-
-    def stop_moving(self):
-        self._motors._motor1.stop_moving()
-        self._motors._motor2.stop_moving()
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -376,7 +359,7 @@ class Core(object):
         """
         Sets the current start position of the zeppelin
         """
-        self._current_position = self._imageprocessor.get_current_position()
+        self._current_position = self._positioner.get_current_position()
         self._goal_position = self._current_position
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
@@ -412,7 +395,6 @@ class Core(object):
     def set_navigation_mode(self, flag):
         if flag:
             self._stay_on_position_flag = True
-            Thread(target=self._navigation_thread()).start()
             Thread(target=self._update_position_thread()).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
@@ -427,18 +409,4 @@ if __name__ == "__main__":
     core.initialise()
     core.set_goal_height(130)
 
-    while True:
-        c = raw_input()
-
-        if c == "v":
-            core.move_forward()
-
-        elif c == "a":
-            core.move_backward()
-
-        elif c == "s":
-            core.stop_moving()
-
-        #else:
-        #    core.set_goal_height(int(c))
 # ---------------------------------------------------------------------------------------------------------------------

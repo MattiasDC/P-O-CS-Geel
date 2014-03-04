@@ -52,9 +52,9 @@ class MotorControl(object):
         """
 
         #If the pwm-value is outside the range [-100,100], adjust it
-        if pwm>100:
+        if pwm > 100:
             pwm = 100
-        if pwm <-100:
+        if pwm < -100:
             pwm = -100
 
         #The total duration of one duty cycle
