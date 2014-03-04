@@ -1,54 +1,33 @@
 import pika
 from values import *
+#import the GUI-class which the callback-function must use here here
+#import GUI
 from threading import Thread
 from time import sleep
 
-#The core (or simulator) which the callback function must use
-_core = None
+#The GUI-object which the callback-function must use
+_GUI = None
 #The receiver-object for receiving messages
 _receiver = None
 
-#Determines the behavior when a message is received (calls the appropriate function in the core/simulator)
-#No check on exceptions
+#Determines the behavior when a message is received
+#Still to be determined
 def callback(ch, method, properties, body):
-    global _core
-    if (team + '.hcommand.move') in str(method.routing_key):
-        print 'ga naar'
+    print 'boodschap ontvangen'
+    if 'height' in method.method.routing_key:
+        print 'hoogte'
         print body
-        #position in format <x>,<y>, so parse first the correct values for the correct vales
-        body = str(body)
-        pos = body.find(',')
+    if 'location' in method.method.routing_key:
+        print 'positie'
         print body
-        x = body[0:pos]
-        y = body[pos+1:len(body)]
-        #Set the new goal-position in the core-class
-        #Comment next statement to run Test.py (core not initialised properly)
-        _core.set_goal_position((int(x), int(y)))
-    if (team + '.hcommand.elevate') in str(method.routing_key):
-        #Set the new goal-height in the core-class
-        #Comment next statement to run Test.py (core not initialised properly)
-        _core.set_goal_height(int(body))
-    if (team + '.lcommand') in str(method.routing_key):
-        if 'motor1' in str(method.routing_key):
 
-            #Set motor1 at the pwm-value determined by the message
-            _core.set_motor1(int(body))
-        if 'motor2' in str(method.routing_key):
-
-            #Set motor2 at the pwm-value determined by the message
-            _core.set_motor2(int(body))
-        if 'motor3' in str(method.routing_key):
-            #Set motor3 at the pwm-value determined by the message
-            _core.set_motor3(int(body/10.0))
-
-
-#Run this function (in the core) to start receiving messages
+#Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
-def receive(core):
-    global _core
-    _core = core
+def receive(GUI):
+    global _GUI
+    _GUI = GUI
     global _receiver
-    _receiver = ReceiverPi()
+    _receiver = ReceiverGUI()
     t = Thread(target=receive_thread)
     sleep(0.1)
     t.start()
@@ -60,8 +39,7 @@ def receive_thread():
     _receiver.receive()
 
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
-
-class ReceiverPi(object):
+class ReceiverGUI(object):
     #Flag to determine if the sender is connected to a receiver
     _connected = False
     #The connection used by the receiver
@@ -88,19 +66,19 @@ class ReceiverPi(object):
         self._connection.close()
         self._connected = False
 
-    #Wait for a new high-level command (infinite loop, so must be run in a separate thread)
-    #Difference between commands made in the callback-function
+    #Receive all the positions of the team determined by the parameter
+    #Infinite loop, so must be run in a separate thread
     def receive(self):
         result = self._channel.queue_declare(exclusive=True)
         queue_name = result.method.queue
-        #Listen to the high-level commands
+        #Receive all the public information (height + position)
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key= team + '.hcommand.*')
-        #Listen to the low-level commands
+                       routing_key='*.info.*')
+        #Receive all the private information of our team
         self._channel.queue_bind(exchange=exchange,
                        queue=queue_name,
-                       routing_key= team + '.lcommand.*')
+                       routing_key= team + '.private.#')
         self._channel.basic_consume(callback,
                       queue=queue_name,
                       no_ack=True)

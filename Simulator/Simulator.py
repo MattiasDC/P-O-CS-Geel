@@ -4,11 +4,13 @@ from datetime import datetime
 from math import sqrt
 from values import *
 from random import randrange
-import ReceiverPi
-import SenderPi
+import Communication.ReceiverPi as ReceiverPi
+import Communication.SenderPi as SenderPi
+import Grid
 
 
 class VirtualZeppelin(object):
+    _senderPi = None                # The sender-object used for sending messages to the server
 
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
     _stay_on_position_flag = None   # Flag to indicate the zeppelin should (try) to go to the goal position
@@ -20,22 +22,24 @@ class VirtualZeppelin(object):
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _current_height = 10
 
-    _senderPi = None
+    _grid = None                    # The grid
 
     _console = ""                   # String used to send info to the GUI
     _console2 = ""                  # Used as a double buffer to avoid conflict of simultaneous reading and writing
                                     # to the console
 
-
     def initialise(self, curr_pos):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-        print 'hier'
+
         #Initialisation and start of the communication with the shared server
-        ReceiverPi.receive(self)
-        sleep (0.1)
-        self._senderPi = SenderPi.SenderPi()
+        self._start_server()
+
+        # Sets the grid
+        self._grid = Grid
+        self._grid = self._grid.from_file("/grid.csv")
+
         self._current_position = curr_pos
         self._goal_height = 50
 
@@ -57,16 +61,14 @@ class VirtualZeppelin(object):
             self._senderPi.sent_height(new_height)
             sleep(sleep_interval)
 
-
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
-
     def _update_position_thread(self):
         sleep_interval = 0.8
         speed = 20  # cm/s
 
         while self._stay_on_position_flag:
             # once the goal is reached do nothing
-            if self._goal_height != self._current_height:
+            if self._current_position != self._goal_position:
                 # distance to goal < speed*sleep_interval -> goal reached
                 if sqrt(abs(self._current_position[0] - self._goal_position[0])**2 + abs(self._current_position[1]
                         - self._goal_position[1])**2) < (speed*sleep_interval):
@@ -81,6 +83,15 @@ class VirtualZeppelin(object):
             sleep(sleep_interval)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
+
+    def set_motor1(self, pwm):
+        pass
+
+    def set_motor2(self, pwm):
+        pass
+
+    def set_motor3(self, pwm):
+        pass
 
     def add_to_console(self, line):
         """
@@ -103,13 +114,21 @@ class VirtualZeppelin(object):
         self._current_height = ground_height
         self.set_height_control(False)
 
-    def _update_position(self, (x, y)):
+    def _update_position(self, (x, y), (q, z)):
         """
         Updates the current position, direction and sends it to the server
         """
-        self._current_direction = (x, y)        # TODO
+        self._current_direction = (q, z)
         self._current_position = (x, y)
         self._senderPi.sent_position(x, y)
+
+    def _start_server(self):
+        """
+        Initialises everything to start the server
+        """
+        ReceiverPi.receive(self)
+        sleep(0.1)
+        self._senderPi = SenderPi.SenderPi()
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
