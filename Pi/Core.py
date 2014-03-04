@@ -11,6 +11,7 @@ from math import pow, sqrt, acos, degrees
 from values import *
 import Communication.ReceiverPi as ReceiverPi
 import Communication.SenderPi as SenderPi
+import os
 
 #TODO update direction in positioner
 
@@ -73,7 +74,7 @@ class Core(object):
 
         # Sets the grid
         self._grid = Grid
-        self._grid = self._grid.from_file("/grid.csv")
+        self._grid = self._grid.from_file(os.path.dirname(os.path.realpath(__file__))[:-8] + "grid.csv")
 
         # Start height control
         self._goal_height = ground_height
