@@ -74,5 +74,3 @@ class SenderPi(object):
                       routing_key=routing_key,
                       body=message)
             return 'succes'
-
-	

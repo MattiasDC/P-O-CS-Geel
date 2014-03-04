@@ -4,11 +4,10 @@ from time import sleep
 from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
-import ImageProcessing.Recognize as Recognizer
+import ImageProcessing.Recognizer as Recognizer
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
-from Communication.NetworkConnection import PIServer, CoreHandler
 from math import pow, sqrt, acos, degrees
 from values import *
 import ReceiverPi
@@ -75,12 +74,7 @@ class Core(object):
         self._camera.initialise(self)
 
         # Start the server
-        #self._start_server()
-
-        #Initialisation and start of the communication with the shared server
-        #ReceiverPi.receive(self)
-        #sleep (0.1)
-        #self._senderPi = SenderPi.SenderPi()
+        self._start_server()
 
         # Sets the grid
         self._grid = Grid
@@ -105,6 +99,7 @@ class Core(object):
         """
         while self._stay_on_height_flag:
             self._motors.set_pwm(self._pid())
+            self._senderPi.sent_height(self._sensor.get_height()*10)
             sleep(pid_interval)                             # time in seconds
 
     def _pid(self):
@@ -266,9 +261,9 @@ class Core(object):
         """
         Initialises everything to start the server
         """
-        self._handler = CoreHandler(self)
-        self._server = PIServer(self._handler, self)
-        self._server.start_server()
+        ReceiverPi.receive(self)
+        sleep(0.1)
+        self._senderPi = SenderPi.SenderPi()
 
     def land(self):
         """
@@ -285,7 +280,7 @@ class Core(object):
         """
         self._current_direction = (q, z)
         self._current_position = (x, y)
-        #TODO send it to the server
+        self._senderPi.sent_position(x*10, y*10)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
