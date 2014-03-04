@@ -33,8 +33,22 @@ def callback(ch, method, properties, body):
         #Comment next statement to run Test.py (core not initialised properly)
         _core.set_goal_height(int(body))
     if (team + '.lcommand') in str(method.routing_key):
-        #We don't use low-level commands
-        print 'lcommand ontvangen'
+        if 'motor1' in str(method.routing_key):
+            print 'motor1 op'
+            print body
+            #Set motor1 at the pwm-value determined by the message
+            _core.set_motor1(int(body))
+        if 'motor2' in str(method.routing_key):
+            print 'motor2 op'
+            print body
+            #Set motor2 at the pwm-value determined by the message
+            _core.set_motor2(int(body))
+        if 'motor3' in str(method.routing_key):
+            print 'motor3 op'
+            print body
+            #Set motor3 at the pwm-value determined by the message
+            _core.set_motor3(int(body))
+
 
 #Run this function (in the core) to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
