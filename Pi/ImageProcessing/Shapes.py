@@ -23,6 +23,13 @@ class Shape(object):
     def center(self, center):
         self._center = center
 
+    def eq_no_center(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        elif self.color == other.color:
+            return True
+        return False
+
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False

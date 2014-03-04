@@ -1,7 +1,6 @@
-from math import sqrt
 from ImageProcessing import Grid
 from ImageProcessing.Shapes import *
-from ImageProcessing import Recognizer
+import Recognizer
 from copy import copy
 from time import time
 
@@ -50,9 +49,9 @@ def interconnect_shapes(shapes):
     return []
 
 
-def find_in_grid(shapes, grd):
+def find_in_grid(shapes, grid):
     #Haal de echte nodes uit alle edges en maak een tuple met een bijhorende colorpoint
-    color_points = map(lambda x: (ColorPoint(x.color), x), list(set(list(sum(shapes, ())))))
+    color_points_and_shapes = map(lambda x: (ColorPoint(x.color), x), list(set(list(sum(shapes, ())))))
 
     def right_element(element, x, y):
         if not element.__eq__(x):
@@ -60,29 +59,30 @@ def find_in_grid(shapes, grd):
         return y
 
     #Add alle neighbour nodes van elk element aan de colorpoints
-    for c_point, shape in color_points:
+    for c_point, shape in color_points_and_shapes:
         connected_shapes = map(lambda (x, y): right_element(shape, x, y),
                                filter(lambda (x, y): x == shape or y == shape, shapes))
-        for point, other_shape in color_points:
+        for point, other_shape in color_points_and_shapes:
             if other_shape in connected_shapes:
                 c_point.neighbours.add(point)
 
     #Haal enkel de colorpoints eruit
-    points = map(lambda (x, y): x, color_points)
+    points = map(lambda (x, y): x, color_points_and_shapes)
 
     #Populate color_points with initial possible solutions
     for c_point in points:
-        for i in range(0, grd.n_rows):
-            for j in range(0, grd.n_columns):
-                if not grd.get_point(i, j) is None:
-                    if c_point.color == grd.get_point(i, j).color:
-                        c_point.possible_positions[(i, j)] = grd.get_neighbour_points(pos=(i, j))
+        for i in range(0, grid.n_rows):
+            for j in range(0, grid.n_columns):
+                if not grid.get_point(i, j) is None:
+                    if c_point.color == grid.get_point(i, j).color:
+                        c_point.possible_positions[(i, j)] = grid.get_neighbour_points(pos=(i, j))
 
     possible_points = reduce_solutions(points)
 
     builded_color_patterns = build_patterns(possible_points)
 
-    find_closest_match(builded_color_patterns, color_points)
+    best_pattern = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
+    return best_pattern
 
 
 def reduce_solutions(points):
@@ -128,7 +128,6 @@ def build_patterns(solutions):
                 for element, position_element in current_pattern:
                     for neighbour in element.neighbours:
                         for position_neighbour in neighbour.possible_positions.keys():
-
                             if position_element in neighbour.possible_positions[position_neighbour]\
                                     and not neighbour in map(lambda (x, y): x, current_pattern):
                                 new_pattern = copy(current_pattern)
@@ -136,6 +135,20 @@ def build_patterns(solutions):
                                 patterns.append(new_pattern)
 
     return list(set(map(tuple, map(sorted, patterns))))
+
+
+def find_closest_match(patterns, colors_and_shapes, grid):
+    mx, best_pattern = 0, []
+    for pattern in patterns:
+        value = 0
+        for element, element_position in pattern:
+            _, shape = filter(lambda (x, y): x == element, colors_and_shapes)[0]
+            if shape.eq_no_center(grid.get_point(pos=element_position)):
+                value += 1
+        if value > mx:
+            mx = value
+            best_pattern = pattern
+    return best_pattern
 
 
 class ColorPoint(object):
@@ -180,11 +193,10 @@ class ColorPoint(object):
         return "Color: " + str(self.color) + " Positions: " + build_string
 
 if __name__ == '__main__':
-    grid = Grid.Grid.from_file('C:/Users/Mattias/Desktop/grid.csv')
-
+    grd = Grid.Grid.from_file('C:/Users/Mattias/Desktop/grid.csv')
     start_time = time()
     s_1 = Star('yellow', (5, 2))
     s_2 = Ellipse('blue', (5, 3))
-    result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grid)
+    result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grd)
     print result
     print str(time()-start_time)
