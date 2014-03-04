@@ -14,6 +14,7 @@ _receiver = None
 #Determines the behavior when a message is received (calls the appropriate function in the core/simulator)
 #No check on exceptions
 def callback(ch, method, properties, body):
+    global _core
     if (team + '.hcommand.move') in str(method.routing_key):
         print 'ga naar'
         print body
@@ -27,27 +28,21 @@ def callback(ch, method, properties, body):
         #Comment next statement to run Test.py (core not initialised properly)
         _core.set_goal_position((int(x), int(y)))
     if (team + '.hcommand.elevate') in str(method.routing_key):
-        print 'ga naar hoogte'
-        print body
         #Set the new goal-height in the core-class
         #Comment next statement to run Test.py (core not initialised properly)
         _core.set_goal_height(int(body))
     if (team + '.lcommand') in str(method.routing_key):
         if 'motor1' in str(method.routing_key):
-            print 'motor1 op'
-            print body
+
             #Set motor1 at the pwm-value determined by the message
             _core.set_motor1(int(body))
         if 'motor2' in str(method.routing_key):
-            print 'motor2 op'
-            print body
+
             #Set motor2 at the pwm-value determined by the message
             _core.set_motor2(int(body))
         if 'motor3' in str(method.routing_key):
-            print 'motor3 op'
-            print body
             #Set motor3 at the pwm-value determined by the message
-            _core.set_motor3(int(body))
+            _core.set_motor3(int(body/10.0))
 
 
 #Run this function (in the core) to start receiving messages

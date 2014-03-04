@@ -52,7 +52,7 @@ class VirtualZeppelin(object):
         sleep_interval = 1
 
         while self._stay_on_height_flag:
-            self._current_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10))
+            self._current_height = self._goal_height * (1 + ((randrange(10) - diviation) / 10.0))
             sleep(sleep_interval)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
