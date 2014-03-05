@@ -2,6 +2,8 @@ import pika
 from values import *
 
 #!!!!!Messages sent to an exchange with no receiver attached, will be lost!!!!!
+#!!!!Be careful with threads: calling a send-function more than once simultaneously results in an error!!!!
+#!!!! => make a new sender for each thread!!!!
 
 #To use this class, just make an object and call the appropriate method
 class SenderGUI(object):

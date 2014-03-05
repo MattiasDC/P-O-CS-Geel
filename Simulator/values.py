@@ -5,6 +5,9 @@ maximum_height = 200           # Maximum height of the zeppelin in cm
 ground_height = 10            # Base height to hover over the ground (used to initialise the goal height and land)
 extention = ".jpg"              # Extentions for the images
 
+# -------------------------------- Simulator
+speed_start = 20                 #The initial speed of the zeppelin in the simulator
+
 # -------------------------------- PID
 pid_interval = 0.3
 

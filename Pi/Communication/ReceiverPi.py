@@ -13,19 +13,20 @@ _receiver = None
 def callback(ch, method, properties, body):
     global _core
     if (team + '.hcommand.move') in str(method.routing_key):
+        #move-command received
         #position in format <x>,<y>, so parse first the correct values for the correct vales
         body = str(body)
         pos = body.find(',')
         x = body[0:pos]
         y = body[pos+1:len(body)]
         #Set the new goal-position in the core-class
-        #Comment next statement to run Test.py (core not initialised properly)
         _core.set_goal_position((int(x), int(y)))
     if (team + '.hcommand.elevate') in str(method.routing_key):
+        #Height-command received
         #Set the new goal-height in the core-class
-        #Comment next statement to run Test.py (core not initialised properly)
         _core.set_goal_height(int(body))
     if (team + '.lcommand') in str(method.routing_key):
+        #Low-level command received
         if 'motor1' in str(method.routing_key):
             #Set motor1 at the pwm-value determined by the message
             _core.set_motor1(int(body))
@@ -55,7 +56,6 @@ def receive_thread():
     _receiver.receive()
 
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
-
 class ReceiverPi(object):
     #Flag to determine if the sender is connected to a receiver
     _connected = False
@@ -75,7 +75,7 @@ class ReceiverPi(object):
         self._channel = self._connection.channel()
         self._channel.exchange_declare(exchange='exchange',
                          type='topic')
-        self.connected = True
+        self._connected = True
 
     #Close the connection (also sets the connected-flag to true)
     #Must be called when program stops
@@ -86,20 +86,23 @@ class ReceiverPi(object):
     #Wait for a new high-level command (infinite loop, so must be run in a separate thread)
     #Difference between commands made in the callback-function
     def receive(self):
-        result = self._channel.queue_declare(exclusive=True)
-        queue_name = result.method.queue
-        #Listen to the high-level commands
-        self._channel.queue_bind(exchange=exchange,
-                       queue=queue_name,
-                       routing_key= team + '.hcommand.*')
-        #Listen to the low-level commands
-        self._channel.queue_bind(exchange=exchange,
-                       queue=queue_name,
-                       routing_key= team + '.lcommand.*')
-        self._channel.basic_consume(callback,
-                      queue=queue_name,
-                      no_ack=True)
-        self._channel.start_consuming()
+        if self._connected:
+            result = self._channel.queue_declare(exclusive=True)
+            queue_name = result.method.queue
+            #Listen to the high-level commands (only of our team)
+            self._channel.queue_bind(exchange=exchange,
+                           queue=queue_name,
+                           routing_key= team + '.hcommand.*')
+            #Listen to the low-level commands (only of our team)
+            self._channel.queue_bind(exchange=exchange,
+                           queue=queue_name,
+                           routing_key= team + '.lcommand.*')
+            self._channel.basic_consume(callback,
+                          queue=queue_name,
+                          no_ack=True)
+            self._channel.start_consuming()
+        else:
+            return 'Not connected'
 
 
 

@@ -9,17 +9,20 @@ _GUI = None
 #The receiver-object for receiving messages
 _receiver = None
 
-#Determines the behavior when a message is received
-#Still to be determined
+#Determines the behavior when a message is received (calls the appropriate method of the GUI)
+#No check on exceptions
 def callback(ch, method, properties, body):
     print 'boodschap ontvangen'
     if 'height' in method.routing_key:
+        #Height updated
         print 'hoogte'
         print body
     if 'location' in method.routing_key:
+        #Location updated
         print 'positie'
         print body
     if 'private' in method.routing_key:
+        #Private message received
         print 'private'
         print body
 
@@ -61,7 +64,7 @@ class ReceiverGUI(object):
         self._channel = self._connection.channel()
         self._channel.exchange_declare(exchange='exchange',
                          type='topic')
-        self.connected = True
+        self._connected = True
 
     #Close the connection (also sets the connected-flag to true)
     #Must be called when program stops
@@ -69,24 +72,26 @@ class ReceiverGUI(object):
         self._connection.close()
         self._connected = False
 
-    #Receive all the positions of the team determined by the parameter
+    #Receive all the messages for the GUI published to the server
     #Infinite loop, so must be run in a separate thread
     def receive(self):
-        result = self._channel.queue_declare(exclusive=True)
-        queue_name = result.method.queue
-        #Receive all the public information (height + position)
-        self._channel.queue_bind(exchange=exchange,
-                       queue=queue_name,
-                       routing_key='*.info.*')
-        #Receive all the private information of our team
-        self._channel.queue_bind(exchange=exchange,
-                       queue=queue_name,
-                       routing_key= team + '.private.#')
-        self._channel.basic_consume(callback,
-                      queue=queue_name,
-                      no_ack=True)
-        self._channel.start_consuming()
-
+        if self._connected:
+            result = self._channel.queue_declare(exclusive=True)
+            queue_name = result.method.queue
+            #Receive all the public information (height + position)
+            self._channel.queue_bind(exchange=exchange,
+                           queue=queue_name,
+                           routing_key='*.info.*')
+            #Receive all the private information of our team
+            self._channel.queue_bind(exchange=exchange,
+                           queue=queue_name,
+                           routing_key= team + '.private.#')
+            self._channel.basic_consume(callback,
+                          queue=queue_name,
+                          no_ack=True)
+            self._channel.start_consuming()
+        else:
+            return 'Not connected'
 
 
 
