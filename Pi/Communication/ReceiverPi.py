@@ -8,6 +8,7 @@ _core = None
 #The receiver-object for receiving messages
 _receiver = None
 
+
 #Determines the behavior when a message is received (calls the appropriate function in the core/simulator)
 #No check on exceptions
 def callback(ch, method, properties, body):
