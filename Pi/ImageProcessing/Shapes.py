@@ -33,7 +33,7 @@ class Shape(object):
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        elif self.color == other.color and self.center == other.center:
+        elif self.color.lower() == other.color.lower() and self.center == other.center:
             return True
         return False
 
