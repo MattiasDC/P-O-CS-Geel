@@ -3,6 +3,7 @@ from ImageProcessing.Shapes import *
 import Recognizer
 from copy import copy
 from time import time
+from values import *
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
@@ -25,7 +26,7 @@ def find_location(pil):
 
     shapes = _imageprocessor.process_picture(pil)
     connected_shapes = interconnect_shapes(shapes)
-    find_in_grid(connected_shapes)
+    return find_position(find_in_grid(connected_shapes))
 
 
 def interconnect_shapes(shapes):
@@ -82,7 +83,15 @@ def find_in_grid(shapes, grid):
     builded_color_patterns = build_patterns(possible_points)
 
     best_pattern = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
-    return best_pattern
+
+    best_pattern_shape = []
+
+    for colorpoint, pos in best_pattern:
+        for colorpoint2, shape in color_points_and_shapes:
+            if colorpoint == colorpoint2:
+                best_pattern_shape.append((shape, pos))
+
+    return best_pattern_shape
 
 
 def reduce_solutions(points):
@@ -151,6 +160,23 @@ def find_closest_match(patterns, colors_and_shapes, grid):
     return best_pattern
 
 
+def find_position(best_pattern):
+    mx = (cam_resolution / 2.0)
+    my = mx
+
+    length = 100000000000000000000000000000
+    x= 0
+    y = 0
+    for shape, (px, py) in best_pattern:
+        (cx, cy) = shape.center
+        length2 = sqrt((cx + mx)**2 + (cy + my)**2)
+        if length2 < length:
+            length = length2
+            x = px
+            y = py
+    return (x, y)
+
+
 class ColorPoint(object):
 
     def __init__(self, color, possible_positions=None, neighbours=None):
@@ -193,10 +219,11 @@ class ColorPoint(object):
         return "Color: " + str(self.color) + " Positions: " + build_string
 
 if __name__ == '__main__':
-    grd = Grid.Grid.from_file('C:/Users/Mattias/Desktop/grid.csv')
+    grd = Grid.Grid.from_file('/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/gridLokaal.csv')
     start_time = time()
     s_1 = Star('yellow', (5, 2))
     s_2 = Ellipse('blue', (5, 3))
     result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grd)
+    find_position(result)
     print result
     print str(time()-start_time)
