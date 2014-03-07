@@ -1,5 +1,5 @@
 #FIXME: proper import when refactored.
-from Pi.ImageProcessing.Grid import Grid
+from grid import Grid
 
 
 class GridController(object):
