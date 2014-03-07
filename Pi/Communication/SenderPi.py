@@ -62,16 +62,43 @@ class SenderPi(object):
                       body=message)
             return 'succes'
 
-    #Sent a private message to the server
-    #Exact formatting must still be determined
-    #!!!!!Only ASCII-signs in message!!!!!
-    def sent_private(self, message):
+    #Sent a goal position (determined by the parameters) to the sever
+    def sent_goal_position(self, x, y):
         if not self._connected:
             #No connection to a server, so the message can not be delivered
             return 'Not connected'
         else:
-            routing_key = team + '.private'
-            message = str(message)
+            #Publish the message in format <x>,<y> to the exchange with the correct routing key
+            routing_key = team + '.private.goal_position'
+            message = str(int(x)) + ',' + str(int(y))
+            self._channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=message)
+            return 'succes'
+
+    #Sent a goal height (determined by the parameters) to the sever
+    def sent_goal_height(self, z):
+        if not self._connected:
+            #No connection to a server, so the message can not be delivered
+            return 'Not connected'
+        else:
+            #Publish the message in format <z> to the exchange with the correct routing key
+            routing_key = team + '.private.goal_height'
+            message = str(int(z))
+            self._channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=message)
+            return 'succes'
+
+    #Sent console information to the sever
+    def sent_console_information(self, info):
+        if not self._connected:
+            #No connection to a server, so the message can not be delivered
+            return 'Not connected'
+        else:
+            #Publish the console-information to the exchange with the correct routing key
+            routing_key = team + '.private.console'
+            message = str(info)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)

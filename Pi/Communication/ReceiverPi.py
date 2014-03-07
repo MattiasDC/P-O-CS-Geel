@@ -16,6 +16,7 @@ def callback(ch, method, properties, body):
     if (team + '.hcommand.move') in str(method.routing_key):
         #move-command received
         #position in format <x>,<y>, so parse first the correct values for the correct vales
+        print 'test'
         body = str(body)
         pos = body.find(',')
         x = body[0:pos]
@@ -48,6 +49,7 @@ def receive(core):
     _receiver = ReceiverPi()
     t = Thread(target=receive_thread)
     sleep(0.1)
+    print 'test1'
     t.start()
 
 

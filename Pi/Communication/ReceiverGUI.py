@@ -12,20 +12,28 @@ _receiver = None
 #Determines the behavior when a message is received (calls the appropriate method of the GUI)
 #No check on exceptions
 def callback(ch, method, properties, body):
+    global _GUI
     print 'boodschap ontvangen'
     if 'height' in method.routing_key:
         #Height updated
-        print 'hoogte'
+        print 'height'
         print body
     if 'location' in method.routing_key:
         #Location updated
-        print 'positie'
+        print 'position'
         print body
-    if 'private' in method.routing_key:
-        #Private message received
-        print 'private'
+    if 'private.goal_position' in method.routing_key:
+        #goal position received
+        print 'goal position'
         print body
-
+    if 'private.goal_height' in method.routing_key:
+        #goal height received
+        print 'goal height'
+        print body
+    if 'private.console' in method.routing_key:
+        #console information received
+        print 'console'
+        print 'body'
 
 #Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
