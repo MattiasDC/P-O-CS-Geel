@@ -1,0 +1,105 @@
+<ZeppelinProperties>
+    canvas:
+        Color:
+            rgb: (0.1, 0.1, 0.1)
+        Rectangle:
+            pos: self.top
+            size: (self.width, 3)
+
+    #------------------------------------------------------------------
+    # Name
+
+
+    #------------------------------------------------------------------
+    #Position
+    PropertiesHeader:
+        source_icon: 'img\\position_icon.png'
+        property_name: 'Position'
+        pos_hint: {'top': 1, 'x': 0}
+
+    PropertyEntryDouble:
+        name: 'Pos Y'
+        value: root.zep_pos_x
+        unit: ''
+        pos_hint: {'top': (1 - ((2 * 0.84 + 2 * 0.7)/13.8)), 'x': 0}
+
+    PropertyEntryDouble:
+        name: 'Pos Y'
+        value: root.zep_pos_y
+        unit: ''
+        pos_hint: {'top': (1 - ((2 * 0.84 + 2 * 0.7)/13.8)), 'x': 0}
+
+    #------------------------------------------------------------------
+    #Height
+    PropertiesHeader:
+        source_icon: 'img\\height_icon.png'
+        property_name: 'Height'
+        pos_hint: {'top': (1 - ((2 * 0.84 + 4 * 0.7)/13.8)), 'x': 0}
+
+    PropertyEntryDouble:
+        name: 'Current'
+        value: root.current_height
+        unit: 'cm'
+        pos_hint: {'top': (1 - ((3 * 0.84 + 5 * 0.7)/13.8)), 'x': 0}
+
+
+#==============================================================================
+# Properties styling.
+#==============================================================================
+<PropertiesLabel@Label>
+    color: light_blue
+    halign: 'left'
+    valign: 'middle'
+
+<PropertyEntryDouble>
+    size_hint_y: 0.7 / 13.8
+    rows: 1
+    #property name
+    PropertiesLabel:
+        text: root.name + ':'
+        font_size: 0.6 * root.height
+    #value and unit.
+    PropertiesLabel:
+        text: ('%0.2f ' % root.value) + root.unit
+        font_size: 0.6 * root.height
+
+<PropertyEntryString>
+    size_hint_y: 0.7 / 13.8
+    rows: 1
+
+    #property name
+    PropertiesLabel:
+        text: root.name + ':'
+        font_size: 0.6 * root.height
+    #value and unit.
+    PropertiesLabel:
+        text: root.value
+        font_size: 0.6 * root.height
+
+
+<PropertiesHeader>
+    #set background of this PropertyHeader
+    #-------------------------------------
+    canvas.before:
+        Color:
+            rgb: widget_colour
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    size_hint_y: 0.84 / 13.8
+
+    rows: 1
+    padding: [5, 0]
+
+    #Icon of the property
+    Image:
+        source: root.source_icon
+        pos: root.pos
+        size_hint: (0.25, 0.25)
+
+    #Name of the property
+    Label:
+        color: blue
+        text: root.property_name
+        font_size: 0.6 * root.height
