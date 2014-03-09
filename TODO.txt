@@ -1,0 +1,3 @@
+- bij gelijk pattern dichtste bij nemen
+- direction -> coordinaat
+- initiele positie

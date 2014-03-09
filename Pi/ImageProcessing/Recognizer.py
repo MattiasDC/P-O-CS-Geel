@@ -2,6 +2,7 @@ from time import time
 from PIL import Image
 import cv2
 from Shapes import *
+import colorsys
 
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
@@ -12,11 +13,11 @@ approx_precision = 0.005    # The approximation of the contour when using the Ra
 iterations = 2              # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_shape_offset = 0.1
 
-colors = {(40, 70, 70): 'Green',
-          (40, 65, 110): 'Blue',
-          (220, 170, 90): 'Yellow',
-          (255, 255, 255): 'White',
-          (160, 30, 70): 'Red'}
+#colors = {(40, 70, 70): 'green',
+#          (40, 65, 110): 'blue',
+#          (220, 170, 90): 'yellow',
+#          (255, 255, 255): 'white',
+#          (160, 30, 70): 'red'}
 
 shapes = [Rectangle, Star, Ellipse, Heart]
 
@@ -61,9 +62,10 @@ def process_picture(image):
         #Get the best match and check if it is less than the max offset
         minimum = min(values)
         if minimum < max_shape_offset:
-            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
-            cv2.putText(gray_image, values.get(minimum).__class__.__name__ + ' ' + color, tuple(contour[0].tolist()[0]),
-                        cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
+            #cv2.putText(gray_image,color, tuple(contour[0].tolist()[0]),
+            #            cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            #cv2.imwrite('grey.jpg', gray_image)
             found_shapes.append(values.get(minimum))
 
     return found_shapes
@@ -95,13 +97,23 @@ def find_shape_color(contour, image):
     """
     center = find_center(contour)
     x, y, z = image.getpixel(center)
-    _, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
-    return colors[value]
+    #_, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
+    h, s, v = colorsys.rgb_to_hsv(x/255.0, y/255.0, z/255.0)
+    if 0 <= s*100 <= 25 and v*100 >= 80:
+        return 'white'
+    if 30 <= h*360 < 75:
+        return 'yellow'
+    elif 0 <= h*360 <= 30 or 329 <= h*360 <= 360:
+        return 'red'
+    elif 200 <= h*360 < 329:
+        return 'blue'
+    elif 75 <= h*360 < 200:
+        return 'green'
 
 
-if __name__ == '__main__':
-    img = Image.open("C:\Users\Mattias\Desktop\Fotos\900 6.jpg")
-    process_picture(img)
+#if __name__ == '__main__':
+    #img = Image.open("C:\Users\Mattias\Desktop\Fotos\900 6.jpg")
+    #process_picture(img)
 #     minres = (300, 300)
 #     for i in range(120):
 #         if i % 10 == 0:

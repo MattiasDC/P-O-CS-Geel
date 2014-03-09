@@ -1,6 +1,7 @@
 import numpy as np
 from math import sqrt
 
+
 class Shape(object):
 
     """abstract class for shapes"""

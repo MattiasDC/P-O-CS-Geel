@@ -33,8 +33,9 @@ class Core(object):
 
     _grid = None                    # The grid
 
-    _current_position = None        # The current position of the zeppelin
-    _current_direction = None       # The direction of the zeppelin
+    _current_position = (0, 0)        # The current position of the zeppelin
+    _current_direction = (1, 1)       # The direction of the zeppelin
+    _current_angle = None             # The current angle of the zeppelin
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _goal_position = None           # The (x,y)- coordinate the zeppelin has to be at the moment
@@ -266,13 +267,14 @@ class Core(object):
             sleep(1)
         self.set_height_control(False)
 
-    def _update_position(self, (x, y), (q, z)):
+    def _update_position(self, (x, y), (q, z), angle):
         """
         Updates the current position, direction and sends it to the server
         """
         self._current_direction = (q, z)
         self._current_position = (x, y)
         self._senderPi_position.sent_position(x*10, y*10)
+        self._current_angle = angle
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
@@ -305,6 +307,9 @@ class Core(object):
         Returns the current position in (x,y) coordinates
         """
         return self._current_position
+
+    def get_angle(self):
+        return self._current_angle
 
     def get_direction(self):
         """
