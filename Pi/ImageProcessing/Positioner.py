@@ -38,7 +38,8 @@ def find_location(pil):
         return None
 
     angle = calc_rotation(found_pos)
-    return find_position(found_pos), (-sin(angle), cos(angle)) , angle
+    x, y = find_position(found_pos)
+    return (x, y), (-sin(angle)+x, cos(angle)+y), angle
 
 
 def interconnect_shapes(shapes):
