@@ -1,6 +1,8 @@
 from ImageProcessing import Grid
 from ImageProcessing.Shapes import *
-import Recognizer
+from PIL import Image
+from ImageProcessing import Recognizer
+from math import *
 from copy import copy
 from time import time
 from values import *
@@ -8,7 +10,7 @@ from values import *
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
 _core = None                    # The core
-_imageprocessor = None          # The image processing
+_imageprocessor = Recognizer    # The image processing
 
 # Eens we onze resolutie hebben bepaalt en onze hoogte kennen, kunnen we exact de afstand tussen de middes uitrekenen.
 # Hierdoor is het mogelijk om de factor zeer nauwkeurig te bepalen.
@@ -25,8 +27,18 @@ def find_location(pil):
     global _core, _imageprocessor
 
     shapes = _imageprocessor.process_picture(pil)
+    if len(shapes) == 0:
+        #return _core.get_position(),  _core.get_direction()
+        return None
+
     connected_shapes = interconnect_shapes(shapes)
-    return find_position(find_in_grid(connected_shapes))
+    found_pos = find_in_grid(connected_shapes, grd)
+    if len(found_pos) == 0:
+        #return _core.get_position(),  _core.get_direction()
+        return None
+
+    angle = calc_rotation(found_pos)
+    return find_position(found_pos), (-sin(angle), cos(angle)) , angle
 
 
 def interconnect_shapes(shapes):
@@ -42,8 +54,8 @@ def interconnect_shapes(shapes):
 
         min_distance, _ = min(edges_and_distance)
 
-        connected_shapes = map(lambda (d, a, b): (a, b),
-                               filter(lambda (d, a, b): d <= factor_edge_max_edge*min_distance, edges_and_distance))
+        connected_shapes = map(lambda (d, a): a,
+                               filter(lambda (d, a): d <= factor_edge_max_edge*min_distance, edges_and_distance))
 
         return connected_shapes
 
@@ -138,7 +150,8 @@ def build_patterns(solutions):
                     for neighbour in element.neighbours:
                         for position_neighbour in neighbour.possible_positions.keys():
                             if position_element in neighbour.possible_positions[position_neighbour]\
-                                    and not neighbour in map(lambda (x, y): x, current_pattern):
+                                    and not neighbour in map(lambda (x, y): x, current_pattern)\
+                                    and not position_neighbour in map(lambda (x, y): y, current_pattern):
                                 new_pattern = copy(current_pattern)
                                 new_pattern.append((neighbour, position_neighbour))
                                 patterns.append(new_pattern)
@@ -165,7 +178,7 @@ def find_position(best_pattern):
     my = mx
 
     length = 100000000000000000000000000000
-    x= 0
+    x = 0
     y = 0
     for shape, (px, py) in best_pattern:
         (cx, cy) = shape.center
@@ -174,7 +187,83 @@ def find_position(best_pattern):
             length = length2
             x = px
             y = py
-    return (x, y)
+    return x, y
+
+
+def calc_rotation(shapes):
+
+    shape1, (x, y) = shapes[0]
+    for shape, (a, b) in shapes:
+        if (a, b) in grd.get_neighbour_points(x, y):
+            shape2 = shape
+            q = a
+            z = b
+            break
+
+    if x >= q:
+        lower_shape = shape1
+        (lx, ly) = (x, y)
+        higher_shape = shape2
+        (hx, hy) = (q, z)
+    else:
+        higher_shape = shape1
+        (lx, ly) = (x, y)
+        lower_shape = shape2
+        (hx, hy) = (q, z)
+
+    if x != q:
+        angle = diff_row_angle(lower_shape, (lx, ly), higher_shape, (hx, hy))
+        tx, ty = calc_theoretical_position_different(angle, lower_shape)
+    else:
+        tx, ty = calc_theoretical_position_same(ly, hy, lower_shape)
+
+    a = sqrt((tx - higher_shape.center[0])**2 + (ty - higher_shape.center[1])**2)
+    b = sqrt((tx - lower_shape.center[0])**2 + (ty - lower_shape.center[1])**2)
+    c = sqrt((lower_shape.center[0] - higher_shape.center[0])**2 + (lower_shape.center[1] - higher_shape.center[1])**2)
+
+    return find_angle(a, b, c)
+
+
+def calc_theoretical_position_different(angle, shape_low):
+    x, y = shape_low.center
+    x += -sin(angle)
+    y += cos(angle)
+    return x, y
+
+
+def calc_theoretical_position_same(ly, hy, shape_low):
+    if ly > hy:
+        x = shape_low.center[0]-1
+    else:
+        x = shape_low.center[0]+1
+    return x, shape_low.center[1]
+
+
+def diff_row_angle(shapelow, (lx, ly), shapehigh, (hx, hy)):
+
+    #Odd
+    if lx % 2 == 0:
+
+        #Left
+        if ly == hy:
+            angle = (1.0/3.0)*pi
+
+        else:
+            #Right
+            angle = (2.0/3.0)*pi
+    else:
+        #left
+        if ly == hy:
+            angle = (2.0/3.0)*pi
+        else:
+            #right
+            angle = (1.0/3.0)*pi
+
+    return angle
+
+
+def find_angle(a, b, c):
+    return acos((-a**2 + b**2 + c**2)/(2*b*c))
 
 
 class ColorPoint(object):
@@ -220,10 +309,18 @@ class ColorPoint(object):
 
 if __name__ == '__main__':
     grd = Grid.Grid.from_file('/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/gridLokaal.csv')
-    start_time = time()
-    s_1 = Star('yellow', (5, 2))
-    s_2 = Ellipse('blue', (5, 3))
-    result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grd)
-    find_position(result)
-    print result
-    print str(time()-start_time)
+    print find_location(Image.open('/home/nooby4ever/Desktop/a/5.jpg'))
+
+    #start_time = time()
+    #s_1 = Star('yellow', (5, 2))
+    #s_2 = Ellipse('blue', (5, 3))
+    #result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grd)
+
+    #print find_position(result)
+    #print str(time()-start_time)
+
+    #shape1s = Shape("blue", (0, 0))
+    #shape2s = Shape("yellow", (-0.866, 0.5))
+
+    #shapes = [(shape1s, (5, 2)), (shape2s, (4, 2))]
+    #print calc_rotation(shapes)
