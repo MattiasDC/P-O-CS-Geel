@@ -40,10 +40,12 @@ class VirtualZeppelin(object):
         ReceiverPi.receive(self)
 
         self._current_position = curr_pos
-        self._goal_height = 50
+        self._goal_height = 130
 
+        self.add_to_console('Simulator started')
         self.set_height_control(True)
         self.set_navigation_mode(True)
+
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
 
@@ -245,7 +247,6 @@ class VirtualZeppelin(object):
 if __name__ == "__main__":
     _simulator = VirtualZeppelin()
     _simulator.initialise(curr_pos=(100, 50))
-    _simulator.set_goal_height(130)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
