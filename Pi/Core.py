@@ -75,7 +75,7 @@ class Core(object):
 
         # Start height control
         self._goal_height = ground_height
-        self.set_height_control(True)
+        self.set_height_control(False)
 
         # Get current position
         self._positioner = Positioner

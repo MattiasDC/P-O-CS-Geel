@@ -21,7 +21,6 @@ class SenderGUI(object):
 
     #Open a connection to the server (also sets the connected-flag to true)
     def open_connection(self):
-        print host
         self._connection = pika.BlockingConnection(pika.ConnectionParameters(
             host=host))
         self._channel = self._connection.channel()
