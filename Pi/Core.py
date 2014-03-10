@@ -7,13 +7,11 @@ import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
-from math import pow, sqrt, acos, degrees
+from math import pow, sqrt, acos, degrees, pi
 from values import *
 import Communication.ReceiverPi as ReceiverPi
 import Communication.SenderPi as SenderPi
 import os
-
-#TODO update direction in positioner
 
 
 class Core(object):
@@ -34,8 +32,8 @@ class Core(object):
     _grid = None                    # The grid
 
     _current_position = (0, 0)        # The current position of the zeppelin
-    _current_direction = (1, 1)       # The direction of the zeppelin
-    _current_angle = None             # The current angle of the zeppelin
+    _current_direction = (0, 0)       # The direction of the zeppelin
+    _current_angle = 0                # The current angle of the zeppelin
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _goal_position = None           # The (x,y)- coordinate the zeppelin has to be at the moment
@@ -271,10 +269,13 @@ class Core(object):
         """
         Updates the current position, direction and sends it to the server
         """
-        self._current_direction = (q, z)
+        if q % 2 == 0:
+            self._current_direction = (q*400, z*400)
+        else:
+            self._current_direction = (q*400+200, z*400)
         self._current_position = (x, y)
-        self._senderPi_position.sent_position(x*10, y*10)
-        self._current_angle = angle
+        self._senderPi_position.sent_position(self._current_position)
+        self._current_angle = (angle * 180) / pi
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_console_output(self):
