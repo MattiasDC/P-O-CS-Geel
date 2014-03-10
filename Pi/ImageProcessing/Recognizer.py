@@ -1,5 +1,6 @@
 from time import time
 from PIL import Image
+from random import randint
 import cv2
 from Shapes import *
 import colorsys
@@ -62,10 +63,10 @@ def process_picture(image):
         #Get the best match and check if it is less than the max offset
         minimum = min(values)
         if minimum < max_shape_offset:
-            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
-            #cv2.putText(gray_image,color, tuple(contour[0].tolist()[0]),
-            #            cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
-            #cv2.imwrite('grey.jpg', gray_image)
+            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
+            cv2.putText(gray_image, color, tuple(contour[0].tolist()[0]),
+                        cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            cv2.imwrite('grey' + randint(0, 50000) + '.jpg', gray_image)
             found_shapes.append(values.get(minimum))
 
     return found_shapes

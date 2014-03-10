@@ -90,7 +90,7 @@ class Core(object):
         """
         while self._stay_on_height_flag:
             self._motors.set_pwm(self._pid())
-            self._senderPi_height.sent_height(self._sensor.get_height()*10)
+            self._senderPi_height.sent_height(self._sensor.get_height())
             sleep(pid_interval)                             # time in seconds
 
     def _pid(self):
@@ -271,14 +271,14 @@ class Core(object):
         Updates the current position, direction and sends it to the server
         """
         if q % 2 == 0:
-            self._current_direction = (q*400, z*400)
+            self._current_direction = (q*400.0, z*400.0)
         else:
-            self._current_direction = (q*400+200, z*400)
+            self._current_direction = (q*400.0+200, z*400.0)
         self._current_position = (x, y)
         a, b = self.get_position()
         #print a, b
         self._senderPi_position.sent_position(a, b)
-        self._current_angle = (angle * 180) / pi
+        self._current_angle = (angle * 180.0) / pi
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
 
@@ -361,12 +361,12 @@ class Core(object):
         Sets a new goal height (in cm)
         """
         try:
-            self._goal_height = new_height
+            self._goal_height = new_height/10.0
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal height is set to: "
-                                + str(new_height) + " cm")
+                                + str(new_height/10) + " cm")
         except (ValueError, TypeError) as e:
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Error on new goal height "
-                                + str(new_height) + " " + str(e))
+                                + str(new_height/10) + " " + str(e))
 
     def set_height_control(self, flag):
         if flag:
@@ -401,6 +401,6 @@ if __name__ == "__main__":
     core.initialise()
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
-    core.set_goal_height(130)
+    core.set_goal_height(1300)
 
 # ---------------------------------------------------------------------------------------------------------------------

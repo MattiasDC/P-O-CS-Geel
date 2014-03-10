@@ -2,7 +2,7 @@
 delimiter = "#"                # Delimiter for the console lines
 maximum_height = 200           # Maximum height of the zeppelin in cm
 
-ground_height = 10            # Base height to hover over the ground (used to initialise the goal height and land)
+ground_height = 100            # Base height to hover over the ground (used to initialise the goal height and land)
 extention = ".jpg"              # Extentions for the images
 
 # -------------------------------- PID
