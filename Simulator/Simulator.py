@@ -197,7 +197,7 @@ class VirtualZeppelin(object):
     def set_navigation_mode(self, flag):
         if flag:
             self._stay_on_position_flag = True
-            Thread(target=self._update_position_thread()).start()
+            Thread(target=self._update_position_thread).start()
             #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False

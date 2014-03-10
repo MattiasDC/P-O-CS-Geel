@@ -28,16 +28,16 @@ def find_location(pil):
 
     shapes = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
-        #return _core.get_position(),  _core.get_direction()
-        return None
+        return None, None, None
 
     connected_shapes = interconnect_shapes(shapes)
-    (x, y), found_pos = find_in_grid(connected_shapes, grd)
+    (x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
     if len(found_pos) == 0:
-        #return _core.get_position(),  _core.get_direction()
-        return None
+        return None, None, None
 
     angle = calc_rotation(found_pos)
+    #print 'angle'
+    #print angle*180.0/pi
     return (x, y), (-sin(angle)+x, cos(angle)+y), angle
 
 
@@ -92,20 +92,28 @@ def find_in_grid(shapes, grid):
 
     possible_points = reduce_solutions(points)
 
+    if len(possible_points) == 0:
+        return (None, None), []
+
     builded_color_patterns = build_patterns(possible_points)
 
-    best_pattern = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
+    best_patterns = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
 
-    map(lambda x: (find_position(x), x), best_pattern)
-    pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_current_pos), y), best_pattern))
+    best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
+    best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), x, y),
+                                   best_patterns_shape_and_pos))
+
+    return pos, best_pattern
+
+
+def add_shapes_to_pattern(pattern, color_points_and_shapes):
     best_pattern_shape = []
-
-    for colorpoint, pos in best_pattern:
+    for colorpoint, pos in pattern:
         for colorpoint2, shape in color_points_and_shapes:
             if colorpoint == colorpoint2:
                 best_pattern_shape.append((shape, pos))
-
-    return pos, best_pattern_shape
+    return best_pattern_shape
 
 
 def map_to_mm((x, y)):
@@ -210,7 +218,7 @@ def calc_rotation(shapes):
 
     shape1, (x, y) = shapes[0]
     for shape, (a, b) in shapes:
-        if (a, b) in grd.get_neighbour_points(x, y):
+        if (a, b) in _core.get_grid().get_neighbour_points(x, y):
             shape2 = shape
             q = a
             z = b

@@ -36,8 +36,8 @@ class Core(object):
     _current_direction = (0, 0)       # The direction of the zeppelin
     _current_angle = 0                # The current angle of the zeppelin
 
-    _goal_height = None             # The height where the zeppelin has to be at the moment
-    _goal_position = None           # The (x,y)- coordinate the zeppelin has to be at the moment
+    _goal_height = 100            # The height where the zeppelin has to be at the moment
+    _goal_position = (0,0)           # The (x,y)- coordinate the zeppelin has to be at the moment
 
     _prev_error = 0                 # Prev error for the PID algorithm
     _prev_errors = [0]*10           # List of integral values for PID
@@ -54,6 +54,9 @@ class Core(object):
         Initialised all the variables, and initialises all the hardware components
         """
 
+        # Start the server
+        self._start_server()
+
         # Initialisation the motors
         self._motors = MotorControl(self)
 
@@ -66,21 +69,16 @@ class Core(object):
         self._camera = Cam
         self._camera.initialise(self)
 
-        # Start the server
-        self._start_server()
-
         # Sets the grid
-        self._grid = Grid
-        self._grid = self._grid.from_file(os.path.dirname(os.path.realpath(__file__))[:-8] + "grid.csv")
+        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/gridLokaal.csv")
 
         # Start height control
         self._goal_height = ground_height
-        self.set_height_control(False)
+        self.set_height_control(True)
 
         # Get current position
         self._positioner = Positioner
         self._positioner.set_core(self)
-        self._update_position(self._positioner.find_location(self._camera.take_picture()))
 
         # Start navigation
         self.set_navigation_mode(True)
@@ -131,7 +129,6 @@ class Core(object):
             direction = self.get_direction()
             angle = self._calculate_angle(start, finish, direction)
             pid_value = self._pid_moving(start, finish)
-
             # The pwm value calculated with the pid method has a maximum and minimum boundary
             if pid_value > pid_boundary:
                 pid_value = pid_boundary
@@ -196,12 +193,23 @@ class Core(object):
         vector_a = destination_point[0] - direction_point[0], destination_point[1] - direction_point[1]
         vector_b = direction_point[0] - start_point[0], direction_point[1] - start_point[1]
         vector_c = destination_point[0] - start_point[0], destination_point[1] - start_point[1]
+        print 'a'
+        print vector_a
+        print 'b'
+        print vector_b
+        print 'c'
+        print vector_c
 
         length_a = sqrt(pow(vector_a[0], 2) + pow(vector_a[1], 2))
         length_b = sqrt(pow(vector_b[0], 2) + pow(vector_b[1], 2))
         length_c = sqrt(pow(vector_c[0], 2) + pow(vector_c[1], 2))
 
         # Angle between the current direction and the direction to the goal point in degrees.
+        if length_b == 0 or length_c == 0:
+            return 0
+
+       # print 'cos-1'
+        #print (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
         angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
 
         cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
@@ -214,7 +222,9 @@ class Core(object):
 
     def _update_position_thread(self):
         while self._stay_on_position_flag:
-            self._update_position(self._positioner.find_location(self._camera.take_picture()))
+            a, b, c = self._positioner.find_location(self._camera.take_picture())
+            if not (a is None or b is None or c is None):
+                self._update_position(a, b, c)
             sleep(self._position_update_interval)
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
@@ -265,7 +275,9 @@ class Core(object):
         else:
             self._current_direction = (q*400+200, z*400)
         self._current_position = (x, y)
-        self._senderPi_position.sent_position(self._current_position)
+        a, b = self.get_position()
+        #print a, b
+        self._senderPi_position.sent_position(a, b)
         self._current_angle = (angle * 180) / pi
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
@@ -360,6 +372,7 @@ class Core(object):
         if flag:
             self._stay_on_height_flag = True
             Thread(target=self._stay_on_height_thread).start()
+            print 'deze thread start ik wel'
             #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
         else:
             self._stay_on_height_flag = False
@@ -375,8 +388,8 @@ class Core(object):
     def set_navigation_mode(self, flag):
         if flag:
             self._stay_on_position_flag = True
-            Thread(target=self._navigation_thread()).start()
-            Thread(target=self._update_position_thread()).start()
+            Thread(target=self._update_position_thread).start()
+            Thread(target=self._navigation_thread).start()
             #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
