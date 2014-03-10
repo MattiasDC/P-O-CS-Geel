@@ -49,7 +49,6 @@ def receive(core):
     _receiver = ReceiverPi()
     t = Thread(target=receive_thread)
     sleep(0.1)
-    print 'test1'
     t.start()
 
 

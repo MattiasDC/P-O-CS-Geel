@@ -13,27 +13,31 @@ _receiver = None
 #No check on exceptions
 def callback(ch, method, properties, body):
     global _GUI
-    print 'boodschap ontvangen'
     if 'height' in method.routing_key:
         #Height updated
-        print 'height'
-        print body
+        team_name = method.routing_key.split('.')[0]
+        _GUI.set_height(team_name, int(body))
     if 'location' in method.routing_key:
         #Location updated
-        print 'position'
-        print body
+        team_name = method.routing_key.split('.')[0]
+        pos = [0,0]
+        pos[0] = int(body.split(',')[0])
+        pos[1] = int(body.split(',')[1])
+        _GUI.set_position(team_name, pos)
     if 'private.goal_position' in method.routing_key:
         #goal position received
-        print 'goal position'
-        print body
+        team_name = team
+        pos = [0,0]
+        pos[0] = int(body.split(',')[0])
+        pos[1] = int(body.split(',')[1])
+        _GUI.set_goal_position(team_name, pos)
     if 'private.goal_height' in method.routing_key:
         #goal height received
-        print 'goal height'
-        print body
+        team_name = method.routing_key.split('.')[0]
+        _GUI.set_goal_height(team_name, int(body))
     if 'private.console' in method.routing_key:
         #console information received
-        print 'console'
-        print 'body'
+        _GUI.add_to_console(body)
 
 #Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)

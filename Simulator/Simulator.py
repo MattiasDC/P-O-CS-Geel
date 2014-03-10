@@ -25,10 +25,8 @@ class VirtualZeppelin(object):
 
     _senderPi_position = None       # The sender-object used for sending position-messages to the server
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
+    _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
 
-    _console = ""                   # String used to send info to the GUI
-    _console2 = ""                  # Used as a double buffer to avoid conflict of simultaneous reading and writing
-                                    # to the console
 
 
     def initialise(self, curr_pos):
@@ -38,13 +36,16 @@ class VirtualZeppelin(object):
         #Initialisation and start of the communication with the shared server
         self._senderPi_position = SenderPi.SenderPi()
         self._senderPi_height = SenderPi.SenderPi()
+        self._SenderPi_Console = SenderPi.SenderPi()
         ReceiverPi.receive(self)
 
         self._current_position = curr_pos
-        self._goal_height = 50
+        self._goal_height = 130
 
+        self.add_to_console('Simulator started')
         self.set_height_control(True)
         self.set_navigation_mode(True)
+
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
 
@@ -52,7 +53,7 @@ class VirtualZeppelin(object):
         """
         Runs the _steady_on_height algorithm every second and updates the current speed
         """
-        sleep_interval = 1
+        sleep_interval = 3
 
         while self._stay_on_height_flag:
             #Fluctuation of maximum 10%
@@ -65,7 +66,7 @@ class VirtualZeppelin(object):
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 0.8
+        sleep_interval = 3
 
         while self._stay_on_position_flag:
             #new_position = old_position*speed
@@ -109,14 +110,8 @@ class VirtualZeppelin(object):
         """
         Adds a new line to the console
         """
-        self._console += delimiter + line
+        self._SenderPi_Console.sent_console_information(line)
 
-    def _clean_console(self):
-        """
-        Clean the current console commands
-        """
-        self._console2 = self._console
-        self._console = ""
 
     def land(self):
         """
@@ -135,12 +130,6 @@ class VirtualZeppelin(object):
         self._senderPi_position.sent_position(x, y)
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
-    def get_console_output(self):
-        """
-        Returns the console text
-        """
-        self._clean_console()
-        return self._console2
 
     def get_grid(self):
         """
@@ -200,19 +189,19 @@ class VirtualZeppelin(object):
         if flag:
             self._stay_on_height_flag = True
             Thread(target=self._stay_on_height_thread).start()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
         else:
             self._stay_on_height_flag = False
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
     def set_navigation_mode(self, flag):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._update_position_thread()).start()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
 
     def set_goal_position(self, (x, y)):
         """
@@ -258,7 +247,6 @@ class VirtualZeppelin(object):
 if __name__ == "__main__":
     _simulator = VirtualZeppelin()
     _simulator.initialise(curr_pos=(100, 50))
-    _simulator.set_goal_height(130)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
