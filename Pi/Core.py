@@ -24,6 +24,7 @@ class Core(object):
 
     _senderPi_position = None       # The sender-object used for sending position-messages to the server
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
+    _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
 
     _positioner = None              # Positioner
 
@@ -39,10 +40,6 @@ class Core(object):
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
     _goal_position = None           # The (x,y)- coordinate the zeppelin has to be at the moment
-
-    _console = ""                   # String used to send info to the GUI
-    _console2 = ""                  # Used as a double buffer to avoid conflict of simultaneous reading and writing
-                                    # to the console
 
     _prev_error = 0                 # Prev error for the PID algorithm
     _prev_errors = [0]*10           # List of integral values for PID
@@ -228,14 +225,7 @@ class Core(object):
         """
         Adds a new line to the console
         """
-        self._console += delimiter + line
-
-    def _clean_console(self):
-        """
-        Clean the current console commands
-        """
-        self._console2 = self._console
-        self._console = ""
+        self._SenderPi_Console.sent_console_information(line)
 
     def quit_core(self):
         """
@@ -257,6 +247,7 @@ class Core(object):
         sleep(0.1)
         self._senderPi_position = SenderPi.SenderPi()
         self._senderPi_height = SenderPi.SenderPi()
+        self._SenderPi_Console = SenderPi.SenderPi()
 
     def land(self):
         """
@@ -277,12 +268,6 @@ class Core(object):
         self._current_angle = angle
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
-    def get_console_output(self):
-        """
-        Returns the console text
-        """
-        self._clean_console()
-        return self._console2
 
     def get_grid(self):
         """
@@ -374,10 +359,10 @@ class Core(object):
         if flag:
             self._stay_on_height_flag = True
             Thread(target=self._stay_on_height_thread).start()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
         else:
             self._stay_on_height_flag = False
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
     def set_goal_position(self, (x, y)):
         """
@@ -391,10 +376,10 @@ class Core(object):
             self._stay_on_position_flag = True
             Thread(target=self._navigation_thread()).start()
             Thread(target=self._update_position_thread()).start()
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
+            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":

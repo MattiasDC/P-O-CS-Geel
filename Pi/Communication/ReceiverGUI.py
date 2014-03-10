@@ -33,7 +33,7 @@ def callback(ch, method, properties, body):
     if 'private.console' in method.routing_key:
         #console information received
         print 'console'
-        print 'body'
+        print body
 
 #Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
