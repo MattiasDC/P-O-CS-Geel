@@ -22,14 +22,14 @@ def callback(ch, method, properties, body):
         team_name = method.routing_key.split('.')[0]
         pos = [0,0]
         pos[0] = int(body.split(',')[0])
-        pos[1] = int(body.split(',')[0])
+        pos[1] = int(body.split(',')[1])
         _GUI.set_position(team_name, pos)
     if 'private.goal_position' in method.routing_key:
         #goal position received
         team_name = team
         pos = [0,0]
         pos[0] = int(body.split(',')[0])
-        pos[1] = int(body.split(',')[0])
+        pos[1] = int(body.split(',')[1])
         _GUI.set_goal_position(team_name, pos)
     if 'private.goal_height' in method.routing_key:
         #goal height received

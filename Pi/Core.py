@@ -384,9 +384,9 @@ class Core(object):
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     core = Core()
+    core.initialise()
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
-    core.initialise()
     core.set_goal_height(130)
 
 # ---------------------------------------------------------------------------------------------------------------------

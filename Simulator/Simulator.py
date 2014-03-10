@@ -51,7 +51,7 @@ class VirtualZeppelin(object):
         """
         Runs the _steady_on_height algorithm every second and updates the current speed
         """
-        sleep_interval = 1
+        sleep_interval = 3
 
         while self._stay_on_height_flag:
             #Fluctuation of maximum 10%
@@ -64,7 +64,7 @@ class VirtualZeppelin(object):
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 0.8
+        sleep_interval = 3
 
         while self._stay_on_position_flag:
             #new_position = old_position*speed

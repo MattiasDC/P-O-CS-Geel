@@ -17,5 +17,6 @@ class GUIDummy(object):
 
     def add_to_console(self, info):
         message = 'New console info: ' + info
+        print message
 
 
