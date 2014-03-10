@@ -109,20 +109,3 @@ def find_shape_color(contour, image):
         return 'blue'
     elif 75 <= h*360 < 200:
         return 'green'
-
-
-#if __name__ == '__main__':
-    #img = Image.open("C:\Users\Mattias\Desktop\Fotos\900 6.jpg")
-    #process_picture(img)
-#     minres = (300, 300)
-#     for i in range(120):
-#         if i % 10 == 0:
-#             minres = (minres[0]+100, minres[1]+100)
-#         img = Image.open('/home/nooby4ever/Desktop/foto/' + str(minres[0]) + ' ' + str(i % 10))
-#         start = time()
-#         gray_with_contour, processed, counter = process_picture(img)
-#         endtime = time() - start
-#         print endtime, minres[0], counter
-#         cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'z.jpg', gray_with_contour)
-#         cv2.imwrite('/home/nooby4ever/Desktop/found/' + str(minres[0]) + ' ' + str(i % 10) + 'other.jpg', processed)
-#         print i

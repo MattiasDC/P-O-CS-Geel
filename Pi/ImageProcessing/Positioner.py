@@ -32,13 +32,12 @@ def find_location(pil):
         return None
 
     connected_shapes = interconnect_shapes(shapes)
-    found_pos = find_in_grid(connected_shapes, grd)
+    (x, y), found_pos = find_in_grid(connected_shapes, grd)
     if len(found_pos) == 0:
         #return _core.get_position(),  _core.get_direction()
         return None
 
     angle = calc_rotation(found_pos)
-    x, y = find_position(found_pos)
     return (x, y), (-sin(angle)+x, cos(angle)+y), angle
 
 
@@ -97,6 +96,8 @@ def find_in_grid(shapes, grid):
 
     best_pattern = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
 
+    map(lambda x: (find_position(x), x), best_pattern)
+    pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_current_pos), y), best_pattern))
     best_pattern_shape = []
 
     for colorpoint, pos in best_pattern:
@@ -104,7 +105,18 @@ def find_in_grid(shapes, grid):
             if colorpoint == colorpoint2:
                 best_pattern_shape.append((shape, pos))
 
-    return best_pattern_shape
+    return pos, best_pattern_shape
+
+
+def map_to_mm((x, y)):
+    if (x % 2 == 0):
+        return (x*400, y*400)
+    else:
+        return (x*400+200, y*400)
+
+
+def calc_distance((x, y), (a, b)):
+    return sqrt((x + a)**2 + (y+b)**2)
 
 
 def reduce_solutions(points):
@@ -161,16 +173,19 @@ def build_patterns(solutions):
 
 
 def find_closest_match(patterns, colors_and_shapes, grid):
-    mx, best_pattern = 0, []
+    mx, best_pattern = 0, [[]]
     for pattern in patterns:
         value = 0
         for element, element_position in pattern:
             _, shape = filter(lambda (x, y): x == element, colors_and_shapes)[0]
             if shape.eq_no_center(grid.get_point(pos=element_position)):
                 value += 1
-        if value > mx:
+
+        if value == mx:
+            best_pattern.append(pattern)
+        elif value > mx:
             mx = value
-            best_pattern = pattern
+            best_pattern = [pattern]
     return best_pattern
 
 

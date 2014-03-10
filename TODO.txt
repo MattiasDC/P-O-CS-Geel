@@ -1,5 +1,0 @@
-- bij gelijk pattern dichtste bij nemen
-- direction -> coordinaat
-- initiele positie
-- coordinate naar millimeter (voor server)
--
