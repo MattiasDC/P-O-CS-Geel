@@ -70,7 +70,7 @@ class Core(object):
         self._camera.initialise(self)
 
         # Sets the grid
-        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/gridLokaal.csv")
+        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/grid.txt")
 
         # Start height control
         self._goal_height = ground_height

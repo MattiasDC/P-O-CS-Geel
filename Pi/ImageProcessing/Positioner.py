@@ -14,7 +14,7 @@ factor_edge_max_edge = 1.5      # The factor which determines how long an edge b
 _core = None                    # The core
 _imageprocessor = Recognizer    # The image processing
 
-grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
+#grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
 
 
 def set_core(core):
@@ -32,8 +32,8 @@ def find_location(pil):
         return None, None, None
 
     connected_shapes = interconnect_shapes(shapes)
-    (x, y), found_pos = find_in_grid(connected_shapes, grd)
-    #(x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
+    #(x, y), found_pos = find_in_grid(connected_shapes, grd)
+    (x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
     if len(found_pos) == 0:
         return None, None, None
 
@@ -101,10 +101,10 @@ def find_in_grid(shapes, grid):
 
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
     best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), map_to_mm(x), y),
-    #                               best_patterns_shape_and_pos))
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0,0)), map_to_mm(x), y),
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), map_to_mm(x), y),
                                    best_patterns_shape_and_pos))
+    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0,0)), map_to_mm(x), y),
+    #                               best_patterns_shape_and_pos))
 
     return pos, best_pattern
 
@@ -223,8 +223,8 @@ def calc_rotation(shapes):
 
     shape1, (x, y) = shapes[0]
     for shape, (a, b) in shapes:
-        if (a, b) in grd.get_neighbour_points(x, y):
-        #if (a, b) in _core.get_grid().get_neighbour_points(x, y):
+        #if (a, b) in grd.get_neighbour_points(x, y):
+        if (a, b) in _core.get_grid().get_neighbour_points(x, y):
             shape2 = shape
             q = a
             z = b
@@ -337,8 +337,8 @@ class ColorPoint(object):
             build_string += str(value) + " "
         return "Color: " + str(self.color) + " Positions: " + build_string
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
 
-    os.chdir("C:\Users\Mattias\Desktop\Pictures\\600x450")
-    for file in glob.glob("*.jpg"):
-        print find_location(Image.open('C:/Users/Mattias/Desktop/Pictures/600x450/' + file))
+ #   os.chdir("C:\Users\Mattias\Desktop\Pictures\\600x450")
+  #  for file in glob.glob("*.jpg"):
+   #     print find_location(Image.open('C:/Users/Mattias/Desktop/Pictures/600x450/' + file))
