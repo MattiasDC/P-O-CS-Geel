@@ -193,12 +193,6 @@ class Core(object):
         vector_a = destination_point[0] - direction_point[0], destination_point[1] - direction_point[1]
         vector_b = direction_point[0] - start_point[0], direction_point[1] - start_point[1]
         vector_c = destination_point[0] - start_point[0], destination_point[1] - start_point[1]
-        print 'a'
-        print vector_a
-        print 'b'
-        print vector_b
-        print 'c'
-        print vector_c
 
         length_a = sqrt(pow(vector_a[0], 2) + pow(vector_a[1], 2))
         length_b = sqrt(pow(vector_b[0], 2) + pow(vector_b[1], 2))
@@ -208,8 +202,6 @@ class Core(object):
         if length_b == 0 or length_c == 0:
             return 0
 
-       # print 'cos-1'
-        #print (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
         angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
 
         cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
@@ -276,7 +268,6 @@ class Core(object):
             self._current_direction = (q*400.0+200, z*400.0)
         self._current_position = (x, y)
         a, b = self.get_position()
-        #print a, b
         self._senderPi_position.sent_position(a, b)
         self._current_angle = (angle * 180.0) / pi
 
@@ -372,11 +363,10 @@ class Core(object):
         if flag:
             self._stay_on_height_flag = True
             Thread(target=self._stay_on_height_thread).start()
-            print 'deze thread start ik wel'
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
         else:
             self._stay_on_height_flag = False
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
 
     def set_goal_position(self, (x, y)):
         """
@@ -390,10 +380,10 @@ class Core(object):
             self._stay_on_position_flag = True
             Thread(target=self._update_position_thread).start()
             Thread(target=self._navigation_thread).start()
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
+            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -401,6 +391,6 @@ if __name__ == "__main__":
     core.initialise()
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
-    core.set_goal_height(1300)
+    core.set_goal_height(1100)
 
 # ---------------------------------------------------------------------------------------------------------------------

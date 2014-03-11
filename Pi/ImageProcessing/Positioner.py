@@ -6,14 +6,15 @@ from math import *
 from copy import copy
 from time import time
 from values import *
+import os
+import glob
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
 _core = None                    # The core
 _imageprocessor = Recognizer    # The image processing
 
-# Eens we onze resolutie hebben bepaalt en onze hoogte kennen, kunnen we exact de afstand tussen de middes uitrekenen.
-# Hierdoor is het mogelijk om de factor zeer nauwkeurig te bepalen.
+grd = Grid.Grid.from_file('/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/gridLokaal.csv')
 
 
 def set_core(core):
@@ -24,20 +25,19 @@ def set_core(core):
 
 
 def find_location(pil):
-    global _core, _imageprocessor
+    global _core, _imageprocessor, grd
 
     shapes = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
         return None, None, None
 
     connected_shapes = interconnect_shapes(shapes)
-    (x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
+    (x, y), found_pos = find_in_grid(connected_shapes, grd)
+    #(x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
     if len(found_pos) == 0:
         return None, None, None
 
     angle = calc_rotation(found_pos)
-    #print 'angle'
-    #print angle*180.0/pi
     return (x, y), (-sin(angle)+x, cos(angle)+y), angle
 
 
@@ -101,7 +101,9 @@ def find_in_grid(shapes, grid):
 
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
     best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), x, y),
+    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), map_to_mm(x), y),
+    #                               best_patterns_shape_and_pos))
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0,0)), map_to_mm(x), y),
                                    best_patterns_shape_and_pos))
 
     return pos, best_pattern
@@ -117,10 +119,10 @@ def add_shapes_to_pattern(pattern, color_points_and_shapes):
 
 
 def map_to_mm((x, y)):
-    if (x % 2 == 0):
-        return (x*400, y*400)
+    if x % 2 == 0:
+        return x*400, y*400
     else:
-        return (x*400+200, y*400)
+        return x*400+200, y*400
 
 
 def calc_distance((x, y), (a, b)):
@@ -218,7 +220,8 @@ def calc_rotation(shapes):
 
     shape1, (x, y) = shapes[0]
     for shape, (a, b) in shapes:
-        if (a, b) in _core.get_grid().get_neighbour_points(x, y):
+        if (a, b) in grd.get_neighbour_points(x, y):
+        #if (a, b) in _core.get_grid().get_neighbour_points(x, y):
             shape2 = shape
             q = a
             z = b
@@ -332,19 +335,7 @@ class ColorPoint(object):
         return "Color: " + str(self.color) + " Positions: " + build_string
 
 if __name__ == '__main__':
-    grd = Grid.Grid.from_file('/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/gridLokaal.csv')
-    print find_location(Image.open('/home/nooby4ever/Desktop/a/5.jpg'))
 
-    #start_time = time()
-    #s_1 = Star('yellow', (5, 2))
-    #s_2 = Ellipse('blue', (5, 3))
-    #result = find_in_grid([(Rectangle('yellow', (4, 1)), s_1), (s_1, s_2), (s_2, Star('white', (5, 4)))], grd)
-
-    #print find_position(result)
-    #print str(time()-start_time)
-
-    #shape1s = Shape("blue", (0, 0))
-    #shape2s = Shape("yellow", (-0.866, 0.5))
-
-    #shapes = [(shape1s, (5, 2)), (shape2s, (4, 2))]
-    #print calc_rotation(shapes)
+    os.chdir("/home/nooby4ever/Desktop/benjamin/600x450")
+    for file in glob.glob("*.jpg"):
+        print find_location(Image.open('/home/nooby4ever/Desktop/benjamin/600x450/' + file))
