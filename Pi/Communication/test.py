@@ -18,5 +18,3 @@ while (True):
         h = raw_input('h')
         _sender.height_command(h)
 
-
-

@@ -14,7 +14,7 @@ factor_edge_max_edge = 1.5      # The factor which determines how long an edge b
 _core = None                    # The core
 _imageprocessor = Recognizer    # The image processing
 
-grd = Grid.Grid.from_file('/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/gridLokaal.csv')
+grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
 
 
 def set_core(core):
@@ -165,8 +165,11 @@ def build_patterns(solutions):
             return True
         return False
 
+    start_time = time()
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
+            if time()-start_time > 1:
+                return []
             if not len(current_pattern) == len(solutions):
                 patterns.remove(current_pattern)
                 for element, position_element in current_pattern:
@@ -336,6 +339,6 @@ class ColorPoint(object):
 
 if __name__ == '__main__':
 
-    os.chdir("/home/nooby4ever/Desktop/benjamin/600x450")
+    os.chdir("C:\Users\Mattias\Desktop\Pictures\\600x450")
     for file in glob.glob("*.jpg"):
-        print find_location(Image.open('/home/nooby4ever/Desktop/benjamin/600x450/' + file))
+        print find_location(Image.open('C:/Users/Mattias/Desktop/Pictures/600x450/' + file))
