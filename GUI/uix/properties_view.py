@@ -1,21 +1,71 @@
 #TODO: ZeppelinProperties
 #TODO: ProperitesContainer
 #TODO: ZeppelinSwitch
-from kivy.properties import StringProperty, NumericProperty, ListProperty
+from domain.zeppelin import ZeppelinView
+
+from kivy.properties import StringProperty, NumericProperty, ListProperty, ObjectProperty, OptionProperty
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.stacklayout import StackLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.lang import Builder
+from util.colour import *
 
 
 class PropertiesView(ScrollView):
-    pass
+    view = ObjectProperty(None)
+    """ The actual layout of the this PropertiesView. """
+
+    the_root = ObjectProperty(None)
+
+    _added_zeppelins = {}
+
+    def __init__(self, **kwargs):
+        super(PropertiesView, self).__init__(**kwargs)
+        self._zeppelin_handler = None
+
+        layout = StackLayout(orientation='lr-tb', size_hint_y=None)
+        self.view = layout
+
+        #layout.bind(minimum_height=layout.setter('height'))
+        self.add_widget(layout)
+        self.do_scroll_y = True
+        self.do_scroll_x = False
+
+        layout.bind(minimum_height=layout.setter('height'))
+
+    def add_zeppelin(self, zeppelin):
+        new_zep_prop = ZeppelinProperties(zeppelin=zeppelin, height=(0.8 * self.width))
+        self.add_to_view(new_zep_prop)
+
+    def add_to_view(self, zeppelin_property):
+        #self.n_widgets += 1
+        self.view.add_widget(zeppelin_property)
+        self._added_zeppelins[zeppelin_property.name] = zeppelin_property
+
+    def remove_from_view(self, zeppelin_name):
+        if zeppelin_name in self._added_zeppelins:
+            self.view.clear_widgets(children=self._added_zeppelins[zeppelin_name])
+            del self._added_zeppelins[zeppelin_name]
+
+    def update(self, dt):
+        for c in self.view.children:
+            c.update(dt)
+    #def set_zeppelin_handler(self, zep_handler):
+    #    self._zeppelin_handler = zep_handler
 
 
-class ZeppelinProperties(RelativeLayout):
+class ZeppelinProperties(FloatLayout):
     name = StringProperty("None")
     """ Identifier of this zeppelin. """
 
-    colour = ListProperty([1, 1, 1])
+    colour = OptionProperty("red", options=["yellow",
+                                            "red",
+                                            "none"])
+
+    _colour_map = {"yellow": YELLOW_ZEPPELIN,
+                   "red": RED_ZEPPELIN}
+
     """ The colour of this zeppelin. """
 
     zep_pos_x = NumericProperty(0.0)
@@ -42,6 +92,10 @@ class ZeppelinProperties(RelativeLayout):
         super(ZeppelinProperties, self).__init__(**kwargs)
 
         self._zeppelin = kwargs["zeppelin"]
+        self.name = self._zeppelin.identifier
+        self.colour = self.name
+        self.height = kwargs["height"]
+        self.size_hint = (1.0, None)
 
     @property
     def zeppelin(self):
@@ -51,8 +105,9 @@ class ZeppelinProperties(RelativeLayout):
         """
         Update this ZeppelinProperties.
         """
-        self.zep_height = self.zeppelin.height;
-        self.zep_pos_x, self.zep_pos_y = self.zeppelin.position
+        self.zep_height = float(self.zeppelin.height) / 10.0
+        pos = self.zeppelin.position
+        self.zep_pos_x, self.zep_pos_y = pos
 
 
 #-----------------------------------------------------------------------------
@@ -98,10 +153,40 @@ class PropertyEntryString(GridLayout):
     """ The value of this PropertyEntryString. """
 
 
+class PropertyEntryStringTeam(GridLayout):
+    """
+    PropertyEntryStringTeam specifies the variables and styling of a single entry of
+    a team in the gui that has a string as value.
+
+    It specifies a name, value for this property.
+    """
+    name = StringProperty('None')
+    """ The name of this PropertyEntryString. """
+    value = StringProperty('')
+    """ The value of this PropertyEntryString. """
+    colour = ListProperty([1, 1, 1])
+    """ The colour of the team. """
+
+
 #-----------------------------------------------------------------------------
-class GridViewApp(App):
+from kivy.app import App
+
+
+class PropViewApp(App):
     def build(self):
-        interface = ZeppelinProperties(zeppelin=None)
+        zep1 = ZeppelinView("Red", (0,0), 50.0)
+        zep2 = ZeppelinView("Yellow", (0,0), 50.0)
+
+        zep1_prop = ZeppelinProperties(zeppelin=zep1, size_hint=(None, None), size=(480, 300))
+        zep2_prop = ZeppelinProperties(zeppelin=zep2, size_hint=(None, None), size=(480, 300))
+
+        interface = PropertiesView()
+
+        interface.bind(minimum_height=interface.setter('height'))
+        print interface
+        interface.add_to_view(zep1_prop)
+        interface.add_to_view(zep2_prop)
+
         return interface
 
 Builder.load_file('./uix/properties_view.kv')

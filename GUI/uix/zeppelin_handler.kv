@@ -1,0 +1,129 @@
+#:set light_blue (0.863, 0.949, 1.0, 1.0)
+
+<ZeppelinManager>
+    add_button: add
+    orientation: 'lr-tb'
+
+#    canvas:
+#        Color:
+#            rgb: (0.78, 0.15, 0.55)
+#        Rectangle:
+#            size: self.size
+#            pos: self.pos
+
+    AddButton:
+        id: add
+        size_hint: (1, None)
+        height: root.width
+
+<ZeppelinButton>
+    canvas:
+        Color:
+            rgba: self._colour_map[self.colour]
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: './img/balloon.png'
+
+    canvas.after:
+        Color:
+            rgba: light_blue
+        Rectangle:
+            size: (self.size[0], 2)
+            pos: (self.pos[0], self.pos[1] + self.height - 2)
+
+    on_touch_down: self.collide_point(*args[1].pos) and self.click()
+
+    Label:
+        size: self.texture_size
+        pos: (root.pos[0] + 0.5 * (root.width -  self.width), root.pos[1])
+        halign: 'left'
+        valign: 'bottom'
+        color: root._colour_map[root.colour]
+
+        text: root.name
+        font_size: 0.27 * root.height
+
+
+<AddButton>
+    canvas:
+        Color:
+            rgb: (0.09, .09, 0.09)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+        Color:
+            rgb: (1.0, 1.0, 1.0)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: './img/add_button.png'
+
+        Color:
+            rgba: light_blue
+        Rectangle:
+            size: (2, self.size[1])#self.size[1])
+            pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+
+    canvas.after:
+        Color:
+            rgba: light_blue
+        Rectangle:
+            size: (self.size[0], 2)
+            pos: (self.pos[0], self.pos[1] + self.height - 2)
+
+    #on_touch_down: self.collide_point(*args[1].pos) and self.click()
+    on_press: self.click()
+
+<AddPopUp>
+    input_field: ip
+
+    canvas.before:
+        Color:
+            rgb: (1.0, 0.91, 0.91)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        size: self.texture_size
+        font_size: 0.3 * root.height
+        color: (0.6, 0.09, 0.42, 1.0)
+        halign: 'left'
+        text: "colour: "
+
+        pos_hint: {'top': 0.65, 'x': 0.15}
+        size_hint_x: 0.3
+        size_hint_y: 0.1
+
+    TextInput:
+        id: ip
+        #size: self.texture_size
+        font_size: 0.3 * root.height
+        color: (0.6, 0.09, 0.42, 1.0)
+        text: "None"
+        halign: 'left'
+        valign: 'center'
+        multiline: False
+
+        pos_hint: {'top': 0.9, 'x': 0.45}
+        size_hint_x: 0.4
+        size_hint_y: 0.5
+
+    Button:
+        pos_hint: {'top': 0.35, 'x': 0.1}
+        size_hint_y: 0.25
+        size_hint_x: 0.4
+        on_press: root.on_accept()
+        text: "Accept"
+        font_size: 0.4 * self.height
+
+    Button:
+        pos_hint: {'top': 0.35, 'x': 0.5}
+        size_hint_y: 0.25
+        size_hint_x: 0.4
+        on_press: root.on_cancel()
+        text: "Cancel"
+        font_size: 0.4 * self.height

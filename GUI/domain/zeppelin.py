@@ -20,7 +20,10 @@ class ZeppelinHandler(object):
 
         * Factory method *
         """
-        self._zeppelin_catalog[team_colour] = Zeppelin(team_colour)
+        if team_colour != "yellow":
+            self._zeppelin_catalog[team_colour] = Zeppelin(team_colour)
+        else:
+            self._zeppelin_catalog[team_colour] = ZeppelinControlled(team_colour)
 
     def get_zeppelin(self, team_colour):
         """
@@ -173,8 +176,8 @@ class Zeppelin(ZeppelinView):
     # Methods.
     #-------------------------------------------------------------------------
     def update(self, dt):
-        self.position = self._network_manager.getNewPosition()
-        self.height = self._network_manager.getNewHeight()
+        self.position = self._network_manager.get_position(self.identifier)
+        self.height = self._network_manager.get_height(self.identifier)
 
 
 #=============================================================================
@@ -186,9 +189,11 @@ class ZeppelinControlled(Zeppelin):
     #-------------------------------------------------------------------------
     # Constructor
     #-------------------------------------------------------------------------
-    def __init__(self):
-        super(ZeppelinControlled, self).__init__()
+    def __init__(self, identifier):
+        super(ZeppelinControlled, self).__init__(identifier)
         self._goal_height = 100
+        self._goal_pos = (0, 0)
+        self._direction = 0
 
     #-------------------------------------------------------------------------
     # Properties
@@ -196,5 +201,25 @@ class ZeppelinControlled(Zeppelin):
     @property
     def goal_height(self):
         return self._goal_height
+
+    @goal_height.setter
+    def goal_height(self, new_goal_height):
+        self._goal_height = new_goal_height
+
+    @property
+    def goal_pos(self):
+        return self._goal_pos
+
+    @goal_pos.setter
+    def goal_pos(self, new_pos):
+        self._goal_pos = new_pos
+
+    @property
+    def direction(self):
+        return self._direction
+
+    @direction.setter
+    def direction(self, new_direction):
+        self._direction = new_direction
 
     #TODO: add internal decisions system to this class.

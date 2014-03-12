@@ -1,0 +1,66 @@
+<Buttons>
+    canvas:
+        Color:
+            rgb: (1, 1, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    GridLayout:
+        id_height
+        size_hint: (1, 0.25)
+        pos_hint: {'top': 1, 'x': 0}
+
+        rows: 1
+        Label:
+            text: "Height:"
+            color: (1., 1., 1., 1.)
+
+        NumberTextInput:
+            font_size: self.size[1] * 0.5
+            multiline: False
+            text: '0.0'
+
+            on_text: root._on_height_input(self, self.text)
+
+        Button:
+            on_press: root.send_height()
+            text: "Send height"
+
+    GridLayout:
+        id_height
+        size_hint: (1, 0.25)
+        pos_hint: {'top': .75, 'x': 0}
+
+        rows: 1
+        Label:
+            text: "x:"
+            color: (1., 1., 1., 1.)
+
+        NumberTextInput:
+            font_size: self.size[1] * 0.5
+            multiline: False
+            text: '0.0'
+
+            on_text: root._on_x_input(self, self.text)
+
+    GridLayout:
+        id_height
+        size_hint: (1, 0.25)
+        pos_hint: {'top': 0.5, 'x': 0}
+
+        rows: 1
+        Label:
+            text: "y:"
+            color: (1., 1., 1., 1.)
+
+        NumberTextInput:
+            font_size: self.size[1] * 0.5
+            multiline: False
+            text: '0.0'
+
+            on_text: root._on_y_input(self, self.text)
+
+    Button:
+        on_press: root.send_location()
+        text: "Send position"

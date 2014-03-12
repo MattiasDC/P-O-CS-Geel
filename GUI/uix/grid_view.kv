@@ -1,23 +1,39 @@
-<GridPoint>
-    #size: self.texture_size
+#:kivy 1.8.0
+<ZeppelinScatter>
+    img: im
+    do_scale: False
+    do_translation: False
+    do_rotation: False
+    rotation: self.direction
 
-    #source: './img/%s.png' % self.shape
+    size_hint: (None, None)
+    size: (60, 60)
+
+    Image:
+        id: im
+        source: './img/grid_zeppelin.png'
+        size: root.size
+
+
+<GridViewContainer>
+    view: v
+
+    GridView:
+        id: v
+
+<GridPoint>
     canvas:
         Color:
             rgb: self._get_colour()
         Rectangle:
-            source: './img/grid_%s.png' % self.shape
-            size: self.size
-            pos: self.pos
+            source: './img/gridl3_%s.png' % self.shape
+            size: [self.side_size, self.side_size]
+            pos: (self.pos[0] + 0.5*(self.size[0] - self.side_size), self.pos[1] + 0.5*(self.size[1] - self.side_size))
         Color:
             rgb: (0.8, 0.8 ,0.8)
         Ellipse:
-            size: (self.size[0] * 0.18, self.size[1] * 0.18)
-            pos: (self.pos[0] + self.size[0] / 2.0 - 0.09 * self.size[0], self.pos[1] + self.size[1] / 2.0 - 0.09 * self.size[1])
+            size: (self.size[0] * 0.18, self.size[0] * 0.18)
+            pos: (self.pos[0] + self.size[0] / 2.0 - 0.09 * self.size[0], self.pos[1] + self.size[1] / 2.0 - 0.19 * self.size[1])
 
-
-#    size_hint: None, None
-#
     on_touch_down: self.collide_point(*args[1].pos) and self.click()
-
 

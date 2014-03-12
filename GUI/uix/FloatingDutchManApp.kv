@@ -1,0 +1,233 @@
+#:kivy 1.8.0
+#:import GridViewContainer uix.grid_view.GridViewContainer
+#:import PropertiesView uix.properties_view.PropertiesView
+#:import ZeppelinManager uix.zeppelin_handler.ZeppelinManager
+#:import Console uix.console_view.Console
+#:import Buttons uix.buttons.Buttons
+
+#:set light_blue (0.863, 0.949, 1.0, 1.0)
+#:set slightly_less_light_light_blue (1., 0.43, 0.31, 1.0)
+
+
+<FloatingDutchManGUI>
+    grid_view: grid
+    prop_view: prop
+    console: cons
+
+    #set position of the layout
+#    pos: (self.application_pos_x, 500) #self.application_pos_y)
+    #set size of the layout.
+#    size: (self.application_width, self.application_height)
+
+    canvas:
+        Color:
+            #rgb: (1, 0.5, 0.5)
+            rgb: (0.09, .09, 0.09)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Label:
+        color: (0.74, 0.81, 0.85, 1.0)
+        #size: self.texture_size
+        size_hint_y: 0.08
+        size_hint_x: 0.11
+
+        halign: 'left'
+
+        font_size: 0.4 * self.size[1]
+        pos_hint: {'top': 1.0, 'x': 0}
+
+        text: 'Properties'
+
+    PropertiesView:
+        id: prop
+        pos_hint: {'top': 0.92, 'x':0}
+        size_hint: (0.18, 0.6)
+
+        canvas:
+            Color:
+                rgba: light_blue
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: [self.pos[0], self.pos[1] + self.size[1] - 2]
+
+
+            Rectangle:
+                size: (2, 1080)
+                pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: self.pos
+
+            Rectangle:
+                size: (2, self.size[1])
+                pos: self.pos
+
+
+        the_root: root
+
+    #Graph placeholder
+    FloatLayout:
+        pos_hint: {'top': 0.26, 'x':0}
+        size_hint: (0.19, 0.23)
+
+#        canvas:
+#            Color:
+#                rgb: (1.0, 1.0, 1.0)
+#            Rectangle:
+#                size: self.size
+#                pos: self.pos
+#                source: './img/graph_placeholder.png'
+
+    ZeppelinManager:
+        pos_hint: {'top': 0.92, 'x': 0.18}
+        size_hint: (0.05, 0.6)
+
+        the_root: root
+
+        canvas:
+            Color:
+                rgba: light_blue
+            Rectangle:
+                size: (2, self.size[1])#self.size[1])
+                pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: self.pos
+
+
+    Label:
+        color: (0.74, 0.81, 0.85, 1.0)
+        #size: self.texture_size
+        size_hint_y: 0.08
+        size_hint_x: 0.05
+
+        halign: 'left'
+
+        font_size: 0.4 * self.size[1]
+        pos_hint: {'top': 1.0, 'x': 0.24}
+
+        text: 'Grid'
+
+    GridViewContainer:
+        id: grid
+        pos_hint: {'top': 0.99, 'x': 0.232}
+        size_hint: (0.596, 0.75)
+
+        the_root: root
+
+        canvas:
+            Color:
+                rgba: slightly_less_light_light_blue
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: [self.pos[0], self.pos[1] + self.size[1] - 2]
+
+
+            Rectangle:
+                size: (2, self.size[1])
+                pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: self.pos
+
+            Rectangle:
+                size: (2, self.size[1])
+                pos: self.pos
+
+#        canvas:
+#            Color:
+#                rgba: light_blue
+#
+#            Rectangle:
+#                size: (2, self.size[1])
+#                pos: (self.pos[0] - 2, self.pos[1])
+#
+#            Rectangle:
+#                size: (2, self.size[1])
+#                pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+    Label:
+        color: (0.74, 0.81, 0.85, 1.0)
+        #size: self.texture_size
+        size_hint_y: 0.08
+        size_hint_x: 0.06
+
+        halign: 'left'
+
+        font_size: 0.4 * self.size[1]
+        pos_hint: {'top': 1.0, 'x': 0.84}
+
+        text: 'Control'
+
+    #Buttons
+    Buttons:
+        pos_hint: {'top': 0.92, 'x':0.83}
+        size_hint: (0.17, 0.6)
+
+        canvas:
+            Color:
+                rgba: light_blue
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: [self.pos[0], self.pos[1] + self.size[1] - 2]
+
+            Rectangle:
+                size: (2, 1080)
+                pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: self.pos
+
+            Rectangle:
+                size: (2, self.size[1])
+                pos: self.pos
+
+    Label:
+        color: (0.74, 0.81, 0.85, 1.0)
+        #size: self.texture_size
+        size_hint_y: 0.08
+        size_hint_x: 0.05
+
+        halign: 'left'
+
+        font_size: 0.3 * self.size[1]
+        pos_hint: {'top': 0.26, 'x': 0.28}
+
+        text: 'Console'
+
+    Console:
+        id: cons
+        pos_hint: {'top': 0.2, 'x':0.28}
+        size_hint: (0.5, 0.195)
+
+
+        canvas:
+            Color:
+                rgba: light_blue
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: [self.pos[0], self.pos[1] + self.size[1] - 2]
+
+
+            Rectangle:
+                size: (2, 1080)
+                pos: (self.pos[0] + self.width - 2, self.pos[1])
+
+            Rectangle:
+                size: (self.size[0], 2)
+                pos: self.pos
+
+            Rectangle:
+                size: (2, self.size[1])
+                pos: self.pos
+

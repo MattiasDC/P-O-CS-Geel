@@ -1,47 +1,5 @@
-<ZeppelinProperties>
-    canvas:
-        Color:
-            rgb: (0.1, 0.1, 0.1)
-        Rectangle:
-            pos: self.top
-            size: (self.width, 3)
-
-    #------------------------------------------------------------------
-    # Name
-
-
-    #------------------------------------------------------------------
-    #Position
-    PropertiesHeader:
-        source_icon: 'img\\position_icon.png'
-        property_name: 'Position'
-        pos_hint: {'top': 1, 'x': 0}
-
-    PropertyEntryDouble:
-        name: 'Pos Y'
-        value: root.zep_pos_x
-        unit: ''
-        pos_hint: {'top': (1 - ((2 * 0.84 + 2 * 0.7)/13.8)), 'x': 0}
-
-    PropertyEntryDouble:
-        name: 'Pos Y'
-        value: root.zep_pos_y
-        unit: ''
-        pos_hint: {'top': (1 - ((2 * 0.84 + 2 * 0.7)/13.8)), 'x': 0}
-
-    #------------------------------------------------------------------
-    #Height
-    PropertiesHeader:
-        source_icon: 'img\\height_icon.png'
-        property_name: 'Height'
-        pos_hint: {'top': (1 - ((2 * 0.84 + 4 * 0.7)/13.8)), 'x': 0}
-
-    PropertyEntryDouble:
-        name: 'Current'
-        value: root.current_height
-        unit: 'cm'
-        pos_hint: {'top': (1 - ((3 * 0.84 + 5 * 0.7)/13.8)), 'x': 0}
-
+#:set light_blue (0.863, 0.949, 1.0, 1.0)
+#:set blue [0.0, 0.6, 0.9, 1.0]
 
 #==============================================================================
 # Properties styling.
@@ -52,7 +10,6 @@
     valign: 'middle'
 
 <PropertyEntryDouble>
-    size_hint_y: 0.7 / 13.8
     rows: 1
     #property name
     PropertiesLabel:
@@ -64,7 +21,6 @@
         font_size: 0.6 * root.height
 
 <PropertyEntryString>
-    size_hint_y: 0.7 / 13.8
     rows: 1
 
     #property name
@@ -76,21 +32,35 @@
         text: root.value
         font_size: 0.6 * root.height
 
+<PropertyEntryStringTeam>
+    rows: 1
+
+    #property name
+    PropertiesLabel:
+        text: root.name + ':'
+        font_size: 0.6 * root.height
+    #value and unit.
+    Label:
+        text: root.value
+        font_size: 0.6 * root.height
+        halign: 'left'
+        valign: 'middle'
+        color: root.colour
+
 
 <PropertiesHeader>
-    #set background of this PropertyHeader
-    #-------------------------------------
-    canvas.before:
-        Color:
-            rgb: widget_colour
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
     size_hint_y: 0.84 / 13.8
 
     rows: 1
     padding: [5, 0]
+
+    canvas.before:
+        Color:
+            rgba: [1.0, 1.0, 1.0, 0.12]
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
 
     #Icon of the property
     Image:
@@ -103,3 +73,67 @@
         color: blue
         text: root.property_name
         font_size: 0.6 * root.height
+
+#--------------------------------------------------
+<ZeppelinProperties>
+    canvas:
+        Color:
+            rgb: light_blue
+        Rectangle:
+            pos: (self.pos[0], self.top - 3)
+            size: (self.width, 2)
+
+#    canvas.after:
+#        Color:
+#            rgb: (0., 0., 0.)
+#        Rectangle:
+#            pos: self.pos
+#            size: self.size
+
+    #------------------------------------------------------------------
+    # Name
+    PropertyEntryStringTeam
+        size_hint: (1, 1.0/7.0)
+        name: 'Team'
+        value: root.name
+        colour: root._colour_map[root.colour]
+        pos_hint: {'top': 1, 'x': 0}
+
+    #------------------------------------------------------------------
+    #Position
+    PropertiesHeader:
+        size_hint: (1, 1.5/7.0)
+        source_icon: 'img\\prop_pos.png'
+        property_name: 'Position'
+        pos_hint: {'top': 1 - 1*(1.0/7.0) - 0 * (1.5/7.0), 'x': 0}
+
+    PropertyEntryDouble:
+        size_hint: (1, 1.0/7.0)
+        name: 'Pos X'
+        value: root.zep_pos_x
+        unit: ''
+        pos_hint: {'top': 1 - 1*(1.0/7.0) - 1 * (1.5/7.0), 'x': 0}
+
+    PropertyEntryDouble:
+        size_hint: (1, 1.0/7.0)
+        name: 'Pos Y'
+        value: root.zep_pos_y
+        unit: ''
+        pos_hint: {'top': 1 - 2*(1.0/7.0) - 1 * (1.5/7.0), 'x': 0}
+
+    #------------------------------------------------------------------
+    #Height
+    PropertiesHeader:
+        size_hint: (1, 1.5/7.0)
+        source_icon: 'img\\prop_height.png'
+        property_name: 'Height'
+        pos_hint: {'top': 1 - 3*(1.0/7.0) - 1 * (1.5/7.0), 'x': 0}
+
+    PropertyEntryDouble:
+        size_hint: (1, 1.0/7.0)
+        name: 'Current'
+        value: root.zep_height
+        unit: 'cm'
+        pos_hint: {'top': 1 - 3*(1.0/7.0) - 2 * (1.5/7.0), 'x': 0}
+
+
