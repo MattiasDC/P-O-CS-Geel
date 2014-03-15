@@ -13,9 +13,12 @@ class SenderPi(object):
     _connection = None
     #The channel of the connection used by the sender
     _channel = None
+    #The color of the team that uses this Sender
+    _color = None
 
     #Initialise the sender (open the connection and set the related core)
-    def __init__(self):
+    def __init__(self, color):
+        _color = color
         self.open_connection()
 
     #Open a connection to the server (also sets the connected-flag to true)
@@ -41,7 +44,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the message in format <x>,<y> to the exchange with our routing key
-            routing_key = team + '.info.location'
+            routing_key = self._color + '.info.location'
             message = str(int(x)) + ',' + str(int(y))
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -55,7 +58,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the message in format <z> to the exchange with our routing key
-            routing_key = team + '.info.height'
+            routing_key = self._color + '.info.height'
             message = str(int(z))
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -69,7 +72,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the message in format <x>,<y> to the exchange with the correct routing key
-            routing_key = team + '.private.goal_position'
+            routing_key = self._color + '.private.goal_position'
             message = str(int(x)) + ',' + str(int(y))
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -83,7 +86,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the message in format <z> to the exchange with the correct routing key
-            routing_key = team + '.private.goal_height'
+            routing_key = self._color + '.private.goal_height'
             message = str(int(z))
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
@@ -97,7 +100,7 @@ class SenderPi(object):
             return 'Not connected'
         else:
             #Publish the console-information to the exchange with the correct routing key
-            routing_key = team + '.private.console'
+            routing_key = self._color + '.private.console'
             message = str(info)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,

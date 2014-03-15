@@ -8,43 +8,102 @@ import ReceiverPi
 import SenderPi
 from math import copysign
 
-
 class VirtualZeppelin(object):
 
-    _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
-    _stay_on_position_flag = None   # Flag to indicate the zeppelin should (try) to go to the goal position
-
-    _goal_position = (0, 0)         # The (x,y)- coordinate the zeppelin has to be at the moment
-    _current_position = None        # The current position of the zeppelin
-    _current_direction = None       # The direction of the zeppelin
-
-    _goal_height = None             # The height where the zeppelin has to be at the moment
-    _current_height = 10            #The current height of the zeppelin
-    _speed_x = speed_start  # cm/s           #The current speed of the zeppelin in the x-direction
-    _speed_y = speed_start  # cm/s           #The current speed of the zeppelin in the y-direction
-
+    _current_position = None
+    #_current_direction = None
+    _goal_position = None
+    _goal_height = None
+    _current_height = None
+    _speed_x = None
+    _speed_y = None
+    _color = None
     _senderPi_position = None       # The sender-object used for sending position-messages to the server
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
-    _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
 
+    def __init__(self, x, y, goal_x, goal_y, height, v_x, v_y, color):
+        #self._senderPi_position = SenderPi.SenderPi(color)
+        #self._senderPi_height = SenderPi.SenderPi(color)
+        self._current_position = (x,y)
+        self._goal_position = (goal_x, goal_y)
+        self._goal_height = height
+        self._current_height = height
+        self._speed_x = v_x
+        self._speed_y = v_y
+        self._color = color
 
+    def get_current_position(self):
+        return self._current_position
 
-    def initialise(self, curr_pos):
+    def set_current_position(self, x, y):
+        self._current_position = (x,y)
+        #self._senderPi_position.sent_position(x, y)
+
+    def get_goal_position(self):
+        return self._goal_position
+
+    def set_goal_position(self, x, y):
+        self._goal_position = (x, y)
+
+    def get_goal_height(self):
+        return self._goal_height
+
+    def set_goal_height(self, h):
+        self._goal_height = h
+
+    def get_current_height(self):
+        return self._current_height
+
+    def set_current_height(self, h):
+        self._current_height = h
+        #self._senderPi_position.sent_height(h)
+
+    def get_speed_x(self):
+        return self._speed_x
+
+    def set_speed_x(self, v_x):
+        self._speed_x = v_x
+
+    def get_speed_y(self):
+        return self._speed_y
+
+    def set_speed_y(self, v_y):
+        self._speed_y = v_y
+
+    def get_color(self):
+        return self._color
+
+    def random_behaviour(self):
+        pass
+
+class Simulator(object):
+
+    _stay_on_height_flag = False     # Flag to indicate the zeppelin should stay on the goal height or not.
+    _stay_on_position_flag = False   # Flag to indicate the zeppelin should (try) to go to the goal position
+    _with_other_zeppelin_flag = False
+
+    _our_zeppelin = None
+    _other_zeppelin = None
+
+    #_senderPi_Console = None        # The sender-object used for sending console-messages to the server
+
+    def __init__(self, other_zep):
         """
         Initialised all the variables, and initialises all the hardware components
         """
         #Initialisation and start of the communication with the shared server
-        self._senderPi_position = SenderPi.SenderPi()
-        self._senderPi_height = SenderPi.SenderPi()
-        self._SenderPi_Console = SenderPi.SenderPi()
-        ReceiverPi.receive(self)
+        #self._senderPi_Console = SenderPi.SenderPi()
+        #ReceiverPi.receive(self)
 
-        self._current_position = curr_pos
-        self._goal_height = 130
+        self._our_zeppelin = VirtualZeppelin(0, 0, 100, 100, 100, speed_start, speed_start, team)
+        if not (other_zep.get_color() is None or other_zep.get_color() == team):
+            self._other_zeppelin = other_zep
+            self._with_other_zeppelin_flag = True
 
+    def start(self, height_flag, pos_flag):
+        self.set_height_control(height_flag)
+        self.set_navigation_mode(pos_flag)
         self.add_to_console('Simulator started')
-        self.set_height_control(True)
-        self.set_navigation_mode(True)
 
 
 # ------------------------------------------ Height Control ------------------------------------------------------------
@@ -56,172 +115,117 @@ class VirtualZeppelin(object):
         sleep_interval = 3
 
         while self._stay_on_height_flag:
-            #Fluctuation of maximum 10%
-            new_height = self._goal_height * (1 + random.uniform(-0.1, 0.1))
-            self._current_height = new_height
-            self._senderPi_height.sent_height(new_height)
+            self._stay_on_height_thread_zep(self._our_zeppelin)
+            if self._with_other_zeppelin_flag == True:
+                self._stay_on_height_thread_zep(self._other_zeppelin)
             sleep(sleep_interval)
 
+    def _stay_on_height_thread_zep(self, zeppelin):
+
+        #Fluctuation of maximum 10%
+        new_height = zeppelin.get_goal_height() * (1 + random.uniform(-0.1, 0.1))
+        zeppelin.set_current_height(new_height)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
         sleep_interval = 3
-
         while self._stay_on_position_flag:
-            #new_position = old_position*speed
-            x = self._speed_x*sleep_interval + self._current_position[0]
-            y = self._speed_y*sleep_interval + self._current_position[1]
-            #At goal position: stop
-            if x == self._goal_position[0]:
-                self._speed_x = 0
-            #At goal position: stop
-            if y == self._goal_position[1]:
-                self._speed_y = 0
-            #Move away from goal for x (change direction)
-            if abs(self._current_position[0] - self._goal_position[0]) < abs(x - self._goal_position[0]):
-                self._speed_x = -self._speed_x
-            #Move over goal-position in x-direction => stop op goal-position
-            if (self._current_position[0] - self._goal_position[0]) > 0 and (x - self._goal_position[0]) < 0 :
-                self._speed_x = 0
-                x = self._goal_position[0]
-            #Move over goal-position in x-direction => stop op goal-position
-            if (self._current_position[0] - self._goal_position[0]) < 0 and (x - self._goal_position[0]) > 0:
-                self._speed_x = 0
-                x = self._goal_position[0]
-            #Move away from goal for y (change direction)
-            if abs(self._current_position[1] - self._goal_position[1]) < abs(y - self._goal_position[1]):
-                self._speed_y = -self._speed_y
-            #Move over goal-position in y-direction (change of sign) => stop op goal-position
-            if (self._current_position[1] - self._goal_position[1]) < 0 and (y - self._goal_position[1]) > 0:
-                self._speed_y = 0
-                y = self._goal_position[1]
-            #Move over goal-position in y-direction (change of sign) => stop op goal-position
-            if (self._current_position[1] - self._goal_position[1]) > 0 and (y - self._goal_position[1]) < 0:
-                self._speed_y = 0
-                y = self._goal_position[1]
-            #Update the position
-            self._update_position((x, y))
+            self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
+            if self._with_other_zeppelin_flag == True:
+                self._update_position_thread_zep(self._other_zeppelin, sleep_interval)
+                self._other_zeppelin.random_behaviour()
             sleep(sleep_interval)
 
-# -------------------------------------------- Commands ----------------------------------------------------------------
+    def _update_position_thread_zep(self, zeppelin, sleep_interval):
+            #new_position = old_position*speed
+            x = zeppelin.get_speed_x()*sleep_interval + zeppelin.get_current_position()[0]
+            y = zeppelin.get_speed_y()*sleep_interval + zeppelin.get_current_position()[1]
+            #At goal position: stop
+            if x == zeppelin.get_goal_position()[0]:
+                zeppelin.set_speed_x(0)
+            #At goal position: stop
+            if y == zeppelin.get_goal_position()[1]:
+                zeppelin.set_speed_y(0)
+            #Move away from goal for x (change direction)
+            if abs(zeppelin.get_current_position()[0] - zeppelin.get_goal_position()[0]) < abs(x - zeppelin.get_goal_position()[0]):
+                zeppelin.set_speed_x(-zeppelin.get_speed_x())
+            #Move over goal-position in x-direction => stop op goal-position
+            if (zeppelin.get_current_position()[0] - zeppelin.get_goal_position()[0]) > 0 and (x - zeppelin.get_goal_position()[0]) < 0 :
+                zeppelin.set_speed_x(0)
+                x = zeppelin.get_goal_position()[0]
+            #Move over goal-position in x-direction => stop op goal-position
+            if (zeppelin.get_current_position()[0] - zeppelin.get_goal_position()[0]) < 0 and (x - zeppelin.get_goal_position()[0]) > 0:
+                zeppelin.set_speed_x(0)
+                x = zeppelin.get_goal_position()[0]
+            #Move away from goal for y (change direction)
+            if abs(zeppelin.get_current_position()[1] - zeppelin.get_goal_position()[1]) < abs(y - zeppelin.get_goal_position()[1]):
+                zeppelin.set_speed_y(-self.get_speed_y())
+            #Move over goal-position in y-direction (change of sign) => stop op goal-position
+            if (zeppelin.get_current_position()[1] - zeppelin.get_goal_position()[1] < 0) and (y - zeppelin.get_goal_position()[1] > 0):
+                zeppelin.set_speed_y(0)
+                y = zeppelin.get_goal_position()[1]
+            #Move over goal-position in y-direction (change of sign) => stop op goal-position
+            if (zeppelin.get_current_position()[1] - zeppelin.get_goal_position()[1] > 0) and (y - zeppelin.get_goal_position()[1] < 0):
+                zeppelin.set_speed_y(0)
+                y = zeppelin.get_goal_position()[1]
+            #Update the position
+            zeppelin.set_current_position(x, y)
 
+
+# -------------------------------------------- Commands ----------------------------------------------------------------
     def add_to_console(self, line):
         """
         Adds a new line to the console
         """
-        self._SenderPi_Console.sent_console_information(line)
-
-
-    def land(self):
-        """
-        Lands the zeppelin and quits heightcontrol
-        """
-        self.set_goal_height(ground_height)
-        self._current_height = ground_height
-        self.set_height_control(False)
-
-    def _update_position(self, (x, y)):
-        """
-        Updates the current position, direction and sends it to the server
-        """
-        self._current_direction = (x, y)        # TODO
-        self._current_position = (x, y)
-        self._senderPi_position.sent_position(x, y)
-
-# ------------------------------------------ Getters -------------------------------------------------------------------
-
-    def get_grid(self):
-        """
-        Returns the grid
-        """
-        return self._grid
-
-    def get_height(self):
-        """
-        Returns the current height in cm
-        """
-        return self._current_height
-
-    def get_goal_height(self):
-        """
-        Returns the goal height in cm
-        """
-        return self._goal_height
-
-    def get_position(self):
-        """
-        Returns the current position in (x,y) coordinates
-        """
-        return self._current_position
-
-    def get_direction(self):
-        """
-        Returns a point in front of the current position  of the zeppelin in (x,y) coordinates
-        """
-        return self._current_direction
-
-    def get_goal_position(self):
-        """
-        Returns the goal position in (x,y) coordinates
-        """
-        return self._goal_position
+        #self._senderPi_Console.sent_console_information(line)
 
     def quit_core(self):
-        self.land()
+        self._our_zeppelin.set_goal_height(ground_height)
+        self._our_zeppelin.set_current_height = ground_height
+        self.add_to_console('The zeppelin of team ' + team + ' has landed')
+        self.set_height_control(False)
         self.set_navigation_mode(False)
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
-
     def set_goal_height(self, new_height):
         """
         Sets a new goal height (in cm)
         """
         try:
-            self._goal_height = new_height
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal height is set to: "
-                                + str(new_height) + " cm")
+            self._our_zeppelin.set_goal_height(new_height)
+            self.add_to_console("Goal height for team " + team + "is set to: " + str(new_height) + " mm")
         except (ValueError, TypeError) as e:
-            self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Error on new goal height "
-                                + str(new_height) + " " + str(e))
+            self.add_to_console("Error on new goal height")
 
     def set_height_control(self, flag):
         if flag:
             self._stay_on_height_flag = True
             Thread(target=self._stay_on_height_thread).start()
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is activated")
+            self.add_to_console("Height control is activated")
         else:
             self._stay_on_height_flag = False
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Height control is turned off")
+            self.add_to_console("Height control is turned off")
+
+    def set_goal_position(self, pos):
+        """
+        Sets a new goal height (in cm)
+        """
+        try:
+            self._our_zeppelin.set_goal_position(pos[0], pos[1])
+            self.add_to_console("Goal position for team " + team + "is set to: " + str(pos[0]) + "","" + str(pos[1]))
+        except (ValueError, TypeError) as e:
+            self.add_to_console("Error on new goal position")
 
     def set_navigation_mode(self, flag):
         if flag:
             self._stay_on_position_flag = True
-            Thread(target=self._update_position_thread).start()
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
+            t = Thread(target=self._update_position_thread)
+            t.start()
+            self.add_to_console("Navigation is activated")
         else:
             self._stay_on_position_flag = False
-            #self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has stopped")
-
-    def set_goal_position(self, (x, y)):
-        """
-        Sets a new position in (x,y)- coordinates
-        """
-        self._goal_position = (x, y)
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
-        #New goal position, so start moving in the correct direction
-        if x < self._current_position[0]:
-            #Move left
-            self._speed_x = -speed_start
-        else:
-            #Move right
-            self._speed_x = speed_start
-        if y < self._current_position[1]:
-            #Move backward
-            self._speed_y = -speed_start
-        else:
-            #Move forward
-            self._speed_y = speed_start
+            self.add_to_console("Navigation is turned off")
 
     #Set motor1 to the pwm-value determined by the parameter
     #Not used normally
@@ -241,12 +245,11 @@ class VirtualZeppelin(object):
         #Do nothing
         pass
 
-
-
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    _simulator = VirtualZeppelin()
-    _simulator.initialise(curr_pos=(100, 50))
+    _other_zep = VirtualZeppelin(400, 400, 300, 300, 100,  -speed_start, -speed_start, 'rood')
+    _simulator = Simulator(_other_zep)
+    _simulator.start(True, True)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
