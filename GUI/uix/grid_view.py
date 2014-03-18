@@ -1,13 +1,11 @@
-#TODO: GridContainerWidget
-#TODO: GridPointWidget
-#TODO: ZeppelinGridView
-from math import tan, pi
+#TODO: add (pre)|(post) conditions
+
+from math import tan, pi, sin
 from kivy.uix.scatter import Scatter
 
 from domain.grid_handler import GridController
 from util import colour as col
 from kivy.graphics import *
-from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.properties import OptionProperty, NumericProperty, ListProperty, ObjectProperty, StringProperty
@@ -16,36 +14,52 @@ from kivy.clock import Clock
 
 from util.colour import *
 
-from kivy.lang import Builder
-
 
 class ZeppelinScatter(Scatter):
+    """
+    The zeppelin scatter displays the zeppelin object on the grid.
+    """
+
     direction = NumericProperty(0)
+    """ The direction of this zeppelin. """
     speed = NumericProperty(10.0)
+    """ The speed of this zeppelin. """
 
     location_local = (0, 0)
+    """ The local location of this zeppelin on the grid. """
     grid = ObjectProperty(None)
+    """ The internal grid object that this zeppelin is displayed on. """
 
     x_left_bound = NumericProperty(0)
+    """ The left bound of the x-axis of the GridView in window values that this zeppelin is on. """
     x_right_bound = NumericProperty(0)
+    """ The right bound of the x-axis of the GridView in window values that this zeppelin is on. """
 
     y_top_bound = NumericProperty(0)
+    """ The top bound of the y-axis of the GridView in window values that this zeppelin is on. """
     y_bottom_bound = NumericProperty(0)
+    """ The bottom bound of this y-axis of the GridView in window values that this zeppelin si on. """
     team = StringProperty("None")
+    """ The team colour of this zeppelin scatter. """
 
     colour_map = {"yellow": YELLOW_ZEPPELIN,
                   "red": RED_ZEPPELIN}
+    """ A colour map that maps team colours to actual kivy colour tuples. """
 
     img = ObjectProperty(None)
-
-    def on_team(self, instance, value):
-        self.img.color = self.colour_map[value]
+    """ The image that represents this zeppelin object on the GridView. """
 
     def __init__(self, **kwargs):
-        super(ZeppelinScatter, self).__init__(**kwargs)
+        """
+        Create a new instance of this Zeppelin scatter with the given
+        ZeppelinView object.
 
-        ##self.grid = kwargs['grid']
-        #self.calculate_bounds()
+        Parameters
+        ----------
+        zeppelin : ZeppelinView
+            The domain object that represents the actual zeppelin logic.
+        """
+        super(ZeppelinScatter, self).__init__(**kwargs)
 
         self._zeppelin = kwargs['zeppelin']
         self.team = self._zeppelin.identifier
@@ -54,16 +68,37 @@ class ZeppelinScatter(Scatter):
         self.trigger_reposition = Clock.create_trigger(self.calculate_bounds, 0)
 
     def on_grid(self, instance, value):
+        """
+         Reposition this ZeppelinScatter on the grid when the window resizes.
+        """
         self.grid.bind(size=self.trigger_resize)
         self.grid.bind(pos=self.trigger_reposition)
 
+    def on_team(self, instance, value):
+        """
+        Change the colour to the team colour when the team is set.
+        """
+        self.img.color = self.colour_map[value]
+
     def update(self, dt):
+        """
+        Update the position and rotation ofthis zeppelinScatter.
+
+        Parameters
+        ----------
+        dt : int
+            The time that has passed since the last update.
+        """
         x_l, x_r, y_b, y_t = self.grid.get_bounds()
 
         loc_x, loc_y = self._zeppelin.position
         grid = self.grid.grid_handler.grid
 
-        self.location_local = (float(loc_x) / (float(400 * grid.n_columns) + 0.5), float(loc_y) / (float(400 * grid.n_rows)))
+        # There are n-1 + 0.5 steps of 400 mm to get the size of grid.
+        location_local_x = float(loc_x) / (float(400 * grid.n_columns) - 0.5)
+        # we take the sin of 1/3 pi because the edge of 400 mm has a hook of
+        location_local_y = float(loc_y) / (sin((1.0/3.0) * pi) * float(400 * grid.n_rows))
+        self.location_local = (location_local_x, location_local_y)
         width = x_r - x_l
         height = y_t - y_b
         self.pos = (x_l + width * self.location_local[0] - 0.5 * self.size[0], y_t - height * self.location_local[1] - 0.5 * self.size[1])
@@ -71,32 +106,32 @@ class ZeppelinScatter(Scatter):
         if self._zeppelin.identifier == "yellow":
             self.direction = self._zeppelin.direction
 
-        #if self.pos[0] <= x_l and self.speed == -10:
-        #    if self.direction <= 0:
-        #        self.direction = 0
-        #        self.speed *= -1
-        #    else:
-        #        self.direction -= 5
-        #elif self.pos[0] >= x_r and self.speed == 10:
-        #    if self.direction >= 180:
-        #        self.direction = 180
-        #        self.speed *= -1
-        #    else:
-        #        self.direction += 5
-        #else:
-        #    self.pos = (self.pos[0] + self.speed, self.pos[1])
-
     def calculate_bounds(self, *args):
         (x_l, x_r, y_b, y_t) = self.grid.get_bounds()
         self.pos = [x_l - 0.5 * self.size[0], y_t - 0.5 * self.size[1]]
 
 
 class GridViewContainer(FloatLayout):
+    """
+    The actual representation of the Grid in the GUI,
+    contains the logic to add a new zeppelin on the grid when asked.
+    """
     view = ObjectProperty(None)
+    """ The object that draws the grid. """
     the_root = ObjectProperty(None)
+    """ The root of this interface. """
     zeppelin_scatters = ListProperty([])
+    """ A list of the zeppelin scatters on this grid. """
 
     def add_zeppelin(self, zeppelin):
+        """
+        Add and display the specified zeppelin to the grid.
+
+        Paramaters
+        ----------
+        zeppelin : ZeppelinView
+            The new zeppelin that is added to this GridView
+        """
         new_scatter = ZeppelinScatter(zeppelin=zeppelin)
         new_scatter.grid = self.view
 
@@ -104,11 +139,23 @@ class GridViewContainer(FloatLayout):
         self.add_widget(new_scatter)
 
     def update(self, dt):
+        """
+        Update this GridViewContainer by updating all of the zeppelins
+        that are placed in it.
+
+        Parameters
+        ----------
+        dt : int
+            the time that has passed since the last update.
+        """
         for w in self.zeppelin_scatters:
             w.update(dt)
 
 
 class GridView(FloatLayout):
+    """
+    The object that draws the Grid it reads from the csv file.
+    """
     def __init__(self, **kwargs):
         super(GridView, self).__init__(**kwargs)
 
@@ -122,9 +169,22 @@ class GridView(FloatLayout):
 
     @property
     def grid_handler(self):
+        """
+        GridHandler that acts as an interface between the ui a
+        nd the domain layer logic.
+        """
         return self._grid_controller
 
     def load_new_grid(self, file_path):
+        """
+        Load a new grid from the specified file and draw this in the
+        ui.
+
+        Paramaters
+        ----------
+        file_path : string
+            path specifing the location of a valid csv on the file system.
+        """
         if not self._grid is None:
             self.unbind(size=self.trigger_resize)
 
@@ -289,7 +349,16 @@ class GridView(FloatLayout):
 
         return x_left_bound, x_right_bound, y_bottom_bound, y_top_bound
 
+
 class GridPoint(Widget):
+    """
+    The GridPoint displays a single point of the grid on the ui.
+
+    Invariants
+    ----------
+    * | coord[0] >= 0
+    * | coord[1] >= 0
+    """
     side_size = NumericProperty(0)
 
     def __init__(self, **kwargs):
@@ -300,9 +369,15 @@ class GridPoint(Widget):
 
     @property
     def coord(self):
+        """
+        The coordinate of this GridPoint.
+        """
         return self._coord
 
     def click(self):
+        """
+        Action associated with clicking on this GridPoint.
+        """
         print self.to_window(self.pos[0], self.pos[1])
 
     shape = OptionProperty("None", options=["Star",
@@ -319,6 +394,11 @@ class GridPoint(Widget):
                                              "None"])
 
     def _get_colour(self):
+        """
+        Get the colour of this GridPoint.
+
+        return : (r, g, b)
+        """
         return self._colour_map[self.colour]
 
     _colour_map = {"White": col.WHITE,
@@ -335,32 +415,3 @@ class GridPoint(Widget):
 
     def on_size(self, *args):
         self.side_size = min(self.size)
-
-#
-#from kivy.app import App
-#from kivy.uix.floatlayout import FloatLayout
-
-
-#class GridViewApp(App):
-#    def build(self):
-#        interface = FloatLayout()
-#        herpyderpelderpderp = GridView()
-#        interface.add_widget(herpyderpelderpderp)
-#        #
-#        #interface = RelativeLayout()
-#        #new_point = GridPoint(coord=(0, 0), shape="Heart", colour="Red")
-#        #new_point.pos_hint = {'x': 0.5,
-#        #                      'top': 0.8}
-#        #new_point.size_hint_y = 0.1
-#        #new_point.size_hint_x = 0.1
-#        #interface.add_widget(new_point)
-#        #
-#        #other_new_point = GridPoint(coord=(0, 0), shape="Star", colour="Blue")
-#        #other_new_point.pos_hint = {'x': 0.2,
-#        #                      'top': 0.4}
-#        #other_new_point.size_hint_y = 0.1
-#        #other_new_point.size_hint_x = 0.1
-#        #interface.add_widget(other_new_point)
-#        herpyderpelderpderp.load_new_grid('./grid.csv')
-#
-#        return interface
