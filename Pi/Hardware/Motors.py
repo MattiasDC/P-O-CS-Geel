@@ -165,6 +165,7 @@ class FixedMotor(object):
         """
         GPIO.output(self._pin1, 0)
         GPIO.output(self._pin2, 1)
+        print "move counterclockwise"
 
     def move_clockwise(self):
         """
@@ -172,6 +173,7 @@ class FixedMotor(object):
         """
         GPIO.output(self._pin1, 1)
         GPIO.output(self._pin2, 0)
+        print "moved clockwise"
 
     def stop_moving(self):
         """

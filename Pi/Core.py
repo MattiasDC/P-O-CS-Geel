@@ -74,7 +74,7 @@ class Core(object):
 
         # Start height control
         self._goal_height = ground_height
-        self.set_height_control(True)
+        self.set_height_control(False)
 
         # Get current position
         self._positioner = Positioner
@@ -90,7 +90,7 @@ class Core(object):
         """
         while self._stay_on_height_flag:
             self._motors.set_pwm(self._pid())
-            self._senderPi_height.sent_height(self._sensor.get_height())
+            self._senderPi_height.sent_height(self._sensor.get_height()*10.0)
             sleep(pid_interval)                             # time in seconds
 
     def _pid(self):
@@ -116,8 +116,6 @@ class Core(object):
         return pid_error*error + pid_integral*integral + pid_derivative*derivative
 
 # ------------------------------------------ Navigation Control --------------------------------------------------------
-        # TODO check this formulas
-
     def _navigation_thread(self):
         """
         SoftwarePWM thread
@@ -237,7 +235,6 @@ class Core(object):
         self._sensor.stop()
         self._motors.stop()
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core has gracefully quited")
-        #TODO exit rabbitMQ?
 
     def _start_server(self):
         """
@@ -270,6 +267,7 @@ class Core(object):
         a, b = self.get_position()
         self._senderPi_position.sent_position(a, b)
         self._current_angle = (angle * 180.0) / pi
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self._current_position))
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
 
@@ -354,10 +352,10 @@ class Core(object):
         try:
             self._goal_height = new_height/10.0
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal height is set to: "
-                                + str(new_height/10) + " cm")
+                                + str(new_height/10.0) + " cm")
         except (ValueError, TypeError) as e:
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Error on new goal height "
-                                + str(new_height/10) + " " + str(e))
+                                + str(new_height/10.0) + " " + str(e))
 
     def set_height_control(self, flag):
         if flag:

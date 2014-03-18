@@ -19,7 +19,7 @@ class VirtualZeppelin(object):
     _current_direction = None       # The direction of the zeppelin
 
     _goal_height = None             # The height where the zeppelin has to be at the moment
-    _current_height = 10            #The current height of the zeppelin
+    _current_height = 1000            #The current height of the zeppelin
     _speed_x = speed_start  # cm/s           #The current speed of the zeppelin in the x-direction
     _speed_y = speed_start  # cm/s           #The current speed of the zeppelin in the y-direction
 
@@ -40,7 +40,7 @@ class VirtualZeppelin(object):
         ReceiverPi.receive(self)
 
         self._current_position = curr_pos
-        self._goal_height = 130
+        self._goal_height = 1300
 
         self.add_to_console('Simulator started')
         self.set_height_control(True)
@@ -66,7 +66,7 @@ class VirtualZeppelin(object):
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 3
+        sleep_interval = 1
 
         while self._stay_on_position_flag:
             #new_position = old_position*speed
@@ -246,7 +246,7 @@ class VirtualZeppelin(object):
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     _simulator = VirtualZeppelin()
-    _simulator.initialise(curr_pos=(100, 50))
+    _simulator.initialise(curr_pos=(2000, 2000))
 
 
 # ---------------------------------------------------------------------------------------------------------------------
