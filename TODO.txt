@@ -1,14 +1,11 @@
 Vorige opdracht:
 
 - Motor die random aangaat (checken of de camera de oorzaak is => camera uitschakelen in code)      (Yannick)
-- Positioner, endless loop checken                                                                  (Mattias)
 - Match Shapes verbeteren                                                                           (Mattias, Maarten, Nelis) 
 - PID hoogteregelaar nog is nakijken of het nog marcheert                                           (Geen ballonnen)
 - PID navigatie beginnen testen (mss aan de hand van simulator? => simulator uitbreiden)            (Bart)
 - Verbeteren positionering, momenteel is de locatie altijd op een shape                             (Wouter)
-- Testen van oriëntatie                                                                             (Mattias)
-- Frame landen                                                                                      (Maarten)
-- Land functie                                                                                      (nog niemand)
+- Testen van oriëntatie                                                                                   (nog niemand)
 - Verslag feedback verbeteren                                                                       (Wouter)
 - GUI verbeteren                                                                                    (Maarten)
 
