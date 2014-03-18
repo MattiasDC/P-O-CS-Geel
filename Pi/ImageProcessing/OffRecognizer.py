@@ -3,6 +3,8 @@ from PIL import Image
 import cv2
 from Shapes import *
 import colorsys
+import os
+import glob
 
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
@@ -47,6 +49,7 @@ def process_picture(image):
     contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
     #Approximate contour with less points to smooth the contour
     contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
+    contours = filter(lambda x: len(x) > 2, contours)
 
     found_shapes = []
 
@@ -111,3 +114,11 @@ def find_shape_color(contour, image):
         return 'blue'
     elif 75 <= h*360 < 200:
         return 'green'
+
+# ---------------------------------------------------------------------------------------------------------------------
+if __name__ == "__main__":
+    os.chdir("/home/nooby4ever/Desktop/benjamin/demo")
+    for file in glob.glob("*.jpg"):
+        print file
+        map(lambda x: x.__class__, process_picture(Image.open('/home/nooby4ever/Desktop/benjamin/demo/' + file)))
+

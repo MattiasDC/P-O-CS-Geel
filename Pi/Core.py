@@ -230,7 +230,8 @@ class Core(object):
         Stops everything, console output still available. Zeppelin "lands"; Quit server should be called after this
         """
         self.set_navigation_mode(False)
-        self.land()
+        self.set_height_control(False)
+        #self.land()
 
         self._sensor.stop()
         self._motors.stop()
@@ -251,7 +252,7 @@ class Core(object):
         Lands the zeppelin and quits heightcontrol
         """
         self.set_goal_height(ground_height)
-        while self.get_height() > (ground_height + 2):
+        while self.get_height() > (ground_height+5):
             sleep(1)
         self.set_height_control(False)
 

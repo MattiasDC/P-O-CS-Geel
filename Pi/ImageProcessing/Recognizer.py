@@ -50,6 +50,7 @@ def process_picture(image):
     contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
     #Approximate contour with less points to smooth the contour
     contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
+    contours = filter(lambda x: len(x) > 2, contours)
 
     found_shapes = []
 
