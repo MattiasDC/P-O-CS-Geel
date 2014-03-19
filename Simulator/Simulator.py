@@ -137,13 +137,13 @@ class Simulator(object):
 
     def _stay_on_height_thread_zep(self, zeppelin):
         #Fluctuation of maximum 10%
-        new_height = self._deviation(zeppelin.get_goal_height(), 0.1, 10)
+        new_height = self._deviation(zeppelin.get_goal_height(), 10)
         zeppelin.set_current_height(new_height)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 3
+        sleep_interval = 0.2
         while self._stay_on_position_flag:
             self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
             if self._with_other_zeppelin_flag == True:
@@ -152,7 +152,7 @@ class Simulator(object):
 
     def _update_position_thread_zep(self, zeppelin, sleep_interval):
         angle = self._calculate_angle(zeppelin)
-        print 'angle: ' + str(angle)
+        #print 'angle: ' + str(angle)
         pid_value = self._pid_moving(zeppelin, sleep_interval)
         # The pwm value calculated with the pid method has a maximum and minimum boundary
         if pid_value > pid_boundary:
@@ -164,7 +164,7 @@ class Simulator(object):
         pid_value = pid_value / 100.0
 
         current_degrees = self._direction_to_degrees(zeppelin)
-        print 'current_degrees: ' + str(degrees(current_degrees))
+        #print 'current_degrees: ' + str(degrees(current_degrees))
         speed_backward = max_speed * power_ratio
 
         motor1_x = 0
@@ -175,14 +175,9 @@ class Simulator(object):
         if 0 <= angle <= 45:
             # Both motors are used forwards
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * pid_value * (45-angle)/45.0
-            print 'motor1_x: ' + str(motor1_x)
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * pid_value * (45-angle)/45.0
-            print 'motor1_y: ' + str(motor1_y)
             motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * pid_value
-            print 'motor2_x: ' + str(motor2_x)
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * pid_value
-            print 'motor2_y: ' + str(motor2_y)
-
         elif 45 < angle <= 135:
             # Right motor is used forwards, but because left motor is used backwards,
             # power ratio must be taken into account
@@ -222,19 +217,19 @@ class Simulator(object):
 
         change_x = motor1_x + motor2_x
         change_y = motor1_y + motor2_y
-        print 'change_x: ' + str(change_x)
-        print 'change_y: ' + str(change_y)
+        #print 'change_x: ' + str(change_x)
+        #print 'change_y: ' + str(change_y)
         new_x = zeppelin.get_current_position()[0] + change_x
         new_y = zeppelin.get_current_position()[1] + change_y
-        print 'new_x without error: ' + str(new_x)
-        print 'new_y without error: ' + str(new_y)
-        new_x = self._deviation(new_x, 0.1, 400)
-        new_y = self._deviation(new_y, 0.1, 400)
+        #print 'new_x without error: ' + str(new_x)
+        #print 'new_y without error: ' + str(new_y)
+        new_x = self._deviation(new_x, 5)
+        new_y = self._deviation(new_y, 5)
         print 'new_x with error: ' + str(new_x)
         print 'new_y with error: ' + str(new_y)
         zeppelin.set_current_position(new_x, new_y)
-        new_dir_x = self._deviation(zeppelin.get_current_direction()[0], 0.1, 45)
-        new_dir_y = self._deviation(zeppelin.get_current_direction()[1], 0.1, 45)
+        new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 10)
+        new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 10)
         zeppelin.set_current_direction((new_dir_x, new_dir_y))
 
     def _pid_moving(self, zeppelin, sleep_interval):
@@ -263,10 +258,8 @@ class Simulator(object):
         return atan2(y, x) - pi/2
 
     @staticmethod
-    def _deviation(value, deviation, zero_range):
-        if value != 0:
-            return value * (1 + random.uniform(-deviation, deviation))
-        return random.uniform(-zero_range, zero_range)
+    def _deviation(value, range):
+        return value + random.uniform(-range, range)
 
     @staticmethod
     def _calculate_distance_between(start, end):
@@ -292,13 +285,17 @@ class Simulator(object):
         if length_b == 0 or length_c == 0:
             return 0
 
-        angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
+        try:
+            angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
 
-        cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
+            cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
 
-        if cross < 0:
-            angle *= -1         # angle is negative if the goal lies to the right of the current direction
-        return angle
+            if cross < 0:
+                angle *= -1         # angle is negative if the goal lies to the right of the current direction
+            return angle
+
+        except ValueError:
+            return 0
 
 
 
