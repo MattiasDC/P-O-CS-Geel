@@ -112,7 +112,7 @@ class Simulator(object):
         #self._senderPi_Console = SenderPi.SenderPi()
         #ReceiverPi.receive(self)
 
-        self._our_zeppelin = VirtualZeppelin(114, 24, 10, 50, 100, 0, 10, team)
+        self._our_zeppelin = VirtualZeppelin(27, 185, 47, 141, 100, 194, 137, team)
         if not other_zep is None:
             self._other_zeppelin = other_zep
             self._with_other_zeppelin_flag = True
@@ -195,14 +195,12 @@ class Simulator(object):
 
         elif -45 <= angle < 0:
             # Both motors are used forwards
-            print 'test1'
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * pid_value
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * pid_value
             motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
 
         elif -135 <= angle < - 45:
-            print 'test2'
             # Left motor is used forwards, but because right motor is used backwards,
             # power ratio must be taken into account
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * (angle+135) * 1/90.0 * power_ratio
@@ -222,8 +220,8 @@ class Simulator(object):
         print 'motor2_y: ' + str(motor2_y)
         change_x = motor1_x + motor2_x
         change_y = motor1_y + motor2_y
-        #print 'change_x: ' + str(change_x)
-        #print 'change_y: ' + str(change_y)
+        print 'change_x: ' + str(change_x)
+        print 'change_y: ' + str(change_y)
         new_x = zeppelin.get_current_position()[0] + change_x
         new_y = zeppelin.get_current_position()[1] + change_y
         #print 'new_x without error: ' + str(new_x)
@@ -233,8 +231,8 @@ class Simulator(object):
         print 'new_x with error: ' + str(new_x)
         print 'new_y with error: ' + str(new_y)
         zeppelin.set_current_position(new_x, new_y)
-        new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, change_x)
-        new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, change_y)
+        new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 2*change_x)
+        new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 2*change_y)
         zeppelin.set_current_direction((new_dir_x, new_dir_y))
 
     def _pid_moving(self, zeppelin, sleep_interval):
