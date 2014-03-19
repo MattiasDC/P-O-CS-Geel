@@ -47,4 +47,4 @@ host = 'localhost'             #The ip-adress of the server
 exchange = 'server'            #Name of the exchange used in the protocol
 team = 'geel'                  #Name of the controlled zeppelin
 
-max_speed = 10
+max_speed = 100

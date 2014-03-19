@@ -112,7 +112,7 @@ class Simulator(object):
         #self._senderPi_Console = SenderPi.SenderPi()
         #ReceiverPi.receive(self)
 
-        self._our_zeppelin = VirtualZeppelin(0, 0, 0, 100, 100, 0, 10, team)
+        self._our_zeppelin = VirtualZeppelin(114, 24, 10, 50, 100, 0, 10, team)
         if not other_zep is None:
             self._other_zeppelin = other_zep
             self._with_other_zeppelin_flag = True
@@ -148,11 +148,11 @@ class Simulator(object):
             self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
             if self._with_other_zeppelin_flag == True:
                 self._update_position_thread_zep(self._other_zeppelin, sleep_interval)
-            sleep(sleep_interval)
+            sleep(0.5)
 
     def _update_position_thread_zep(self, zeppelin, sleep_interval):
         angle = self._calculate_angle(zeppelin)
-        #print 'angle: ' + str(angle)
+        print 'angle: ' + str(angle)
         pid_value = self._pid_moving(zeppelin, sleep_interval)
         # The pwm value calculated with the pid method has a maximum and minimum boundary
         if pid_value > pid_boundary:
@@ -164,7 +164,7 @@ class Simulator(object):
         pid_value = pid_value / 100.0
 
         current_degrees = self._direction_to_degrees(zeppelin)
-        #print 'current_degrees: ' + str(degrees(current_degrees))
+        print 'current_degrees: ' + str(degrees(current_degrees))
         speed_backward = max_speed * power_ratio
 
         motor1_x = 0
@@ -195,12 +195,14 @@ class Simulator(object):
 
         elif -45 <= angle < 0:
             # Both motors are used forwards
+            print 'test1'
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * pid_value
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * pid_value
-            motor2_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
+            motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
 
-        elif 135 <= angle < - 45:
+        elif -135 <= angle < - 45:
+            print 'test2'
             # Left motor is used forwards, but because right motor is used backwards,
             # power ratio must be taken into account
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * (angle+135) * 1/90.0 * power_ratio
@@ -214,7 +216,10 @@ class Simulator(object):
             motor1_y = sin(current_degrees + pi/4) * (pid_value * (angle+135) * 1/45)
             motor2_x = cos(current_degrees + 3*pi/4) * (pid_value * -1)
             motor2_y = sin(current_degrees + 3*pi/4) * (pid_value * -1)
-
+        print 'motor1_x: ' + str(motor1_x)
+        print 'motor1_y: ' + str(motor1_y)
+        print 'motor2_x: ' + str(motor2_x)
+        print 'motor2_y: ' + str(motor2_y)
         change_x = motor1_x + motor2_x
         change_y = motor1_y + motor2_y
         #print 'change_x: ' + str(change_x)
@@ -223,13 +228,13 @@ class Simulator(object):
         new_y = zeppelin.get_current_position()[1] + change_y
         #print 'new_x without error: ' + str(new_x)
         #print 'new_y without error: ' + str(new_y)
-        new_x = self._deviation(new_x, 5)
-        new_y = self._deviation(new_y, 5)
+        new_x = self._deviation(new_x, change_x/2)
+        new_y = self._deviation(new_y, change_y/2)
         print 'new_x with error: ' + str(new_x)
         print 'new_y with error: ' + str(new_y)
         zeppelin.set_current_position(new_x, new_y)
-        new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 10)
-        new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 10)
+        new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, change_x)
+        new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, change_y)
         zeppelin.set_current_direction((new_dir_x, new_dir_y))
 
     def _pid_moving(self, zeppelin, sleep_interval):
@@ -285,19 +290,13 @@ class Simulator(object):
         if length_b == 0 or length_c == 0:
             return 0
 
-        try:
-            angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
+        angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
 
-            cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
+        cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
 
-            if cross < 0:
-                angle *= -1         # angle is negative if the goal lies to the right of the current direction
-            return angle
-
-        except ValueError:
-            return 0
-
-
+        if cross < 0:
+            angle *= -1         # angle is negative if the goal lies to the right of the current direction
+        return angle
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
     def add_to_console(self, line):
