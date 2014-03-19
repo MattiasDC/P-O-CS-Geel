@@ -25,31 +25,36 @@ i = 0
 
 def process_picture(image):
     global i
-    #Filter giant rectangle of the image itself
-    res_x, res_y = image.size
-    max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
-    #Load image gray scale
-    gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
-    gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
-    #Find edges in image
-    edge_image = cv2.Canny(gray_image, canny_threshold1, canny_threshold2)
-    cv2.imwrite("a/" + str(i) + "canny.jpg", edge_image)
-    #Make lines thicker to make found edges of shapes closed
-    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-    dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
-    cv2.imwrite("a/" + str(i) + "dilate.jpg", dilated_edge_image)
-    #Fill the rest of the image => result = black shapes, rest is white
+    try:
+        #Filter giant rectangle of the image itself
+        res_x, res_y = image.size
+        max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
-    filled_image = fill_image(dilated_edge_image)
-    cv2.imwrite("a/" + str(i) + "filled.jpg", filled_image)
-    #Find contours of black shapes
-    contours, _ = cv2.findContours(filled_image, 1, 2)
+        #Load image gray scale
+        gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
+        gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
+        #Find edges in image
+        edge_image = cv2.Canny(gray_image, canny_threshold1, canny_threshold2)
+        cv2.imwrite("a/" + str(i) + "canny.jpg", edge_image)
+        #Make lines thicker to make found edges of shapes closed
+        element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
+        cv2.imwrite("a/" + str(i) + "dilate.jpg", dilated_edge_image)
+        #Fill the rest of the image => result = black shapes, rest is white
 
-    #Filter small elements out of the contours and filter to large elements
-    contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
-    #Approximate contour with less points to smooth the contour
-    contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
+        filled_image = fill_image(dilated_edge_image)
+        cv2.imwrite("a/" + str(i) + "filled.jpg", filled_image)
+        #Find contours of black shapes
+        contours, _ = cv2.findContours(filled_image, 1, 2)
+
+        #Filter small elements out of the contours and filter to large elements
+        contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
+        #Approximate contour with less points to smooth the contour
+        contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
+        contours = filter(lambda x: len(x) > 2, contours)
+    except TypeError:
+        return []
 
     found_shapes = []
 

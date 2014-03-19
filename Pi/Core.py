@@ -1,6 +1,6 @@
 
 from threading import Thread
-from time import sleep
+from time import sleep, time
 from datetime import datetime
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
@@ -47,7 +47,7 @@ class Core(object):
     _prev_errors_soft = [0]*10      # List of integral values for PID software
     _prev_derivative_soft = 0       # Prev derivative to substitute misreadings (0 values)
 
-    _position_update_interval = 0.8 # The interval where after imageprocssing is ran
+    _position_update_interval = 0.6 # The interval where after imageprocssing is ran
 
     def initialise(self):
         """
@@ -212,10 +212,12 @@ class Core(object):
 
     def _update_position_thread(self):
         while self._stay_on_position_flag:
+            start = time()
             a, b, c = self._positioner.find_location(self._camera.take_picture())
             if not (a is None or b is None or c is None):
                 self._update_position(a, b, c)
-            sleep(self._position_update_interval)
+            if (self._position_update_interval - (time() - start)) > 0:
+                sleep(self._position_update_interval - (time() - start))
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
 
@@ -230,7 +232,8 @@ class Core(object):
         Stops everything, console output still available. Zeppelin "lands"; Quit server should be called after this
         """
         self.set_navigation_mode(False)
-        self.land()
+        self.set_height_control(False)
+        #self.land()
 
         self._sensor.stop()
         self._motors.stop()
@@ -251,7 +254,7 @@ class Core(object):
         Lands the zeppelin and quits heightcontrol
         """
         self.set_goal_height(ground_height)
-        while self.get_height() > (ground_height + 2):
+        while self.get_height() > (ground_height+5):
             sleep(1)
         self.set_height_control(False)
 
