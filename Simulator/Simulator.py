@@ -112,7 +112,7 @@ class Simulator(object):
         #self._senderPi_Console = SenderPi.SenderPi()
         #ReceiverPi.receive(self)
 
-        self._our_zeppelin = VirtualZeppelin(27, 185, 47, 141, 100, 194, 137, team)
+        self._our_zeppelin = VirtualZeppelin(130, 1360, 2400, 2870, 100, 1970, 1310, team)
         if not other_zep is None:
             self._other_zeppelin = other_zep
             self._with_other_zeppelin_flag = True
@@ -136,23 +136,23 @@ class Simulator(object):
             sleep(sleep_interval)
 
     def _stay_on_height_thread_zep(self, zeppelin):
-        #Fluctuation of maximum 10%
+        #Fluctuation of maximum 10cm
         new_height = self._deviation(zeppelin.get_goal_height(), 10)
         zeppelin.set_current_height(new_height)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
     def _update_position_thread(self):
-        sleep_interval = 0.2
+        sleep_interval = 0.8
         while self._stay_on_position_flag:
             self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
             if self._with_other_zeppelin_flag == True:
                 self._update_position_thread_zep(self._other_zeppelin, sleep_interval)
-            sleep(0.5)
+            sleep(2)
 
     def _update_position_thread_zep(self, zeppelin, sleep_interval):
         angle = self._calculate_angle(zeppelin)
-        print 'angle: ' + str(angle)
+        #print 'angle: ' + str(angle)
         pid_value = self._pid_moving(zeppelin, sleep_interval)
         # The pwm value calculated with the pid method has a maximum and minimum boundary
         if pid_value > pid_boundary:
@@ -164,7 +164,7 @@ class Simulator(object):
         pid_value = pid_value / 100.0
 
         current_degrees = self._direction_to_degrees(zeppelin)
-        print 'current_degrees: ' + str(degrees(current_degrees))
+        #print 'current_degrees: ' + str(degrees(current_degrees))
         speed_backward = max_speed * power_ratio
 
         motor1_x = 0
@@ -210,29 +210,38 @@ class Simulator(object):
 
         elif -180 <= angle < -135:
             # Both motors are used forwards
-            motor1_x = cos(current_degrees + pi/4) * (pid_value * (angle+135) * 1/45)
-            motor1_y = sin(current_degrees + pi/4) * (pid_value * (angle+135) * 1/45)
-            motor2_x = cos(current_degrees + 3*pi/4) * (pid_value * -1)
-            motor2_y = sin(current_degrees + 3*pi/4) * (pid_value * -1)
-        print 'motor1_x: ' + str(motor1_x)
-        print 'motor1_y: ' + str(motor1_y)
-        print 'motor2_x: ' + str(motor2_x)
-        print 'motor2_y: ' + str(motor2_y)
+            motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * (pid_value * (angle+135) * 1/45)
+            motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * (pid_value * (angle+135) * 1/45)
+            motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * -1)
+            motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * -1)
+        #print 'motor1_x: ' + str(motor1_x)
+        #print 'motor1_y: ' + str(motor1_y)
+        #print 'motor2_x: ' + str(motor2_x)
+        #print 'motor2_y: ' + str(motor2_y)
         change_x = motor1_x + motor2_x
         change_y = motor1_y + motor2_y
-        print 'change_x: ' + str(change_x)
-        print 'change_y: ' + str(change_y)
+        #print 'change_x: ' + str(change_x)
+        #print 'change_y: ' + str(change_y)
         new_x = zeppelin.get_current_position()[0] + change_x
         new_y = zeppelin.get_current_position()[1] + change_y
         #print 'new_x without error: ' + str(new_x)
         #print 'new_y without error: ' + str(new_y)
+        #The movement of the zeppelin is not exact
         new_x = self._deviation(new_x, change_x/2)
         new_y = self._deviation(new_y, change_y/2)
         print 'new_x with error: ' + str(new_x)
         print 'new_y with error: ' + str(new_y)
-        zeppelin.set_current_position(new_x, new_y)
+        #The zeppelin will also turn a bit while moving
         new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 2*change_x)
         new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 2*change_y)
+        if -drift_threshold<pid_value< drift_threshold:
+            #If the pid_value is low, there is a chance the zeppelin wil start to drift away
+            drift = self._drift(new_x, new_y, new_dir_x, new_dir_y, sleep_interval)
+            new_x = drift[0]
+            new_y = drift[1]
+            new_dir_x = drift[2]
+            new_dir_y = drift[3]
+        zeppelin.set_current_position(new_x, new_y)
         zeppelin.set_current_direction((new_dir_x, new_dir_y))
 
     def _pid_moving(self, zeppelin, sleep_interval):
@@ -263,6 +272,25 @@ class Simulator(object):
     @staticmethod
     def _deviation(value, range):
         return value + random.uniform(-range, range)
+
+    @staticmethod
+    def _drift(x, y, dir_x, dir_y, sleep_interval):
+        max_drift = sleep_interval*max_speed
+        drift_angle = random.uniform(-2*pi, 2*pi)
+        if random.uniform(0,1) < drift_chance:
+            print "I drifted away"
+            actual_drift = random.gauss(0, max_drift/1.65)
+            drift = [0]*4
+            drift[0] = x + actual_drift*cos(drift_angle)
+            drift[1] = y + actual_drift*sin(drift_angle)
+            drift[2] = dir_x + random.gauss(0, dir_x)
+            drift[3] = dir_y + random.gauss(0, dir_y)
+            print "drift_x:" + str(drift[0])
+            print "drift_y:" + str(drift[1])
+            print "drift_dir_x:" + str(drift[2])
+            print "drift_dir_y:" + str(drift[3])
+            return drift
+        return [x, y, dir_x, dir_y]
 
     @staticmethod
     def _calculate_distance_between(start, end):
