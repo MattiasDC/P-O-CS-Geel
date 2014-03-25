@@ -27,8 +27,8 @@ class VirtualZeppelin(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
 
     def __init__(self, x, y, goal_x, goal_y, height, dir_x, dir_y, color):
-        #self._senderPi_position = SenderPi.SenderPi(color)
-        #self._senderPi_height = SenderPi.SenderPi(color)
+        self._senderPi_position = SenderPi.SenderPi(color)
+        self._senderPi_height = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
         self._goal_height = height
@@ -44,7 +44,7 @@ class VirtualZeppelin(object):
 
     def set_current_position(self, x, y):
         self._current_position = (x,y)
-        #self._senderPi_position.sent_position(x, y)
+        self._senderPi_position.sent_position(x, y)
 
     def get_goal_position(self):
         return self._goal_position
@@ -63,7 +63,7 @@ class VirtualZeppelin(object):
 
     def set_current_height(self, h):
         self._current_height = h
-        #self._senderPi_position.sent_height(h)
+        self._senderPi_position.sent_height(h)
 
     def get_current_direction(self):
         return self._current_direction
@@ -108,11 +108,8 @@ class Simulator(object):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-        #Initialisation and start of the communication with the shared server
-        #self._senderPi_Console = SenderPi.SenderPi()
-        #ReceiverPi.receive(self)
-
         self._our_zeppelin = VirtualZeppelin(130, 1360, 2400, 2870, 100, 1970, 1310, team)
+        ReceiverPi.receive(self._our_zeppelin)
         if not other_zep is None:
             self._other_zeppelin = other_zep
             self._with_other_zeppelin_flag = True
@@ -148,7 +145,7 @@ class Simulator(object):
             self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
             if self._with_other_zeppelin_flag == True:
                 self._update_position_thread_zep(self._other_zeppelin, sleep_interval)
-            sleep(2)
+            sleep(0.8)
 
     def _update_position_thread_zep(self, zeppelin, sleep_interval):
         angle = self._calculate_angle(zeppelin)
@@ -159,7 +156,7 @@ class Simulator(object):
             pid_value = pid_boundary
         elif pid_value < -pid_boundary:
             pid_value = -pid_boundary
-        print 'pid_value: ' + str(pid_value)
+        #print 'pid_value: ' + str(pid_value)
 
         pid_value = pid_value / 100.0
 
@@ -229,8 +226,8 @@ class Simulator(object):
         #The movement of the zeppelin is not exact
         new_x = self._deviation(new_x, change_x/2)
         new_y = self._deviation(new_y, change_y/2)
-        print 'new_x with error: ' + str(new_x)
-        print 'new_y with error: ' + str(new_y)
+        #print 'new_x with error: ' + str(new_x)
+        #print 'new_y with error: ' + str(new_y)
         #The zeppelin will also turn a bit while moving
         new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 2*change_x)
         new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 2*change_y)
@@ -278,17 +275,17 @@ class Simulator(object):
         max_drift = sleep_interval*max_speed
         drift_angle = random.uniform(-2*pi, 2*pi)
         if random.uniform(0,1) < drift_chance:
-            print "I drifted away"
+            #print "I drifted away"
             actual_drift = random.gauss(0, max_drift/1.65)
             drift = [0]*4
             drift[0] = x + actual_drift*cos(drift_angle)
             drift[1] = y + actual_drift*sin(drift_angle)
             drift[2] = dir_x + random.gauss(0, dir_x)
             drift[3] = dir_y + random.gauss(0, dir_y)
-            print "drift_x:" + str(drift[0])
-            print "drift_y:" + str(drift[1])
-            print "drift_dir_x:" + str(drift[2])
-            print "drift_dir_y:" + str(drift[3])
+            #print "drift_x:" + str(drift[0])
+            #print "drift_y:" + str(drift[1])
+            #print "drift_dir_x:" + str(drift[2])
+            #print "drift_dir_y:" + str(drift[3])
             return drift
         return [x, y, dir_x, dir_y]
 

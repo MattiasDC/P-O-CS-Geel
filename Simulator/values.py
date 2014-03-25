@@ -6,9 +6,9 @@ ground_height = 10            # Base height to hover over the ground (used to in
 extention = ".jpg"              # Extentions for the images
 
 # -------------------------------- PID
-pid_error = 0.0115                # 1.95;0.12;3.2/ 3      -> Origineel
-pid_integral = 0.006             # 2.3 1.2 5             -> goede
-pid_derivative = 0.025            # 4 0.38 6
+pid_error = 0.0115              # 1.95;0.12;3.2/ 3      -> Origineel
+pid_integral = 0.006              # 2.3 1.2 5             -> goede
+pid_derivative = 0.025           # 4 0.38 6
                                 # 3.5 0.45 6            -> laatste test
 pid_boundary = 100              # TODO nog te testen
 
@@ -45,6 +45,6 @@ host = 'localhost'             #The ip-adress of the server
 exchange = 'server'            #Name of the exchange used in the protocol
 team = 'geel'                  #Name of the controlled zeppelin
 
-max_speed = 2000                #The maximum speed of the zeppelin
+max_speed = 274               #The maximum speed of the zeppelin
 drift_threshold = 0.2           #The value under which drift will occur
 drift_chance = 0.2              #If the pwm-value is below the threshold-value, drift will occur with this chance

@@ -18,7 +18,7 @@ class SenderPi(object):
 
     #Initialise the sender (open the connection and set the related core)
     def __init__(self, color):
-        _color = color
+        self._color = color
         self.open_connection()
 
     #Open a connection to the server (also sets the connected-flag to true)
