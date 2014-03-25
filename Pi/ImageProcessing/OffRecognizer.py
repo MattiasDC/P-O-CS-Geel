@@ -7,20 +7,15 @@ import os
 import glob
 
 
-min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
-max_contour_factor = 0.8
-canny_threshold1 = 15       # Thresholds for the canny edge detection algorithm
-canny_threshold2 = 45
+min_contour_length = 75    # The minimum length of the contour of a shape, used to filter
+max_contour_factor = 0.6
+canny_threshold1 = 3       # Thresholds for the canny edge detection algorithm
+canny_threshold2 = 10
+# 15 45
 approx_precision = 0.01    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
-iterations = 2              # The amount of iterations to dilate the edges to make the contours of the shapes closed
+iterations = 2             # The amount of iterations to dilate the edges to make the contours of the shapes closed
+# 2
 max_shape_offset = 0.2
-
-#colors = {(40, 70, 70): 'green',
-#          (40, 65, 110): 'blue',
-#          (220, 170, 90): 'yellow',
-#          (255, 255, 255): 'white',
-#          (160, 30, 70): 'red'}
-
 shapes = [Rectangle, Star, Ellipse, Heart]
 i = 0
 
@@ -34,24 +29,57 @@ def process_picture(image):
         max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
         #Load image gray scale
-        gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
-        gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
+        #gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
+        #gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
+        gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2LAB)
+        gray_image = cv2.cvtColor(gray_image, cv2.COLOR_RGB2GRAY)
+        gray_image = cv2.GaussianBlur(gray_image, (5, 5), 2)
         #Find edges in image
         edge_image = cv2.Canny(gray_image, canny_threshold1, canny_threshold2)
+
+        cv2.imshow('e-image', edge_image)
         #Make lines thicker to make found edges of shapes closed
-        element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
         dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
+        cv2.imshow('d-image', dilated_edge_image)
         #Fill the rest of the image => result = black shapes, rest is white
 
-        filled_image = fill_image(dilated_edge_image)
+        #filled_image = fill_image(dilated_edge_image)
+        filled_image = dilated_edge_image
         #Find contours of black shapes
         contours, _ = cv2.findContours(filled_image, 1, 2)
 
         #Filter small elements out of the contours and filter to large elements
         contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
         #Approximate contour with less points to smooth the contour
-        contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
+        #contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
         contours = filter(lambda x: len(x) > 2, contours)
+        #TODO
+        print "hallo", len(contours)
+        sorted_contours = list(map(lambda c: (find_center(c), cv2.arcLength(c), c), contours))
+        sorted_contours = sorted(sorted_contours)
+        print "nope", len(sorted_contours)
+
+        (x, y), _, _ = sorted_contours[0]
+        x1 = x
+        y1 = y
+        filtered_contours = []
+        contours2 = []
+
+        for ((x, y), l, contour) in sorted_contours[:]:
+            if (x1*0.95 <= x <= x1*1.05) and (y1*0.95 <= y <= y1*1.05):
+                filtered_contours.append(((x, y), l, contour))
+            else:
+                _, contour = sorted(map(lambda (_, length, con): (length, con), filtered_contours), reverse=True)[0]
+                contours2.append(contour)
+                filtered_contours = []
+                filtered_contours.append(((x, y), l, contour))
+                x1 = x
+                y1 = y
+
+        contours = contours2
+        print len(contours)
+
     except TypeError:
         return []
 
@@ -70,7 +98,7 @@ def process_picture(image):
         #Get the best match and check if it is less than the max offset
         minimum = min(values)
         if minimum < max_shape_offset:
-            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 3)
+            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 1)
             cv2.putText(gray_image, values[minimum].__class__.__name__ + color, tuple(contour[0].tolist()[0]),
                         cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
             found_shapes.append(values.get(minimum))
@@ -121,8 +149,9 @@ def find_shape_color(contour, image):
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    os.chdir("/home/nooby4ever/Desktop/benjamin/demo")
+    path = "/home/nooby4ever/Desktop/benjamin/600x450/"
+    os.chdir(path)
     for file in glob.glob("*.jpg"):
         print file
-        map(lambda x: x.__class__, process_picture(Image.open('/home/nooby4ever/Desktop/benjamin/demo/' + file)))
+        map(lambda x: x.__class__, process_picture(Image.open(path + file)))
 

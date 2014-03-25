@@ -1,20 +1,22 @@
-from ImageProcessing import Grid
-from ImageProcessing.Shapes import *
-from PIL import Image
-from ImageProcessing import OffRecognizer
+
 from math import *
 from copy import copy
 from time import time
-from values import *
 import os
 import glob
+from PIL import Image
+import Grid
+from Shapes import *
+import OffRecognizer
+from values import *
+
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
 _core = None                    # The core
 _imageprocessor = OffRecognizer    # The image processing
 
-grd = Grid.Grid.from_file("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/grid.txt")
+grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
 
 
 def set_core(core):
@@ -26,8 +28,7 @@ def set_core(core):
 
 def find_location(pil):
     global _core, _imageprocessor, grd
-
-    shapes = _imageprocessor.process_picture(pil)
+    shapes, _ = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
         return None, None, None
 
@@ -100,11 +101,13 @@ def find_in_grid(shapes, grid):
     best_patterns = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
 
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
-    best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
+
+    pos, best_pattern = map(lambda x: (find_position(x), x), best_patterns_shape)
+    #best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
     #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), map_to_mm(x), y),
     #                               best_patterns_shape_and_pos))
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0,0)), map_to_mm(x), y),
-                                   best_patterns_shape_and_pos))
+    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
+    #                               best_patterns_shape_and_pos))
 
     return pos, best_pattern
 
@@ -168,7 +171,7 @@ def build_patterns(solutions):
     start_time = time()
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
-            if time()-start_time > 1:
+            if time()-start_time > 0.7:
                 return []
             if not len(current_pattern) == len(solutions):
                 patterns.remove(current_pattern)
@@ -177,7 +180,8 @@ def build_patterns(solutions):
                         for position_neighbour in neighbour.possible_positions.keys():
                             if position_element in neighbour.possible_positions[position_neighbour]\
                                     and not neighbour in map(lambda (x, y): x, current_pattern)\
-                                    and not position_neighbour in map(lambda (x, y): y, current_pattern):
+                                    and not position_neighbour in map(lambda (x, y): y, current_pattern)\
+                                    and not current_pattern in patterns:
                                 new_pattern = copy(current_pattern)
                                 new_pattern.append((neighbour, position_neighbour))
                                 patterns.append(new_pattern)
@@ -202,47 +206,80 @@ def find_closest_match(patterns, colors_and_shapes, grid):
     return best_pattern
 
 
-def find_position(best_pattern):
+def find_position(best_pattern, mx, my):
     mx = (cam_resolution / 2.0)
     my = mx
 
+    def middle_of_coordinates(coordinates1, coordinates2):
+        return (coordinates1[0] + coordinates2[0])/float(2), (coordinates1[1] + coordinates2[1])/float(2)
+
+    #calculate the middle of a triangle.
+    def middle_of_triangle(coordinates1, coordinates2, coordinates3):
+        return((coordinates1[0] + coordinates2[0] + coordinates3[0])/float(3), (coordinates1[1] + coordinates2[1] + coordinates3[1])/float(3))
+
+    middle_of_shapes = []
+    for i in range(0, len(best_pattern)):
+        for j in range(i, len(best_pattern)):
+            #(shape,(px,py))
+            tuple1 = best_pattern[i]
+            tuple2 = best_pattern[j]
+            #Do not compare shapes that are in a bigger triangle than the smallest possible.
+            if(fabs(tuple1[1][0]-tuple2[1][0])<2 and fabs(tuple1[1][1]-tuple2[1][1])<2):
+                element = middle_of_coordinates(tuple1[0].center, tuple2[0].center)
+                #Add positions to the list which are in the middle between 2 shapes.
+                if not(element in middle_of_shapes):
+                    middle_of_shapes.append(element)
+            #Add positions to the list which are in the middle of a triangle.
+            if(i != j):
+                for k in range(j+1, len(best_pattern)):
+                    tuple3 = best_pattern[k]
+                    if(fabs(tuple1[1][0]-tuple3[1][0])<2 and fabs(tuple1[1][1]-tuple3[1][1])<2 and fabs(tuple2[1][0]-tuple3[1][0])<2 and fabs(tuple2[1][1]-tuple3[1][1])<2):
+                        element = middle_of_triangle(tuple1[0].center, tuple2[0].center, tuple3[0].center)
+                        if not(element in middle_of_shapes):
+                            middle_of_shapes.append(element)
     length = 100000000000000000000000000000
     x = 0
     y = 0
-    for shape, (px, py) in best_pattern:
-        (cx, cy) = shape.center
-        length2 = sqrt((cx + mx)**2 + (cy + my)**2)
+    for (cx, cy) in middle_of_shapes:
+        length2 = sqrt((cx - mx)**2 + (cy - my)**2)
         if length2 < length:
             length = length2
-            x = px
-            y = py
+            x = cx*10.0
+            y = cy*10.0
     return x, y
 
 
 def calc_rotation(shapes):
 
-    shape1, (x, y) = shapes[0]
-    for shape, (a, b) in shapes:
-        if (a, b) in grd.get_neighbour_points(x, y):
-        #if (a, b) in _core.get_grid().get_neighbour_points(x, y):
-            shape2 = shape
-            q = a
-            z = b
+    shape_2, q, z = None, None, None
+    shape_1, x, y = None, None, None
+    for shape1, (a, b) in shapes:
+        for shape2, (c, d) in shapes:
+            if (c, d) in grd.get_neighbour_points(a, b):
+            #if (a, b) in _core.get_grid().get_neighbour_points(x, y):
+                shape_1 = shape1
+                x = a
+                y = b
+                shape_2 = shape2
+                q = c
+                z = d
+                break
+        if not (shape_2 is None and q is None and z is None):
             break
-
+    print x, y, q, z
     if x >= q:
-        lower_shape = shape1
+        lower_shape = shape_1
         (lx, ly) = (x, y)
-        higher_shape = shape2
+        higher_shape = shape_2
         (hx, hy) = (q, z)
     else:
-        higher_shape = shape1
-        (lx, ly) = (x, y)
-        lower_shape = shape2
-        (hx, hy) = (q, z)
+        higher_shape = shape_1
+        (hx, hy) = (x, y)
+        lower_shape = shape_2
+        (lx, ly) = (q, z)
 
     if x != q:
-        angle = diff_row_angle(lower_shape, (lx, ly), higher_shape, (hx, hy))
+        angle = diff_row_angle((lx, ly), (hx, hy))
         tx, ty = calc_theoretical_position_different(angle, lower_shape)
     else:
         tx, ty = calc_theoretical_position_same(ly, hy, lower_shape)
@@ -251,25 +288,48 @@ def calc_rotation(shapes):
     b = sqrt((tx - lower_shape.center[0])**2 + (ty - lower_shape.center[1])**2)
     c = sqrt((lower_shape.center[0] - higher_shape.center[0])**2 + (lower_shape.center[1] - higher_shape.center[1])**2)
 
-    return find_angle(a, b, c)
+    angle = find_angle(a, b, c)
+    if left_turn(lower_shape.center, (tx, ty), higher_shape.center) > 0:
+        left = True
+    else:
+        left = False
+
+    if (lower_shape.center[1] > ty and not left)\
+            or (ty > lower_shape.center[1] and left):
+        angle = 2*pi-angle
+    if lower_shape.center[1] == ty:
+        if (lower_shape.center[0] > tx and higher_shape.center[1] < ty)\
+                or (lower_shape.center[0] < tx and ty < higher_shape.center[1]):
+            angle = 2*pi-angle
+    return angle
+
+
+#if negative => right turn in b, if positive => left turn in b, if 0 collinear
+#caution when using this because this is used in the image coordination format
+def left_turn(a, b, c):
+    return (b[1] - a[1])*(c[0] - a[0]) - (b[0] - a[0])*(c[1] - a[1])
 
 
 def calc_theoretical_position_different(angle, shape_low):
     x, y = shape_low.center
-    x += -sin(angle)
-    y += cos(angle)
+    if round(angle*180/pi) == 60:
+        x += cos(angle)*50
+        y -= sin(angle)*50
+    elif round(angle*180/pi) == 120:
+        x += cos(angle)*50
+        y -= sin(angle)*50
     return x, y
 
 
 def calc_theoretical_position_same(ly, hy, shape_low):
     if ly > hy:
-        x = shape_low.center[0]-1
+        x = shape_low.center[0]-50
     else:
-        x = shape_low.center[0]+1
+        x = shape_low.center[0]+50
     return x, shape_low.center[1]
 
 
-def diff_row_angle(shapelow, (lx, ly), shapehigh, (hx, hy)):
+def diff_row_angle((lx, ly), (hx, hy)):
 
     #Odd
     if lx % 2 == 0:
@@ -339,7 +399,9 @@ class ColorPoint(object):
 
 if __name__ == '__main__':
 
-    os.chdir("/home/nooby4ever/Desktop/benjamin/demo")
-    for file in glob.glob("*.jpg"):
-        print file
-        find_location(Image.open('/home/nooby4ever/Desktop/benjamin/demo/' + file))
+    os.chdir("C:\Users\Mattias\Desktop\images")
+    for filee in glob.glob("*.jpg"):
+        print str(filee)
+        pos, _, pangle = find_location(Image.open('C:\Users\Mattias\Desktop\images\\' + filee))
+        if not pangle is None:
+            print str(pos) + str(pangle*180.0/pi)
