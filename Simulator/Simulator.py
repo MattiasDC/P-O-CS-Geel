@@ -156,7 +156,7 @@ class Simulator(object):
             pid_value = pid_boundary
         elif pid_value < -pid_boundary:
             pid_value = -pid_boundary
-        #print 'pid_value: ' + str(pid_value)
+        print 'pid_value: ' + str(pid_value)
 
         pid_value = pid_value / 100.0
 
@@ -226,8 +226,8 @@ class Simulator(object):
         #The movement of the zeppelin is not exact
         new_x = self._deviation(new_x, change_x/2)
         new_y = self._deviation(new_y, change_y/2)
-        #print 'new_x with error: ' + str(new_x)
-        #print 'new_y with error: ' + str(new_y)
+        print 'new_x with error: ' + str(new_x)
+        print 'new_y with error: ' + str(new_y)
         #The zeppelin will also turn a bit while moving
         new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 2*change_x)
         new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 2*change_y)
