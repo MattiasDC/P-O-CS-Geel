@@ -1,6 +1,7 @@
 from time import time
 from PIL import Image
 import cv2
+from math import pi
 from Shapes import *
 import colorsys
 import os
@@ -54,31 +55,23 @@ def process_picture(image):
         #Approximate contour with less points to smooth the contour
         #contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
         contours = filter(lambda x: len(x) > 2, contours)
-        #TODO
-        print "hallo", len(contours)
-        sorted_contours = list(map(lambda c: (find_center(c), cv2.arcLength(c), c), contours))
-        sorted_contours = sorted(sorted_contours)
-        print "nope", len(sorted_contours)
 
-        (x, y), _, _ = sorted_contours[0]
-        x1 = x
-        y1 = y
-        filtered_contours = []
+        sorted_contours = list(map(lambda c: (find_center(c), cv2.arcLength(c, True), c), contours))
+        sorted_contours = sorted(sorted_contours)
+
         contours2 = []
 
         for ((x, y), l, contour) in sorted_contours[:]:
-            if (x1*0.95 <= x <= x1*1.05) and (y1*0.95 <= y <= y1*1.05):
-                filtered_contours.append(((x, y), l, contour))
-            else:
-                _, contour = sorted(map(lambda (_, length, con): (length, con), filtered_contours), reverse=True)[0]
-                contours2.append(contour)
-                filtered_contours = []
-                filtered_contours.append(((x, y), l, contour))
-                x1 = x
-                y1 = y
+            if not ((x, y), l, contour) in sorted_contours:
+                continue
+            close_by = filter(lambda ((x1, y1), l1, c1): (x1*0.95 <= x <= x1*1.05) and (y1*0.95 <= y <= y1*1.05),
+                              sorted_contours)
+            _, large_contour = sorted(map(lambda (_, length, con): (length, con), close_by), reverse=True)[0]
+            contours2.append(large_contour)
+            for element in close_by:
+                sorted_contours.remove(element)
 
         contours = contours2
-        print len(contours)
 
     except TypeError:
         return []
@@ -98,12 +91,13 @@ def process_picture(image):
         #Get the best match and check if it is less than the max offset
         minimum = min(values)
         if minimum < max_shape_offset:
-            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 1)
-            cv2.putText(gray_image, values[minimum].__class__.__name__ + color, tuple(contour[0].tolist()[0]),
-                        cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
+            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 1)
+            #cv2.putText(gray_image, values[minimum].__class__.__name__ + color, tuple(contour[0].tolist()[0]),
+            #            cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
             found_shapes.append(values.get(minimum))
-    cv2.imshow('image', gray_image)
-    cv2.waitKey(0)
+            #TODO collect features and feed to network
+    #cv2.imshow('image', gray_image)
+    #cv2.waitKey(0)
     i += 1
     return found_shapes
 
@@ -134,7 +128,6 @@ def find_shape_color(contour, image):
     """
     center = find_center(contour)
     x, y, z = image.getpixel(center)
-    #_, value = min(map(lambda (r, g, b): (abs(r-x) + abs(g-y) + abs(b-z), (r, g, b)), colors.keys()))
     h, s, v = colorsys.rgb_to_hsv(x/255.0, y/255.0, z/255.0)
     if 0 <= s*100 <= 25 and v*100 >= 80:
         return 'white'
@@ -146,6 +139,48 @@ def find_shape_color(contour, image):
         return 'blue'
     elif 75 <= h*360 < 200:
         return 'green'
+
+
+def get_features(contour):
+    result = []
+    for l in invariant_moments(contour).tolist():
+        result.extend(l)
+    result.append(circularity_degree(contour))
+    result.append(rectangle_degree(contour))
+    result.append(sphericity_degree(contour))
+    result.append(concavity_degree(contour))
+    result.append(flat_degree(contour))
+    return result
+
+
+def invariant_moments(contour):
+    return cv2.HuMoments(cv2.moments(contour))
+
+
+def circularity_degree(contour):
+    return (cv2.arcLength(contour, True)**2)/cv2.contourArea(contour)
+
+
+def rectangle_degree(contour):
+    _, _, width, height = cv2.boundingRect(contour)
+    area = (width*height)
+    return cv2.contourArea(contour)/area
+
+
+def sphericity_degree(contour):
+    c, r = cv2.minEnclosingCircle(contour)
+    print str(cv2.contourArea(contour)), str(pi*(r**2))
+    return cv2.contourArea(contour)/(pi*(r**2))
+
+
+def concavity_degree(contour):
+    return 1 - (cv2.contourArea(contour)/cv2.contourArea(cv2.convexHull(contour)))
+
+
+def flat_degree(contour):
+    _, _, width, height = cv2.boundingRect(contour)
+    return float(width)/height
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
