@@ -156,7 +156,7 @@ class Simulator(object):
             pid_value = pid_boundary
         elif pid_value < -pid_boundary:
             pid_value = -pid_boundary
-        print 'pid_value: ' + str(pid_value)
+        #print 'pid_value: ' + str(pid_value)
 
         pid_value = pid_value / 100.0
 

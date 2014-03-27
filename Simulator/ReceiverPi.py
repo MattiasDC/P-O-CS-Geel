@@ -72,12 +72,12 @@ class ReceiverPi(object):
 
     #Open a connection to the server (also sets the connected-flag to true)
     def open_connection(self):
-        self._connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host=host))
-        self._channel = self._connection.channel()
-        self._channel.exchange_declare(exchange='exchange',
+       self._connection = pika.BlockingConnection(pika.ConnectionParameters(
+            host='localhost', port=5673, credentials=pika.PlainCredentials('geel', 'geel')))
+       self._channel = self._connection.channel()
+       self._channel.exchange_declare(exchange='exchange',
                          type='topic')
-        self._connected = True
+       self._connected = True
 
     #Close the connection (also sets the connected-flag to true)
     #Must be called when program stops
