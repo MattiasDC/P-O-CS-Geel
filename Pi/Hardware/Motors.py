@@ -18,7 +18,7 @@ class MotorControl(object):
     def __init__(self, core):
         # Arguments not checked
         self._core = core
-        self._motor1 = FixedMotor(24, 4, self._core)
+        self._motor1 = FixedMotor(9, 7, self._core)
         self._motor2 = FixedMotor(17, 23, self._core)
         self._pwm_motor = PWMMotor(10, 11, self._core)
 
@@ -28,10 +28,10 @@ class MotorControl(object):
         """
         self._pwm_motor.quit()
         self.stop_moving()
-        GPIO.setup(24, GPIO.IN)
-        GPIO.setup(4, GPIO.IN)
-        GPIO.setup(23, GPIO.IN)
+        GPIO.setup(9, GPIO.IN)
+        GPIO.setup(7, GPIO.IN)
         GPIO.setup(17, GPIO.IN)
+        GPIO.setup(23, GPIO.IN)
         GPIO.setup(10, GPIO.IN)
         GPIO.setup(11, GPIO.IN)
         self._core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " +
@@ -165,7 +165,7 @@ class FixedMotor(object):
         """
         GPIO.output(self._pin1, 0)
         GPIO.output(self._pin2, 1)
-        print "move counterclockwise"
+        print "moved counterclockwise"
 
     def move_clockwise(self):
         """

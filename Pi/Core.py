@@ -272,6 +272,7 @@ class Core(object):
         self._current_angle = (angle * 180.0) / pi
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self._current_position))
 
+
 # ------------------------------------------ Getters -------------------------------------------------------------------
 
     def get_grid(self):
