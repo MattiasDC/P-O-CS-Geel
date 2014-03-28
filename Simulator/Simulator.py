@@ -108,7 +108,7 @@ class Simulator(object):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-        self._our_zeppelin = VirtualZeppelin(130, 1360, 2400, 2870, 100, 1970, 1310, team)
+        self._our_zeppelin = VirtualZeppelin(500, 500, 100, 100, 100, 600, 700, team)
         ReceiverPi.receive(self._our_zeppelin)
         if not other_zep is None:
             self._other_zeppelin = other_zep
@@ -145,7 +145,8 @@ class Simulator(object):
             self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
             if self._with_other_zeppelin_flag == True:
                 self._update_position_thread_zep(self._other_zeppelin, sleep_interval)
-            sleep(0.8)
+            sleep(2)
+
 
     def _update_position_thread_zep(self, zeppelin, sleep_interval):
         angle = self._calculate_angle(zeppelin)
@@ -169,12 +170,15 @@ class Simulator(object):
         motor2_x = 0
         motor2_y = 0
 
+
         if 0 <= angle <= 45:
             # Both motors are used forwards
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * pid_value * (45-angle)/45.0
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * pid_value * (45-angle)/45.0
             motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * pid_value
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * pid_value
+            #print 'PID motor1: ' + str(pid_value * (45-angle)/45)
+            #print 'PID motor2: ' + str(pid_value)
         elif 45 < angle <= 135:
             # Right motor is used forwards, but because left motor is used backwards,
             # power ratio must be taken into account
@@ -182,6 +186,8 @@ class Simulator(object):
             motor1_y = sin(current_degrees + pi/4) * speed_backward * sleep_interval * pid_value * (angle-45) * -1/90.0
             motor2_x = cos(current_degrees + 135) * max_speed * sleep_interval * pid_value * (angle-135) * -1/90.0 * power_ratio
             motor2_y = sin(current_degrees + 135) * max_speed * sleep_interval * pid_value * (angle-135) * -1/90.0 * power_ratio
+            #print 'PID motor1: ' + str(pid_value * (angle-45) * -1/90)
+            #print 'PID motor2: ' + str(pid_value * (angle-135) * -1/90 * power_ratio)
 
         elif 135 < angle <= 180:
             # Both motors are used forwards
@@ -189,13 +195,16 @@ class Simulator(object):
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * (pid_value * -1)
             motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (angle-135) * -1/45.0)
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (angle-135) * -1/45.0)
-
+            #print 'PID motor1: ' + str(pid_value * -1)
+            #print 'PID motor2: ' + str(pid_value * (angle-135) * -1/45)
         elif -45 <= angle < 0:
             # Both motors are used forwards
             motor1_x = cos(current_degrees + pi/4) * max_speed * sleep_interval * pid_value
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * pid_value
             motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * (45+angle)/45.0)
+            #print 'PID motor1: ' + str(pid_value)
+            #print 'PID motor2: ' + str(pid_value * (45+angle)/45)
 
         elif -135 <= angle < - 45:
             # Left motor is used forwards, but because right motor is used backwards,
@@ -204,6 +213,8 @@ class Simulator(object):
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * (angle+135) * 1/90.0 * power_ratio
             motor2_x = cos(current_degrees + 3*pi/4) * speed_backward * sleep_interval * (angle+45) * 1/90.0
             motor2_y = sin(current_degrees + 3*pi/4) * speed_backward * sleep_interval * (angle+45) * 1/90.0
+            #print 'PID motor1: ' + str(pid_value * (angle+135) * 1/90 * power_ratio)
+            #print 'PID motor2: ' + str(pid_value * (angle+45) * 1/90)
 
         elif -180 <= angle < -135:
             # Both motors are used forwards
@@ -211,6 +222,8 @@ class Simulator(object):
             motor1_y = sin(current_degrees + pi/4) * max_speed * sleep_interval * (pid_value * (angle+135) * 1/45)
             motor2_x = cos(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * -1)
             motor2_y = sin(current_degrees + 3*pi/4) * max_speed * sleep_interval * (pid_value * -1)
+            #print 'PID motor1: ' + str(pid_value * (angle+135) * 1/45)
+            #print 'PID motor2: ' + str(pid_value * -1)
         #print 'motor1_x: ' + str(motor1_x)
         #print 'motor1_y: ' + str(motor1_y)
         #print 'motor2_x: ' + str(motor2_x)
@@ -226,8 +239,8 @@ class Simulator(object):
         #The movement of the zeppelin is not exact
         new_x = self._deviation(new_x, change_x/2)
         new_y = self._deviation(new_y, change_y/2)
-        print 'new_x with error: ' + str(new_x)
-        print 'new_y with error: ' + str(new_y)
+        #print 'new_x with error: ' + str(new_x)
+        #print 'new_y with error: ' + str(new_y)
         #The zeppelin will also turn a bit while moving
         new_dir_x = self._deviation(zeppelin.get_current_direction()[0] + change_x, 2*change_x)
         new_dir_y = self._deviation(zeppelin.get_current_direction()[1] + change_y, 2*change_y)
@@ -313,7 +326,11 @@ class Simulator(object):
         if length_b == 0 or length_c == 0:
             return 0
 
-        angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
+        x = (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
+        if x <= 1.0:
+            angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
+        else:
+            angle = 0
 
         cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
 
