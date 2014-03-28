@@ -88,3 +88,9 @@ class Ellipse(Shape):
 
     def __init__(self, color, center=None):
         super(Ellipse, self).__init__(color, center)
+
+
+class UnrecognizedShape(Shape):
+
+    def __init__(self, color, center=None):
+        super(UnrecognizedShape, self).__init__(color, center)

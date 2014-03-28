@@ -182,6 +182,20 @@ def flat_degree(contour):
     return float(width)/height
 
 
+def is_gray(contour, image):
+    offset = 20
+    white = 220
+
+    center = find_center(contour)
+    x, y, z = image.getpixel(center)
+
+    if x > white or y > white or z > white:
+        return False
+    if abs(x - y) < offset and abs(x - z) < offset and abs(y - z) < offset:
+        return True
+    return False
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     path = "/home/nooby4ever/Desktop/benjamin/600x450/"
