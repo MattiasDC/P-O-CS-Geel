@@ -327,8 +327,10 @@ class Simulator(object):
             return 0
 
         x = (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
-        if x <= 1.0:
+        if x <= 1.0 and x >= -1.0:
             angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
+        elif x <= -1.0:
+            angle = -pi
         else:
             angle = 0
 
