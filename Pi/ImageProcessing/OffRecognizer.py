@@ -36,8 +36,6 @@ def process_picture(image):
         max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
         #Load image gray scale
-        #gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
-        #gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
         gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2LAB)
         gray_image = cv2.cvtColor(gray_image, cv2.COLOR_RGB2GRAY)
         gray_image = cv2.GaussianBlur(gray_image, (5, 5), 2)
@@ -55,7 +53,6 @@ def process_picture(image):
         #Filter small elements out of the contours and filter to large elements
         contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
         #Approximate contour with less points to smooth the contour
-        #contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
         contours = filter(lambda x: len(x) > 2, contours)
 
         sorted_contours = list(map(lambda c: (find_center(c), cv2.arcLength(c, True), c), contours))
@@ -160,7 +157,6 @@ def get_features(contour, image):
 
 
 def is_valid_shape(contour, image):
-    #TODO max contour size verlagen
     return (not is_gray(contour, image)) and is_full_shape(contour)
 
 

@@ -6,23 +6,29 @@ from Shapes import *
 import colorsys
 import os
 import glob
+from pybrain.structure import FeedForwardNetwork
+from pybrain.tools.xml import NetworkReader
 
 
-min_contour_length = 75    # The minimum length of the contour of a shape, used to filter
+
+min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
 max_contour_factor = 0.6
-canny_threshold1 = 3       # Thresholds for the canny edge detection algorithm
+canny_threshold1 = 5       # Thresholds for the canny edge detection algorithm
 canny_threshold2 = 10
-# 15 45
 approx_precision = 0.01    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
 iterations = 2             # The amount of iterations to dilate the edges to make the contours of the shapes closed
-# 2
 max_shape_offset = 0.2
-shapes = [Rectangle, Star, Ellipse, Heart]
-i = 0
+shape_map = {0: Rectangle,
+            1: Ellipse,
+            2: Heart,
+            3: Star}
+
+feature_size = (20, 20)
+net = NetworkReader.readFrom("C:/Users/Mattias/Dropbox/neural/network40.xml")
 
 
 def process_picture(image):
-    global i
+    global shape_map, net, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length, approx_precision, iterations, max_shape_offset
 
     try:
         #Filter giant rectangle of the image itself
@@ -30,30 +36,23 @@ def process_picture(image):
         max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
         #Load image gray scale
-        #gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2GRAY)
-        #gray_image = cv2.GaussianBlur(gray_image, (3, 3), 3)
         gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2LAB)
         gray_image = cv2.cvtColor(gray_image, cv2.COLOR_RGB2GRAY)
         gray_image = cv2.GaussianBlur(gray_image, (5, 5), 2)
         #Find edges in image
         edge_image = cv2.Canny(gray_image, canny_threshold1, canny_threshold2)
 
-        cv2.imshow('e-image', edge_image)
         #Make lines thicker to make found edges of shapes closed
         element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
         dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
-        cv2.imshow('d-image', dilated_edge_image)
         #Fill the rest of the image => result = black shapes, rest is white
 
-        #filled_image = fill_image(dilated_edge_image)
-        filled_image = dilated_edge_image
         #Find contours of black shapes
-        contours, _ = cv2.findContours(filled_image, 1, 2)
+        contours, _ = cv2.findContours(dilated_edge_image, 1, 2)
 
         #Filter small elements out of the contours and filter to large elements
         contours = filter(lambda x: min_contour_length < cv2.arcLength(x, True) < max_contour_length, contours)
         #Approximate contour with less points to smooth the contour
-        #contours = map(lambda x: cv2.approxPolyDP(x, approx_precision*cv2.arcLength(x, True), True), contours)
         contours = filter(lambda x: len(x) > 2, contours)
 
         sorted_contours = list(map(lambda c: (find_center(c), cv2.arcLength(c, True), c), contours))
@@ -64,8 +63,7 @@ def process_picture(image):
         for ((x, y), l, contour) in sorted_contours[:]:
             if not ((x, y), l, contour) in sorted_contours:
                 continue
-            close_by = filter(lambda ((x1, y1), l1, c1): (x1*0.95 <= x <= x1*1.05) and (y1*0.95 <= y <= y1*1.05),
-                              sorted_contours)
+            close_by = filter(lambda ((x1, y1), l1, c1): abs(x1 -x) <= 50 and abs(y1 -y) <= 50, sorted_contours)
             _, large_contour = sorted(map(lambda (_, length, con): (length, con), close_by), reverse=True)[0]
             contours2.append(large_contour)
             for element in close_by:
@@ -79,26 +77,19 @@ def process_picture(image):
     found_shapes = []
 
     for contour in contours:
-        values = dict()
-
         color = find_shape_color(contour, image)
         center = find_center(contour)
+        features = None
 
-        #For each possible shape, calculate the matching
-        for shape in shapes:
-            values[cv2.matchShapes(contour, shape.contour, 1, 0)] = shape(color, center)
+        if is_valid_shape(contour):
+            features = get_features(contour, gray_image)
+            if features is not None and not is_on_edge(contour, gray_image.shape):
+                net_return = net.activate(features)
+                r = net_return.argmax(axis=0)
+                found_shapes.append(shape_map[r](color, center))
+            else:
+                found_shapes.append(UnrecognizedShape(color, center))
 
-        #Get the best match and check if it is less than the max offset
-        minimum = min(values)
-        if minimum < max_shape_offset:
-            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), 1)
-            #cv2.putText(gray_image, values[minimum].__class__.__name__ + color, tuple(contour[0].tolist()[0]),
-            #            cv2.FONT_HERSHEY_PLAIN, 3.0, (255, 0, 0))
-            found_shapes.append(values.get(minimum))
-            #TODO collect features and feed to network
-    #cv2.imshow('image', gray_image)
-    #cv2.waitKey(0)
-    i += 1
     return found_shapes
 
 
@@ -110,6 +101,11 @@ def fill_image(image):
     image = cv2.copyMakeBorder(image, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=0)
     cv2.floodFill(image, None, (0, 0), 255)
     return image
+
+
+def is_on_edge(contour, (dh, dw)):
+    coordinates = [(h, w) for [[h, w]] in contour]
+    return any(filter(lambda (x, y): if x <= 1 or x == dw or y == dh or y <= 1, coordinates))
 
 
 def find_center(contour):
@@ -141,45 +137,46 @@ def find_shape_color(contour, image):
         return 'green'
 
 
-def get_features(contour):
-    result = []
-    for l in invariant_moments(contour).tolist():
-        result.extend(l)
-    result.append(circularity_degree(contour))
-    result.append(rectangle_degree(contour))
-    result.append(sphericity_degree(contour))
-    result.append(concavity_degree(contour))
-    result.append(flat_degree(contour))
-    return result
+def get_features(contour, image):
+    (x, y), r = cv2.minEnclosingCircle(contour)
+    left_up_x = x-r
+    left_up_y = y-r
+    right_down_x = x+r
+    right_down_y = y+r
+
+    height, width = image.shape
+    blank_image = np.zeros((height, width))
+    cv2.drawContours(blank_image, [contour], 0, (255, 0, 0), -1)
+
+    if left_up_x < 0 or left_up_y < 0 or right_down_x < 0 or right_down_x < 0:
+        return None
+
+    sliced = blank_image[left_up_y:right_down_y, left_up_x:right_down_x]
+    scaled_slice = cv2.resize(sliced, feature_size)
+    return scaled_slice.flat
 
 
-def invariant_moments(contour):
-    return cv2.HuMoments(cv2.moments(contour))
+def is_valid_shape(contour, image):
+    return (not is_gray(contour, image)) and is_full_shape(contour)
 
 
-def circularity_degree(contour):
-    return (cv2.arcLength(contour, True)**2)/cv2.contourArea(contour)
+def is_gray(contour, image):
+    offset = 20
+    white = 220
+
+    center = find_center(contour)
+    x, y, z = image.getpixel(center)
+
+    if x > white or y > white or z > white:
+        return False
+    if abs(x - y) < offset and abs(x - z) < offset and abs(y - z) < offset:
+        return True
+    return False
 
 
-def rectangle_degree(contour):
-    _, _, width, height = cv2.boundingRect(contour)
-    area = (width*height)
-    return cv2.contourArea(contour)/area
-
-
-def sphericity_degree(contour):
-    c, r = cv2.minEnclosingCircle(contour)
-    print str(cv2.contourArea(contour)), str(pi*(r**2))
-    return cv2.contourArea(contour)/(pi*(r**2))
-
-
-def concavity_degree(contour):
-    return 1 - (cv2.contourArea(contour)/cv2.contourArea(cv2.convexHull(contour)))
-
-
-def flat_degree(contour):
-    _, _, width, height = cv2.boundingRect(contour)
-    return float(width)/height
+def is_full_shape(contour):
+    area = cv2.contourArea(contour)
+    return area/cv2.arcLength(contour, True) > 3
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -189,4 +186,3 @@ if __name__ == "__main__":
     for file in glob.glob("*.jpg"):
         print file
         map(lambda x: x.__class__, process_picture(Image.open(path + file)))
-
