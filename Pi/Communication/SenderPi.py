@@ -90,6 +90,20 @@ class SenderPi(object):
                       body=message)
             return 'succes'
 
+    #Sent a direction (determined by the parameters) to the sever
+    def sent_direction(self, angle):
+        if not self._connected:
+            #No connection to a server, so the message can not be delivered
+            return 'Not connected'
+        else:
+            #Publish the message (as a tupel representing the direction) to the exchange with the correct routing key
+            routing_key = team + '.private.direction'
+            message = str(angle)
+            self._channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=message)
+            return 'succes'
+
     #Sent console information to the sever
     def sent_console_information(self, info):
         if not self._connected:

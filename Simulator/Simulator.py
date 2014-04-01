@@ -25,10 +25,12 @@ class VirtualZeppelin(object):
 
     _senderPi_position = None       # The sender-object used for sending position-messages to the server
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
+    _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
 
     def __init__(self, x, y, goal_x, goal_y, height, dir_x, dir_y, color):
         self._senderPi_position = SenderPi.SenderPi(color)
         self._senderPi_height = SenderPi.SenderPi(color)
+        self.senderPi_direction = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
         self._goal_height = height
@@ -68,8 +70,9 @@ class VirtualZeppelin(object):
     def get_current_direction(self):
         return self._current_direction
 
-    def set_current_direction(self, dir):
-        self._current_direction = dir
+    def set_current_direction(self, direction):
+        self._current_direction = direction
+        self.senderPi_direction.sent_direction(Simulator._direction_to_degrees(self))
 
     def get_color(self):
         return self._color
@@ -91,7 +94,6 @@ class VirtualZeppelin(object):
 
     def set_prev_derivative_soft(self, value):
         self._prev_derivative_soft = value
-
 
 class Simulator(object):
 
