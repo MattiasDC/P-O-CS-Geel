@@ -100,9 +100,7 @@ def find_in_grid(shapes, grid):
     best_patterns = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
 
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
-    best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), map_to_mm(x), y),
-                                   best_patterns_shape_and_pos))
+    pos, best_pattern = map(lambda x: (find_position(x), x), best_patterns_shape)
 
     return pos, best_pattern
 
@@ -205,16 +203,44 @@ def find_position(best_pattern):
     mx = (cam_resolution / 2.0)
     my = mx
 
+    def middle_of_coordinates(coordinates1, coordinates2):
+        return (coordinates1[0] + coordinates2[0])/float(2), (coordinates1[1] + coordinates2[1])/float(2)
+
+    #calculate the middle of a triangle.
+    def middle_of_triangle(coordinates1, coordinates2, coordinates3):
+        return (coordinates1[0] + coordinates2[0] + coordinates3[0])/float(3),\
+               (coordinates1[1] + coordinates2[1] + coordinates3[1])/float(3)
+
+    middle_of_shapes = []
+    for i in range(0, len(best_pattern)):
+        for j in range(i, len(best_pattern)):
+            #(shape,(px,py))
+            tuple1 = best_pattern[i]
+            tuple2 = best_pattern[j]
+            #Do not compare shapes that are in a bigger triangle than the smallest possible.
+            if fabs(tuple1[1][0]-tuple2[1][0]) < 2 and fabs(tuple1[1][1]-tuple2[1][1]) < 2:
+                element = middle_of_coordinates(tuple1[0].center, tuple2[0].center)
+                #Add positions to the list which are in the middle between 2 shapes.
+                if not(element in middle_of_shapes):
+                    middle_of_shapes.append(element)
+            #Add positions to the list which are in the middle of a triangle.
+            if i != j:
+                for k in range(j+1, len(best_pattern)):
+                    tuple3 = best_pattern[k]
+                    if fabs(tuple1[1][0]-tuple3[1][0]) < 2 and fabs(tuple1[1][1]-tuple3[1][1]) < 2\
+                            and fabs(tuple2[1][0]-tuple3[1][0]) < 2 and fabs(tuple2[1][1]-tuple3[1][1]) < 2:
+                        element = middle_of_triangle(tuple1[0].center, tuple2[0].center, tuple3[0].center)
+                        if not(element in middle_of_shapes):
+                            middle_of_shapes.append(element)
     length = 100000000000000000000000000000
     x = 0
     y = 0
-    for shape, (lx, ly) in best_pattern:
-        (cx, cy) = shape.center
-        length2 = sqrt((cx + mx)**2 + (cy + my)**2)
+    for (cx, cy) in middle_of_shapes:
+        length2 = sqrt((cx - mx)**2 + (cy - my)**2)
         if length2 < length:
             length = length2
-            x = lx
-            y = ly
+            x = cx*10.0
+            y = cy*10.0
     return x, y
 
 

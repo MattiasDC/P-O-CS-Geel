@@ -1,17 +1,16 @@
-
 from threading import Thread
 from time import sleep, time
 from datetime import datetime
+from math import pow, sqrt, acos, degrees, pi
+
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
-from math import pow, sqrt, acos, degrees, pi
 from values import *
 import Communication.ReceiverPi as ReceiverPi
 import Communication.SenderPi as SenderPi
-import os
 
 
 class Core(object):

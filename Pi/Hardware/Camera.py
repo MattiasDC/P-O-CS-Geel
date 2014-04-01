@@ -1,9 +1,11 @@
-import PiCamera
 from datetime import datetime
-from values import *
 import io
+
 import Image
-import os
+
+import PiCamera
+from values import *
+
 
 _core = None
 _flag_initialised = False

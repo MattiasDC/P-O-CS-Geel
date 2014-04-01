@@ -99,14 +99,14 @@ class MotorControl(object):
             sleep(up_time)
             #Stop the motor and sleep for the remaining of the duty_cycle
             self._motor2.stop_moving()
-            sleep (total_time-up_time)
+            sleep(total_time-up_time)
         if (pwm < 0 and pwm >= 100):
             #Let the motor turn for the up_time
             self._motor2.move_clockwise()
             sleep(up_time)
             #Stop the motor and sleep for the remaining of the duty_cycle
             self._motor2.stop_moving()
-            sleep (total_time-up_time)
+            sleep(total_time-up_time)
 
     def set_pwm(self, pwm):
         #Controls the PWM-motor

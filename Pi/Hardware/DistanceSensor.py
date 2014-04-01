@@ -1,10 +1,12 @@
 import time
 from datetime import datetime
-import RPi.GPIO as GPIO
 from threading import Thread
 from time import sleep
 from copy import deepcopy
+
+import RPi.GPIO as GPIO
 from values import *
+
 
 GPIO.setmode(GPIO.BCM)
 # --------------------------------------------------------------------- Variables

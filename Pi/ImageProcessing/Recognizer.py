@@ -19,16 +19,17 @@ approx_precision = 0.01    # The approximation of the contour when using the Ram
 iterations = 2             # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_shape_offset = 0.2
 shape_map = {0: Rectangle,
-            1: Ellipse,
-            2: Heart,
-            3: Star}
+             1: Ellipse,
+             2: Heart,
+             3: Star}
 
 feature_size = (20, 20)
 net = NetworkReader.readFrom("C:/Users/Mattias/Dropbox/neural/network40.xml")
 
 
 def process_picture(image):
-    global shape_map, net, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length, approx_precision, iterations, max_shape_offset
+    global shape_map, net, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length,\
+        approx_precision, iterations, max_shape_offset
 
     try:
         #Filter giant rectangle of the image itself
@@ -105,7 +106,7 @@ def fill_image(image):
 
 def is_on_edge(contour, (dh, dw)):
     coordinates = [(h, w) for [[h, w]] in contour]
-    return any(filter(lambda (x, y): if x <= 1 or x == dw or y == dh or y <= 1, coordinates))
+    return any(filter(lambda (x, y): x <= 1 or x == dw or y == dh or y <= 1, coordinates))
 
 
 def find_center(contour):

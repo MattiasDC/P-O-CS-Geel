@@ -206,7 +206,7 @@ def find_closest_match(patterns, colors_and_shapes, grid):
     return best_pattern
 
 
-def find_position(best_pattern, mx, my):
+def find_position(best_pattern):
     mx = (cam_resolution / 2.0)
     my = mx
 
@@ -215,7 +215,8 @@ def find_position(best_pattern, mx, my):
 
     #calculate the middle of a triangle.
     def middle_of_triangle(coordinates1, coordinates2, coordinates3):
-        return((coordinates1[0] + coordinates2[0] + coordinates3[0])/float(3), (coordinates1[1] + coordinates2[1] + coordinates3[1])/float(3))
+        return (coordinates1[0] + coordinates2[0] + coordinates3[0])/float(3),\
+               (coordinates1[1] + coordinates2[1] + coordinates3[1])/float(3)
 
     middle_of_shapes = []
     for i in range(0, len(best_pattern)):
@@ -224,16 +225,17 @@ def find_position(best_pattern, mx, my):
             tuple1 = best_pattern[i]
             tuple2 = best_pattern[j]
             #Do not compare shapes that are in a bigger triangle than the smallest possible.
-            if(fabs(tuple1[1][0]-tuple2[1][0])<2 and fabs(tuple1[1][1]-tuple2[1][1])<2):
+            if fabs(tuple1[1][0]-tuple2[1][0]) < 2 and fabs(tuple1[1][1]-tuple2[1][1]) < 2:
                 element = middle_of_coordinates(tuple1[0].center, tuple2[0].center)
                 #Add positions to the list which are in the middle between 2 shapes.
                 if not(element in middle_of_shapes):
                     middle_of_shapes.append(element)
             #Add positions to the list which are in the middle of a triangle.
-            if(i != j):
+            if i != j:
                 for k in range(j+1, len(best_pattern)):
                     tuple3 = best_pattern[k]
-                    if(fabs(tuple1[1][0]-tuple3[1][0])<2 and fabs(tuple1[1][1]-tuple3[1][1])<2 and fabs(tuple2[1][0]-tuple3[1][0])<2 and fabs(tuple2[1][1]-tuple3[1][1])<2):
+                    if fabs(tuple1[1][0]-tuple3[1][0]) < 2 and fabs(tuple1[1][1]-tuple3[1][1]) < 2\
+                            and fabs(tuple2[1][0]-tuple3[1][0]) < 2 and fabs(tuple2[1][1]-tuple3[1][1]) < 2:
                         element = middle_of_triangle(tuple1[0].center, tuple2[0].center, tuple3[0].center)
                         if not(element in middle_of_shapes):
                             middle_of_shapes.append(element)
