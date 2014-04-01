@@ -24,7 +24,7 @@ shape_map = {0: Rectangle,
              3: Star}
 
 feature_size = (20, 20)
-net = NetworkReader.readFrom("C:/Users/Mattias/Dropbox/neural/network40.xml")
+net = NetworkReader.readFrom("home/pi/P-O-Geel2/network40.xml")
 
 
 def process_picture(image):
