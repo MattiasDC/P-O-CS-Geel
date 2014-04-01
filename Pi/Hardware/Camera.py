@@ -27,18 +27,19 @@ def take_picture():
 
     _last_picture = None
     if _flag_initialised:
+        try:
+            #height = _core.get_height()
+            #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
+            #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
+            _camera.resolution = (cam_resolution, cam_resolution)
+            stream = io.BytesIO()
+            _camera.capture(stream, format='jpeg')
+            stream.seek(0)
+            _last_picture = Image.open(stream)
 
-        #height = _core.get_height()
-        #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
-        #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
-        _camera.resolution = (cam_resolution, cam_resolution)
-        stream = io.BytesIO()
-        _camera.capture(stream, format='jpeg')
-        stream.seek(0)
-        _last_picture = Image.open(stream)
-
-        _core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Took a picture")
-
+            _core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Took a picture")
+        except Exception:
+            return _last_picture
     return _last_picture
 
 # ------------------------------------------------- GETTERS

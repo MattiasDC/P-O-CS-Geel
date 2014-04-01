@@ -1,7 +1,7 @@
 from threading import Thread
 from time import sleep, time
 from datetime import datetime
-from math import pow, sqrt, acos, degrees, pi
+from math import pow, sqrt, acos, degrees, pi, atan
 
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
@@ -74,7 +74,7 @@ class Core(object):
 
         # Start height control
         self._goal_height = ground_height
-        self.set_height_control(False)
+        self.set_height_control(True)
 
         # Get current position
         self._positioner = Positioner
@@ -201,11 +201,8 @@ class Core(object):
             return 0
 
         x = (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
-<<<<<<< HEAD
-        if x <= 1.0 and x>=- 1.0:
-=======
+
         if -1.0 <= x <= 1.0:
->>>>>>> df5401702f498a7ea55e16d535904f1632013b64
             angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
         elif x <= -1.0:
             angle = -pi
@@ -218,11 +215,6 @@ class Core(object):
             angle *= -1         # angle is negative if the goal lies to the right of the current direction
         return angle
 
-    @staticmethod
-    def _direction_to_degrees(zeppelin):
-        x = zeppelin.get_current_direction()[0] - zeppelin.get_current_position()[0]
-        y = zeppelin.get_current_direction()[1] - zeppelin.get_current_position()[1]
-        return atan2(y, x) - pi/2
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
@@ -232,8 +224,8 @@ class Core(object):
             a, b, c = self._positioner.find_location(self._camera.take_picture())
             if not (a is None or b is None or c is None):
                 self._update_position(a, b, c)
-            if (self._position_update_interval - (time() - start)) > 0:
-                sleep(self._position_update_interval - (time() - start))
+           # if (self._position_update_interval - (time() - start)) > 0:
+            #    sleep(self._position_update_interval - (time() - start))
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
 
@@ -285,9 +277,8 @@ class Core(object):
         else:
             self._current_direction = (q*400.0+200, z*400.0)
         self._current_position = (x, y)
-        a, b = self.get_position()
-        self._senderPi_position.sent_position(a, b)
-        self._senderPi_direction.sent_direction(self._direction_to_degrees(self._current_direction))
+        self._senderPi_position.sent_position(x, y)
+        self._senderPi_direction.sent_direction(self.get_angle())
         self._current_angle = (angle * 180.0) / pi
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self._current_position))
 
@@ -398,7 +389,7 @@ class Core(object):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._update_position_thread).start()
-            Thread(target=self._navigation_thread).start()
+            #Thread(target=self._navigation_thread).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
@@ -408,6 +399,7 @@ class Core(object):
 if __name__ == "__main__":
     core = Core()
     core.initialise()
+    print "Job's done"
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
     core.set_goal_height(1100)

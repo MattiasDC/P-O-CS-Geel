@@ -24,7 +24,7 @@ shape_map = {0: Rectangle,
              3: Star}
 
 feature_size = (20, 20)
-net = NetworkReader.readFrom("home/pi/P-O-Geel2/network40.xml")
+net = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/ImageProcessing/Networks/network40.xml")
 
 
 def process_picture(image):
@@ -82,7 +82,7 @@ def process_picture(image):
         center = find_center(contour)
         features = None
 
-        if is_valid_shape(contour):
+        if is_valid_shape(contour, image):
             features = get_features(contour, gray_image)
             if features is not None and not is_on_edge(contour, gray_image.shape):
                 net_return = net.activate(features)

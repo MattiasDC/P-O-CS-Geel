@@ -28,7 +28,7 @@ def set_core(core):
 
 def find_location(pil):
     global _core, _imageprocessor, grd
-    shapes, _ = _imageprocessor.process_picture(pil)
+    shapes = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
         return None, None, None
 

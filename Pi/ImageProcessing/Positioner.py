@@ -7,14 +7,14 @@ import glob
 from PIL import Image
 import Grid
 from Shapes import *
-import OffRecognizer
+import Recognizer
 from values import *
 
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
 _core = None                    # The core
-_imageprocessor = OffRecognizer    # The image processing
+_imageprocessor = Recognizer    # The image processing
 grd = None                      # The grid
 
 
@@ -23,17 +23,19 @@ def set_core(core):
 
     _core = core
     grd = _core.get_grid()
-    _imageprocessor = OffRecognizer
+    _imageprocessor = Recognizer
 
 
 def find_location(pil):
     global _core, _imageprocessor, grd
-    shapes, _ = _imageprocessor.process_picture(pil)
+    shapes = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
         return None, None, None
 
     connected_shapes = interconnect_shapes(shapes)
+    st = time()
     (x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
+    print "find in grid: " + str(time()-st)
     if len(found_pos) == 0:
         return None, None, None
 
@@ -100,7 +102,12 @@ def find_in_grid(shapes, grid):
     best_patterns = find_closest_match(builded_color_patterns, color_points_and_shapes, grid)
 
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
-    pos, best_pattern = map(lambda x: (find_position(x), x), best_patterns_shape)
+
+    best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(x, _core.get_position()), x, y),
+                                   best_patterns_shape_and_pos))
+    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
+    #                               best_patterns_shape_and_pos))
 
     return pos, best_pattern
 
@@ -164,7 +171,8 @@ def build_patterns(solutions):
     start_time = time()
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
-            if time()-start_time > 0.7:
+            if time()-start_time > 10:
+                print 'lang'
                 return []
             if not len(current_pattern) == len(solutions):
                 patterns.remove(current_pattern)
@@ -250,7 +258,7 @@ def calc_rotation(shapes):
     shape_1, x, y = None, None, None
     for shape1, (a, b) in shapes:
         for shape2, (c, d) in shapes:
-            if (a, b) in _core.get_grid().get_neighbour_points(x, y):
+            if (c, d) in _core.get_grid().get_neighbour_points(a, b):
                 shape_1 = shape1
                 x = a
                 y = b
@@ -260,7 +268,7 @@ def calc_rotation(shapes):
                 break
         if not (shape_2 is None and q is None and z is None):
             break
-    print x, y, q, z
+
     if x >= q:
         lower_shape = shape_1
         (lx, ly) = (x, y)
