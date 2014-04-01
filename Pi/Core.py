@@ -238,7 +238,7 @@ class Core(object):
         """
         self.set_navigation_mode(False)
         self.set_height_control(False)
-        #self.land()
+        self.land()
 
         self._sensor.stop()
         self._motors.stop()
@@ -258,6 +258,7 @@ class Core(object):
         """
         Lands the zeppelin and quits heightcontrol
         """
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The zeppelin started the landing procedure")
         self.set_goal_height(ground_height)
         while self.get_height() > (ground_height+5):
             sleep(1)

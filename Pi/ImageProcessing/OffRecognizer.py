@@ -7,7 +7,7 @@ import colorsys
 import os
 import glob
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.xml import NetworkReader
+from pybrain.tools.customxml import NetworkReader
 
 
 
