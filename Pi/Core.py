@@ -21,6 +21,7 @@ class Core(object):
 
     _senderPi_position = None       # The sender-object used for sending position-messages to the server
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
+    _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
 
     _positioner = None              # Positioner
@@ -200,7 +201,7 @@ class Core(object):
             return 0
 
         x = (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
-        if x <= 1.0 and x> =-1.0:
+        if x <= 1.0 and x>=- 1.0:
             angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
         elif x <= -1.0:
             angle = -pi
@@ -212,6 +213,12 @@ class Core(object):
         if cross < 0:
             angle *= -1         # angle is negative if the goal lies to the right of the current direction
         return angle
+
+    @staticmethod
+    def _direction_to_degrees(zeppelin):
+        x = zeppelin.get_current_direction()[0] - zeppelin.get_current_position()[0]
+        y = zeppelin.get_current_direction()[1] - zeppelin.get_current_position()[1]
+        return atan2(y, x) - pi/2
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
 
@@ -253,6 +260,7 @@ class Core(object):
         self._senderPi_position = SenderPi.SenderPi()
         self._senderPi_height = SenderPi.SenderPi()
         self._SenderPi_Console = SenderPi.SenderPi()
+        self._senderPi_direction = SenderPi.SenderPi()
 
     def land(self):
         """
@@ -274,6 +282,7 @@ class Core(object):
         self._current_position = (x, y)
         a, b = self.get_position()
         self._senderPi_position.sent_position(a, b)
+        self._senderPi_direction.sent_direction(self._direction_to_degrees(self._current_direction))
         self._current_angle = (angle * 180.0) / pi
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self._current_position))
 

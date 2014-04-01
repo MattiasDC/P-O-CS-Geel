@@ -35,6 +35,10 @@ def callback(ch, method, properties, body):
         #goal height received
         team_name = method.routing_key.split('.')[0]
         _GUI.set_goal_height(team_name, int(body))
+    if 'private.direction' in method.routing_key:
+        #direction information received
+        team_name = method.routing_key.split('.')[0]
+        _GUI.set_direction(team_name, body)
     if 'private.console' in method.routing_key:
         #console information received
         _GUI.add_to_console(body)
