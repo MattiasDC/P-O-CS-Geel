@@ -200,7 +200,7 @@ class Core(object):
             return 0
 
         x = (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
-        if x <= 1.0 and x> =-1.0:
+        if -1.0 <= x <= 1.0:
             angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
         elif x <= -1.0:
             angle = -pi
@@ -277,9 +277,7 @@ class Core(object):
         self._current_angle = (angle * 180.0) / pi
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self._current_position))
 
-
 # ------------------------------------------ Getters -------------------------------------------------------------------
-
     def get_grid(self):
         """
         Returns the grid
