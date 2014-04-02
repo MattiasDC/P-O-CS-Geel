@@ -171,8 +171,7 @@ def build_patterns(solutions):
     start_time = time()
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
-            if time()-start_time > 10:
-                print 'lang'
+            if time()-start_time > 0.7:
                 return []
             if not len(current_pattern) == len(solutions):
                 patterns.remove(current_pattern)

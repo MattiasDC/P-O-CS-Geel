@@ -22,14 +22,16 @@ shape_map = {0: Rectangle,
              1: Ellipse,
              2: Heart,
              3: Star}
-
-feature_size = (20, 20)
+i = 0
+feature_size = (30, 30)
+start_time = time()
 net = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/ImageProcessing/Networks/network40.xml")
+print str(time()-start_time)
 
 
 def process_picture(image):
     global shape_map, net, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length,\
-        approx_precision, iterations, max_shape_offset
+        approx_precision, iterations, max_shape_offset, i
 
     try:
         #Filter giant rectangle of the image itself
@@ -85,12 +87,18 @@ def process_picture(image):
         if is_valid_shape(contour, image):
             features = get_features(contour, gray_image)
             if features is not None and not is_on_edge(contour, gray_image.shape):
+                st = time()
                 net_return = net.activate(features)
+                print "neural time: " + str(time()-st)
                 r = net_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
+                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color), tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
-
+            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
+    if i < 40:
+        cv2.imwrite(str(i) + '.jpeg', gray_image)
+        i += 1
     return found_shapes
 
 
@@ -187,4 +195,3 @@ if __name__ == "__main__":
     for file in glob.glob("*.jpg"):
         print file
         map(lambda x: x.__class__, process_picture(Image.open(path + file)))
-
