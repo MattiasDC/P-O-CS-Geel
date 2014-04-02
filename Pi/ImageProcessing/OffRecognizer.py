@@ -25,12 +25,12 @@ shape_map = {0: Rectangle,
 
 feature_size = (30, 30)
 start_time = time()
-net = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/ImageProcessing/Networks/network40.xml")
+oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/ImageProcessing/Networks/network40.xml")
 print str(time()-start_time)
 
 
 def process_picture(image):
-    global shape_map, net, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length,\
+    global shape_map, oracle, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length,\
         approx_precision, iterations, max_shape_offset
 
     try:
@@ -90,9 +90,9 @@ def process_picture(image):
             features = get_features(contour, gray_image)
             if features is not None and not is_on_edge(contour, gray_image.shape):
                 st = time()
-                net_return = net.activate(features)
+                oracle_return = oracle.activate(features)
                 print "neural time: " + str(time()-st)
-                r = net_return.argmax(axis=0)
+                r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
                 cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
                             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
