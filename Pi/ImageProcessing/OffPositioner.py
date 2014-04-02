@@ -103,7 +103,7 @@ def find_in_grid(shapes, grid):
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
 
     best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(x, (0, 0)), x, y),
                                    best_patterns_shape_and_pos))
     #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
     #                               best_patterns_shape_and_pos))
@@ -269,7 +269,7 @@ def calc_rotation(shapes):
                 break
         if not (shape_2 is None and q is None and z is None):
             break
-    print x, y, q, z
+
     if x >= q:
         lower_shape = shape_1
         (lx, ly) = (x, y)

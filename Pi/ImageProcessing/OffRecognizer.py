@@ -22,7 +22,7 @@ shape_map = {0: Rectangle,
              1: Ellipse,
              2: Heart,
              3: Star}
-i = 0
+
 feature_size = (30, 30)
 start_time = time()
 net = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/ImageProcessing/Networks/network40.xml")
@@ -31,7 +31,7 @@ print str(time()-start_time)
 
 def process_picture(image):
     global shape_map, net, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length,\
-        approx_precision, iterations, max_shape_offset, i
+        approx_precision, iterations, max_shape_offset
 
     try:
         #Filter giant rectangle of the image itself
@@ -99,9 +99,7 @@ def process_picture(image):
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
             cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
-    if i < 40:
-        cv2.imwrite(str(i) + '.jpeg', gray_image)
-        i += 1
+
     return found_shapes
 
 
