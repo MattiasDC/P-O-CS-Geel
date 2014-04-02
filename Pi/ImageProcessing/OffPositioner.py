@@ -102,10 +102,9 @@ def find_in_grid(shapes, grid):
 
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
 
-    pos, best_pattern = map(lambda x: (find_position(x), x), best_patterns_shape)
-    #best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), _core.get_position()), map_to_mm(x), y),
-    #                               best_patterns_shape_and_pos))
+    best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
+                                   best_patterns_shape_and_pos))
     #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
     #                               best_patterns_shape_and_pos))
 
@@ -226,7 +225,7 @@ def find_position(best_pattern):
             tuple2 = best_pattern[j]
             #Do not compare shapes that are in a bigger triangle than the smallest possible.
             if fabs(tuple1[1][0]-tuple2[1][0]) < 2 and fabs(tuple1[1][1]-tuple2[1][1]) < 2:
-                element = middle_of_coordinates(tuple1[0].center, tuple2[0].center)
+                element = middle_of_coordinates(tuple1[1], tuple2[1])
                 #Add positions to the list which are in the middle between 2 shapes.
                 if not(element in middle_of_shapes):
                     middle_of_shapes.append(element)
@@ -236,7 +235,7 @@ def find_position(best_pattern):
                     tuple3 = best_pattern[k]
                     if fabs(tuple1[1][0]-tuple3[1][0]) < 2 and fabs(tuple1[1][1]-tuple3[1][1]) < 2\
                             and fabs(tuple2[1][0]-tuple3[1][0]) < 2 and fabs(tuple2[1][1]-tuple3[1][1]) < 2:
-                        element = middle_of_triangle(tuple1[0].center, tuple2[0].center, tuple3[0].center)
+                        element = middle_of_triangle(tuple1[1], tuple2[1], tuple3[1])
                         if not(element in middle_of_shapes):
                             middle_of_shapes.append(element)
     length = 100000000000000000000000000000
@@ -246,9 +245,9 @@ def find_position(best_pattern):
         length2 = sqrt((cx - mx)**2 + (cy - my)**2)
         if length2 < length:
             length = length2
-            x = cx*10.0
-            y = cy*10.0
-    return x, y
+            x = cx
+            y = cy
+    return map_to_mm((x, y))
 
 
 def calc_rotation(shapes):

@@ -402,6 +402,6 @@ if __name__ == "__main__":
     print "Job's done"
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
-    core.set_goal_height(1100)
+    core.set_goal_height(1300)
 
 # ---------------------------------------------------------------------------------------------------------------------

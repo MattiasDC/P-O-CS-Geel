@@ -14,7 +14,7 @@ from pybrain.tools.customxml import NetworkReader
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
 max_contour_factor = 0.6
 canny_threshold1 = 5       # Thresholds for the canny edge detection algorithm
-canny_threshold2 = 10
+canny_threshold2 = 18
 approx_precision = 0.01    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
 iterations = 2             # The amount of iterations to dilate the edges to make the contours of the shapes closed
 max_shape_offset = 0.2
@@ -78,6 +78,8 @@ def process_picture(image):
         return []
 
     found_shapes = []
+
+    contours = filter(lambda c: len(c) > 2, contours)
 
     for contour in contours:
         color = find_shape_color(contour, image)
