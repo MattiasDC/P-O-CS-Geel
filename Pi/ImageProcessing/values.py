@@ -37,7 +37,8 @@ echo_gpio = 22                 # = 15 on the pi
 trig_gpio = 27                 # = 13 on the pi
 
 # ------------------------------- Camera
-cam_resolution = 500            # The camera resolution
+cam_height = 500            # The camera resolution
+cam_width = 666
 
 # ------------------------------- Network
 port = 10000                   # The port used in the connection

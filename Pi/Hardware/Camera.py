@@ -31,7 +31,7 @@ def take_picture():
             #height = _core.get_height()
             #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
             #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
-            _camera.resolution = (cam_resolution, cam_resolution)
+            _camera.resolution = (cam_width, cam_height)
             stream = io.BytesIO()
             _camera.capture(stream, format='jpeg')
             stream.seek(0)

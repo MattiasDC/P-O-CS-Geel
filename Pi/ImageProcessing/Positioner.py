@@ -208,8 +208,8 @@ def find_closest_match(patterns, colors_and_shapes, grid):
 
 
 def find_position(best_pattern):
-    mx = (cam_resolution / 2.0)
-    my = mx
+    mx = (cam_width / 2.0)
+    my = (cam_height / 2.0)
 
     def middle_of_coordinates(coordinates1, coordinates2):
         return (coordinates1[0] + coordinates2[0])/float(2), (coordinates1[1] + coordinates2[1])/float(2)
