@@ -1,8 +1,6 @@
 #TODO: ZeppelinProperties
 #TODO: ProperitesContainer
 #TODO: ZeppelinSwitch
-from domain.zeppelin import ZeppelinView
-
 from kivy.properties import StringProperty, NumericProperty, ListProperty, ObjectProperty, OptionProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
@@ -169,24 +167,3 @@ class PropertyEntryStringTeam(GridLayout):
 
 
 #-----------------------------------------------------------------------------
-from kivy.app import App
-
-
-class PropViewApp(App):
-    def build(self):
-        zep1 = ZeppelinView("Red", (0,0), 50.0)
-        zep2 = ZeppelinView("Yellow", (0,0), 50.0)
-
-        zep1_prop = ZeppelinProperties(zeppelin=zep1, size_hint=(None, None), size=(480, 300))
-        zep2_prop = ZeppelinProperties(zeppelin=zep2, size_hint=(None, None), size=(480, 300))
-
-        interface = PropertiesView()
-
-        interface.bind(minimum_height=interface.setter('height'))
-        print interface
-        interface.add_to_view(zep1_prop)
-        interface.add_to_view(zep2_prop)
-
-        return interface
-
-Builder.load_file('./uix/properties_view.kv')

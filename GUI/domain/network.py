@@ -1,11 +1,9 @@
-import SenderGUI
-from util.decorators import singleton
+from util.exceptions import IllegalArgumentException
 from util.values import TEAMS, OUR_TEAM
 from ReceiverGUI import receive
-#from SenderGUI import SenderGUI
+from SenderGUI import SenderGUI
 
 
-@singleton
 class NetworkManager(object):
     """
     The NetworkManager allows the DomainLayer access to the network services, thus
@@ -18,19 +16,19 @@ class NetworkManager(object):
 
         #self._sender = SenderGUI()
         #receive(self)
-        self.nl_to_en = {"geel"     : "yellow",
-                         "paars"    : "purple",
-                         "blauw"    : "blue",
-                         "rood"     : "red",
-                         "groen"    : "green",
-                         "wit"      : "white",
-                         "indigo"   : "indigo",
-                         "brons"    : "bronze",
-                         "silver"   : "silver",
-                         "goud"     : "gold",
-                         "koper"    : "copper",
-                         "platinum" : "platinum",
-                         "ijzer"    : "iron"}
+        self.nl_to_en = {"geel": "yellow",
+                         "paars": "purple",
+                         "blauw": "blue",
+                         "rood": "red",
+                         "groen": "green",
+                         "wit": "white",
+                         "indigo": "indigo",
+                         "brons": "bronze",
+                         "silver": "silver",
+                         "goud": "gold",
+                         "koper": "copper",
+                         "platinum": "platinum",
+                         "ijzer": "iron"}
 
     @property
     def zeppelin_cat(self):
@@ -97,7 +95,6 @@ class NetworkManager(object):
     def get_console(self):
         return self.console_buffer.get_and_clean()
 
-
     #-------------------------------------------------------------------------
     # Senders | Interface for GUI
     def send_goal_pos(self, (x, y)):
@@ -107,6 +104,9 @@ class NetworkManager(object):
         self._sender.height_command(height)
 
     def _check_team(self, team):
+        if not team in TEAMS:
+            raise IllegalArgumentException
+
         if not team in self.zeppelin_cat:
             if team != OUR_TEAM:
                 self.zeppelin_cat[team] = NetworkZeppelinView()
@@ -115,7 +115,7 @@ class NetworkManager(object):
 
 
 class NetworkZeppelinView(object):
-    def __init__(self, pos=[0, 0], height=1000):
+    def __init__(self, pos=(0, 0), height=1000):
         self._pos = pos
         self._height = height
 
@@ -137,7 +137,7 @@ class NetworkZeppelinView(object):
 
 
 class NetworkZeppelinViewYellow(NetworkZeppelinView):
-    def __init__(self, pos=[0, 0], height=1000, goal_pos=[0, 0], goal_height=1000, direction=0):
+    def __init__(self, pos=(0, 0), height=1000, goal_pos=(0, 0), goal_height=1000, direction=0):
         super(NetworkZeppelinViewYellow, self).__init__(pos, height)
 
         self._goal_height = goal_height
@@ -178,12 +178,10 @@ class NetworkConsoleInfo(object):
         return self._buffer_load
 
     def add(self, string):
-        print "in-add buffer"
         self.buffer.append(string)
 
     def get_and_clean(self):
-        print 'get_and_clean'
-        bufbuf = self._buffer_load
+        old_buffer = self._buffer_load
         self._buffer_load = []
 
-        return bufbuf
+        return old_buffer

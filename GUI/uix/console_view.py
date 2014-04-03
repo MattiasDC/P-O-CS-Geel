@@ -36,7 +36,6 @@ class Console(ScrollView):
         return self._log_items
 
     def add_log_items(self, items):
-        print 'ping'
         if len(items) >= self.MAX:
             nmb_to_many = len(items) - self.MAX
             items = items[nmb_to_many:]
@@ -57,7 +56,6 @@ class Console(ScrollView):
             self.view.add_widget(new_widget)
 
     def update(self, dt):
-        print "update console"
         new_strings = self._network_interface.get_console()
         #for string in self._network_interface.get_console():
         #    new_strings.extend(filter(lambda x: x != '',  string.split('#')))
@@ -83,5 +81,4 @@ class ConsoleItem(Label):
         self.color = [1.0, 1.0, 1.0, 1.0]
 
         self.font_size = 0.8 * self.height
-        print self.height
 

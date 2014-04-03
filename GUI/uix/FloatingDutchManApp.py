@@ -1,3 +1,4 @@
+from __builtin__ import property
 from kivy.app import App
 
 from kivy.uix.floatlayout import FloatLayout
@@ -7,7 +8,7 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.lang import Builder
 
-from domain.zeppelin import ZeppelinHandler
+from domain import InitialisationHandler
 from uix.properties_view import ZeppelinProperties
 
 
@@ -64,11 +65,23 @@ class FloatingDutchManGUI(FloatLayout):
         """
         Initialize a new ZeppelinInterfaceRoot widget.
         """
+        self._zeppelin_handler = kwargs['zeppelin_handler']
+        self._grid_handler = kwargs['grid_handler']
+
         super(FloatingDutchManGUI, self).__init__(**kwargs)
+
         #bind Window resize function
         #Window.bind(on_resize=self._on_resize)
-        self.zeppelin_handler = ZeppelinHandler()
+
         self.zeppelins = []
+
+    @property
+    def zeppelin_handler(self):
+        return self._zeppelin_handler
+
+    @property
+    def grid_handler(self):
+        return self._grid_handler
 
     def update(self, dt):
         """
@@ -89,64 +102,6 @@ class FloatingDutchManGUI(FloatLayout):
         self.grid_view.update(dt)
         self.console.update(dt)
 
-
-
-    #--------------------------------------------------------------------------
-    # Resize information
-    #def _on_resize(self, inst, width, height):
-    #    """
-    #    updates variables when the window is resized.
-    #
-    #    param
-    #    -----
-    #    inst : WindowPygame
-    #        instance of the WindowPygame.
-    #    width: int
-    #        Current width of the window of this app.
-    #    height: int
-    #        Current height of the window of this app.
-    #
-    #    Pre-conditions
-    #    --------------
-    #    * window is resized
-    #
-    #    Post-conditions
-    #    ---------------
-    #    * (new self).window_width = width
-    #    * (new self).window_height = height
-    #    * (new self).window_center = inst.center
-    #    * | IF width / height > WIDTH_RATIO -> (new self).application_height = width / WIDTH_RATIO
-    #      |                                    (new self).application_width = width
-    #    * | ELSE (new self).application_height = height
-    #      |      (new self).application_width = height * WIDTH_RATIO
-    #    """
-    #    #set the new dimensions of the window.
-    #    self.window_width = width
-    #    self.window_height = height
-    #    self.window_center = inst.center
-    #
-    #    #calculate and set new dimensions of the application window.
-    #    if float(width) / float(height) < self.WIDTH_RATIO:
-    #        self.application_width = width
-    #        self.application_height = width / self.WIDTH_RATIO
-    #
-    #        self.application_pos_x = 0
-    #        self.application_pos_y = height - self.application_height
-    #    else:
-    #        self.application_width = height * self.WIDTH_RATIO
-    #        self.application_height = height
-    #
-    #        self.application_pos_x = 0.5 * (width - self.application_width)
-    #        self.application_pos_y = 0
-    #
-    #    if not self.grid_view is None:
-    #        self.grid_view.redraw
-
-    #--------------------------------------------------------------------------
-    # initialization
-    def on_grid_view(self, *args):
-        self.grid_view.view.load_new_grid('./grid.csv')
-
     def add_zeppelin(self, name):
         self.zeppelin_handler.add_new_zeppelin(name)
 
@@ -156,21 +111,18 @@ class FloatingDutchManGUI(FloatLayout):
         self.grid_view.add_zeppelin(zep)
 
 
-class Test(FloatLayout):
-    pass
-
-
 class FloatingDutchManApp(App):
     def build(self):
         Builder.load_file('./uix/FloatingDutchManApp.kv')
         Builder.load_file('./uix/grid_view.kv')
         Builder.load_file('./uix/zeppelin_handler.kv')
         Builder.load_file('./uix/console_view.kv')
+        Builder.load_file('./uix/properties_view.kv')
+        Builder.load_file('./uix/load_dialog.kv')
 
-        #interface = FloatingDutchManGUI()
-        #print "x: " + str(interface.application_pos_x)
-        #print "y: " + str(interface.application_pos_y)
-        interface = FloatingDutchManGUI()
+        init_handler = InitialisationHandler()
+        interface = FloatingDutchManGUI(grid_handler=init_handler.grid_handler,
+                                        zeppelin_handler=init_handler.zeppelin_handler)
         Clock.schedule_interval(interface.update, 0.5)
 
         return interface

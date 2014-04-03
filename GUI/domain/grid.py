@@ -1,6 +1,36 @@
 from shapes import *
 
 
+#=============================================================================
+# Grid Handler
+#=============================================================================
+class GridHandler(object):
+    """
+    Grid controller forms the interface between the UI
+    and the domain objects.
+    """
+    def __init__(self):
+        self._grid = Grid.from_empty(10, 10)
+
+    @property
+    def grid(self):
+        return self._grid
+
+    def load_grid(self, file_path):
+        """
+        Load a new grid from the specified file.
+
+        Parameters
+        ----------
+        file_path : String
+            Path + File name to the file that specifies the grid.
+        """
+        self._grid = Grid.from_file(file_path)
+
+
+#=============================================================================
+# Grid object
+#=============================================================================
 class Grid(object):
     """
     Grid datastructure that stores the triangle grid used in the P&O project.
@@ -43,7 +73,6 @@ class Grid(object):
                             row.append(shape_map.get(shape[1])(color_map.get(shape[0])))
                 if len(row) > 0:
                     points.append(row)
-
         return Grid(points)
 
     @classmethod

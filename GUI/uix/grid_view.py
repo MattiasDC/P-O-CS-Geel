@@ -1,9 +1,6 @@
-#TODO: add (pre)|(post) conditions
-
-from math import tan, pi, sin
+from math import pi, sin
 from kivy.uix.scatter import Scatter
 
-from domain.grid_handler import GridController
 from util import colour as col
 from kivy.graphics import *
 from kivy.uix.floatlayout import FloatLayout
@@ -22,8 +19,6 @@ class ZeppelinScatter(Scatter):
 
     direction = NumericProperty(0)
     """ The direction of this zeppelin. """
-    speed = NumericProperty(10.0)
-    """ The speed of this zeppelin. """
 
     location_local = (0, 0)
     """ The local location of this zeppelin on the grid. """
@@ -92,12 +87,12 @@ class ZeppelinScatter(Scatter):
         x_l, x_r, y_b, y_t = self.grid.get_bounds()
 
         loc_x, loc_y = self._zeppelin.position
-        grid = self.grid.grid_handler.grid
+        grid = self.grid.grid
 
         # There are n-1 + 0.5 steps of 400 mm to get the size of grid.
-        location_local_x = float(loc_x) / (float(400 * grid.n_columns) - 0.5)
+        location_local_x = float(loc_x) / (float(400 * (grid.n_columns - 0.5)))
         # we take the sin of 1/3 pi because the edge of 400 mm has a hook of
-        location_local_y = float(loc_y) / (sin((1.0/3.0) * pi) * float(400 * grid.n_rows))
+        location_local_y = float(loc_y) / (sin((1.0/3.0) * pi) * float(400 * (grid.n_rows - 1)))
         self.location_local = (location_local_x, location_local_y)
         width = x_r - x_l
         height = y_t - y_b
@@ -111,18 +106,51 @@ class ZeppelinScatter(Scatter):
         self.pos = [x_l - 0.5 * self.size[0], y_t - 0.5 * self.size[1]]
 
 
+#=============================================================================
+# Grid Container
+#=============================================================================
 class GridViewContainer(FloatLayout):
     """
-    The actual representation of the Grid in the GUI,
-    contains the logic to add a new zeppelin on the grid when asked.
+    The GridViewContainer manages everything related to the Grid in the gui.
+    It contains a single GridView as well as all zeppelins currently displayed
+    on the grid.
     """
-    view = ObjectProperty(None)
+    #-------------------------------------------------------------------------
+    # Properties
+    #-------------------------------------------------------------------------
+    grid_handler = ObjectProperty(None)
+    """ The grid handler of this GridViewContainer. """
+    grid_view = ObjectProperty(None)
     """ The object that draws the grid. """
+
     the_root = ObjectProperty(None)
     """ The root of this interface. """
+
     zeppelin_scatters = ListProperty([])
     """ A list of the zeppelin scatters on this grid. """
 
+    #-------------------------------------------------------------------------
+    # Grid methods
+    #-------------------------------------------------------------------------
+    def load_grid(self, path_to_file):
+        """
+        Load a new grid from the specified csv file.
+
+        Parameters
+        ----------
+        path_to_file : String
+            The path (with the file name) to the grid csv file.
+
+        Post-conditions
+        ---------------
+        * New grid is loaded and displayed.
+        """
+        self.grid_handler.load_grid(path_to_file)
+        self.grid_view.load_new_grid(self.grid_handler.grid)
+
+    #-------------------------------------------------------------------------
+    # Zeppelin methods
+    #-------------------------------------------------------------------------
     def add_zeppelin(self, zeppelin):
         """
         Add and display the specified zeppelin to the grid.
@@ -133,7 +161,7 @@ class GridViewContainer(FloatLayout):
             The new zeppelin that is added to this GridView
         """
         new_scatter = ZeppelinScatter(zeppelin=zeppelin)
-        new_scatter.grid = self.view
+        new_scatter.grid = self.grid_view
 
         self.zeppelin_scatters.append(new_scatter)
         self.add_widget(new_scatter)
@@ -151,98 +179,153 @@ class GridViewContainer(FloatLayout):
         for w in self.zeppelin_scatters:
             w.update(dt)
 
+    def on_grid_handler(self, instance, value):
+        new_grid_view = GridView()
+
+        self.add_widget(new_grid_view)
+        self.grid_view = new_grid_view
+
+        self.grid_view.load_new_grid(value.grid)
+
+    #-------------------------------------------------------------------------
+    grid_load_button = ObjectProperty(None)
+    """ The grid load button in this GridViewContainer."""
+
+    def on_grid_load_button(self, _, value):
+        value.bind(current_csv_path=self.on_load)
+
+    def on_load(self, _, value):
+        self.load_grid(value)
+
 
 class GridView(FloatLayout):
     """
-    The object that draws the Grid it reads from the csv file.
+    The class that draws the actual grid in the GUI.
+    Provides method to load and draw a new grid, and resize everything when
+    the window is updated.
     """
+    #-------------------------------------------------------------------------
+    # Constructor
+    #-------------------------------------------------------------------------
     def __init__(self, **kwargs):
         super(GridView, self).__init__(**kwargs)
 
-        self._lines = None
-        self._grid_controller = GridController()
         self._grid = None
+
+        # Widgets
+        self._grid_widgets = None
+        self._lines = None
 
         self.trigger_init_point = Clock.create_trigger(self._on_init_point)
         self.trigger_resize = Clock.create_trigger(self._on_resize)
         self.trigger_redraw = Clock.create_trigger(self._on_redraw_lines)
 
+    #-------------------------------------------------------------------------
+    # Properties
+    #-------------------------------------------------------------------------
     @property
-    def grid_handler(self):
+    def grid(self):
         """
-        GridHandler that acts as an interface between the ui a
-        nd the domain layer logic.
+        The grid of that is currently displayed in this GridView.
         """
-        return self._grid_controller
+        return self._grid
 
-    def load_new_grid(self, file_path):
+    #-------------------------------------------------------------------------
+    # Grid loading
+    #-------------------------------------------------------------------------
+    def load_new_grid(self, grid):
         """
-        Load a new grid from the specified file and draw this in the
-        ui.
+        Load the specified grid into this GridView.
 
         Paramaters
         ----------
-        file_path : string
-            path specifing the location of a valid csv on the file system.
+        grid : Grid
+            The new grid to be loaded.
         """
-        if not self._grid is None:
-            self.unbind(size=self.trigger_resize)
-
         self._clear_old_grid()
-        self._grid_controller.load_grid(file_path)
+
+        self._set_grid(grid)
+
         self._draw_grid_points()
         #add draw instruction once widgets initialised.
-        self._grid[0][0].bind(pos=self.trigger_init_point)
+        self._grid_widgets[0][0].bind(pos=self.trigger_init_point)
 
+    def _set_grid(self, grid):
+        """
+        Set the current grid of this GridView to specified grid.
+
+        Parameters
+        ----------
+        grid : Grid
+            The new grid of this GridView.
+
+        Post-conditions
+        * | (new self).grid == grid
+        """
+        self._grid = grid
+
+    #-------------------------------------------------------------------------
+    # Trigger methods.
+    #-------------------------------------------------------------------------
     def _on_init_point(self, *args):
-        self._grid[0][0].unbind(pos=self.trigger_init_point)
+        self._grid_widgets[0][0].unbind(pos=self.trigger_init_point)
         self._draw_grid_lines()
         self.bind(size=self.trigger_resize)
 
     def _on_resize(self, *args):
-        print "ping <====================================="
-        # LEAVE THIS PRINT STATEMENT IT FIXES A WEIRD BUG.
-        # and so my descent into madness continues
         self._draw_grid_points()
-        self._grid[0][0].bind(pos=self.trigger_redraw)
+        self._grid_widgets[0][0].bind(pos=self.trigger_redraw)
 
     def _on_redraw_lines(self, *args):
-        self._grid[0][0].unbind(pos=self.trigger_redraw)
+        self._grid_widgets[0][0].unbind(pos=self.trigger_redraw)
         self._redraw_lines()
 
     def _clear_old_grid(self):
-        self._grid = None
-        self._lines = None
-        self.canvas.clear()
+        if not self._grid_widgets is None:
+            self.unbind(size=self.trigger_resize)
+
         self.clear_widgets()
+        self._grid_widgets = None
 
+        self.canvas.before.clear()
+        self._lines = None
+        self._grid = None
+
+    #-------------------------------------------------------------------------
+    # Drawing methods.
+    #-------------------------------------------------------------------------
     def _draw_grid_points(self):
-        grid = self._grid_controller.grid
+        grid = self.grid
+        is_building = self._grid_widgets is None
 
-        is_building = self._grid is None
-
-#        if is_building:
-        x_hint_height = 2.0 * ((1.0 / float(grid.n_rows)) / tan(pi/3.0))
-        x_hint_width = 1.0 / (float(grid.n_columns) + 0.5)
+        #---------------------------------------------------------------------
+        # calculate x and y offset.
+        x_hint_height = ((1.0 / float(grid.n_rows - 1)) / sin(pi/3.0))
+        x_hint_width = 1.0 / (float(grid.n_columns) - 0.5)
         x_hint = min(x_hint_height, x_hint_width)
-        y_hint = (x_hint / 2.0) * tan(pi/3.0)
+        y_hint = x_hint * sin(pi/3.0)
 
-        # THIS LINE FUCKS THINGS UP, LEAVE IT COMMENTED IF YOU VALUE YOUR SANITY.
-        self.size_hint = (x_hint * (float(grid.n_columns) + 0.5), y_hint * float(grid.n_rows))
+        #---------------------------------------------------------------------
+        # calculate pos and size hints of this grid widget.
+        self.size_hint = (x_hint * (float(grid.n_columns) - 0.5),
+                          y_hint * float(grid.n_rows - 1))
         self.pos_hint = {'x': .5 * (1.0 - self.size_hint[0]),
                          'top': 1.0 - (.5 * (1.0 - self.size_hint[1]))}
 
+        #---------------------------------------------------------------------
+        # calculate
         size_x = self.size_hint[0] / float(grid.n_columns + 0.5) * 0.4
         size_y = self.size_hint[1] / float(grid.n_rows) * 0.4
 
         x_dist = .92 / (float(grid.n_columns-1) + 0.5)
         y_dist = .92 / float(grid.n_rows-1)
 
+        #---------------------------------------------------------------------
+        # Define action depending on if it's drawing a new grid or not.
         if is_building:
-            print "ping"
-            self._grid = list(list(None for i in range(grid.n_columns)) for j in range(grid.n_rows))
+            self._grid_widgets = list(list(None for _ in range(grid.n_columns)) for _ in range(grid.n_rows))
 
-            def flyfly_the_great_def(x, y, x_hint, y_hint):
+            def update_point(x, y, pos_x_hint, pos_y_hint):
                 point = grid.get_point(x=x, y=y)
                 if point is None:
                     colour = "None"
@@ -252,60 +335,59 @@ class GridView(FloatLayout):
                     shape = point.shape
 
                 new_grid_point = GridPoint(coord=(x, y), shape=shape, colour=colour)
-                new_grid_point.pos_hint = {'x': x_hint,
-                                           'top': y_hint}
+                new_grid_point.pos_hint = {'x': pos_x_hint,
+                                           'top': pos_y_hint}
                 new_grid_point.size_hint_x = size_x
                 new_grid_point.size_hint_y = size_y
 
                 self.add_widget(new_grid_point)
-                self._grid[y][x] = new_grid_point
+                self._grid_widgets[y][x] = new_grid_point
 
         else:
-            def flyfly_the_great_def(x, y, pos_hint_x, pos_hint_y):
-                point = self._grid[y][x]
+            def update_point(x, y, pos_hint_x, pos_hint_y):
+                point = self._grid_widgets[y][x]
                 point.pos_hint = {'x': pos_hint_x, 'top': pos_hint_y}
                 point.size_hint_x = size_x
                 point.size_hint_y = size_y
 
+        #---------------------------------------------------------------------
         #build create actual points on the grid.
         y_pos_hint = 1.0
         for i in range(grid.n_rows):
             x_pos_hint = - .5 * size_x + .04
 
-            #FIXME I changed this because of fucky behaviour
             if i % 2 == 1:
                 x_pos_hint += 0.5 * x_dist
 
             for j in range(grid.n_columns):
-                flyfly_the_great_def(j, i, x_pos_hint, y_pos_hint)
+                update_point(j, i, x_pos_hint, y_pos_hint)
 
                 x_pos_hint += x_dist
             y_pos_hint -= y_dist
 
     def _draw_grid_lines(self):
-        n_rows = self._grid_controller.grid.n_rows
-        n_cols = self._grid_controller.grid.n_columns
+        n_rows = self.grid.n_rows
+        n_cols = self.grid.n_columns
 
         self._lines = []
 
-        #FIXME I changed this because of fucky behaviour
         is_flushed_left = True
         for i in range(n_rows):
             for j in range(n_cols):
-                cur_point = self._grid[i][j]
+                cur_point = self._grid_widgets[i][j]
 
                 #horizontal line
                 if j > 0:
-                    other_point = self._grid[i][j-1]
+                    other_point = self._grid_widgets[i][j-1]
                     self._draw_line_between(cur_point, other_point)
 
                 #vertical lines
                 if i > 0:
-                    next_points = [self._grid[i-1][j]]
+                    next_points = [self._grid_widgets[i-1][j]]
                     if is_flushed_left and j > 0:
-                        next_points.append(self._grid[i-1][j-1])
+                        next_points.append(self._grid_widgets[i-1][j-1])
                     if (not is_flushed_left) and j < (n_cols-1):
-                        next_points.append(self._grid[i-1][j+1])
+                        next_points.append(self._grid_widgets[i-1][j+1])
 
                     for other_point in next_points:
                         self._draw_line_between(cur_point, other_point)
@@ -330,22 +412,17 @@ class GridView(FloatLayout):
         return line
 
     def _redraw_lines(self, *args):
+        print("This should not print")
         for (line, this_point, other_point) in self._lines:
             this_x, this_y = this_point.center_in_window_coord
             other_x, other_y = other_point.center_in_window_coord
             line.points = [this_x, this_y, other_x, other_y]
 
     def get_bounds(self):
-        x_left_bound, y_top_bound = self._grid[0][0].center_in_window_coord
-        print "-------\nlength: " + str(len(self._grid))
-        #if len(self._grid) > 1:
-        #    x_right_bound = self._grid[1][-1].center_in_window_coord[0]
-        #else:
-        #    x_right_bound = self._grid[0][-1].center_in_window_coord[0]
-        x_right_bound = self._grid[1][-1].center_in_window_coord[0]
+        x_left_bound, y_top_bound = self._grid_widgets[0][0].center_in_window_coord
 
-
-        y_bottom_bound = self._grid[-1][0].center_in_window_coord[1]
+        x_right_bound = self._grid_widgets[1][-1].center_in_window_coord[0]
+        y_bottom_bound = self._grid_widgets[-1][0].center_in_window_coord[1]
 
         return x_left_bound, x_right_bound, y_bottom_bound, y_top_bound
 
@@ -406,7 +483,7 @@ class GridPoint(Widget):
                    "Green": col.GREEN,
                    "Red": col.RED,
                    "Yellow": col.YELLOW,
-                   "None": col.GRAY} #FIXME
+                   "None": col.GRAY}
 
     @property
     def center_in_window_coord(self):

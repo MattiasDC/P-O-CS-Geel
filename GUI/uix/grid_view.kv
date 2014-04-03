@@ -1,4 +1,5 @@
 #:kivy 1.8.0
+#:import LoadButton uix.load_dialog
 <ZeppelinScatter>
     img: im
     do_scale: False
@@ -16,10 +17,12 @@
 
 
 <GridViewContainer>
-    view: v
+    grid_load_button: butt
 
-    GridView:
-        id: v
+    LoadButton:
+        id: butt
+        pos_hint: {'top': 0.05, 'x': 0.95}
+        size_hint: (0.05, 0.05)
 
 <GridPoint>
     canvas:
