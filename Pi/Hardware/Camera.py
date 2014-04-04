@@ -11,6 +11,8 @@ _core = None
 _flag_initialised = False
 _last_picture = None                    # Last taken picture (PIL object)
 _camera = PiCamera.PiCamera()
+_cam_height = 500
+_cam_width = 666
 
 def initialise(core):
     global _core, _flag_initialised
@@ -23,7 +25,7 @@ def take_picture():
     """
     Takes a picture with a resolution in function of the height
     """
-    global _core, _flag_initialised, _last_picture, _camera
+    global _core, _flag_initialised, _last_picture, _camera, _cam_width, _cam_height
 
     _last_picture = None
     if _flag_initialised:
@@ -31,7 +33,7 @@ def take_picture():
             #height = _core.get_height()
             #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
             #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
-            _camera.resolution = (cam_width, cam_height)
+            _camera.resolution = (_cam_width, _cam_height)
             stream = io.BytesIO()
             _camera.capture(stream, format='jpeg')
             stream.seek(0)

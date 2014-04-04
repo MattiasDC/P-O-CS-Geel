@@ -173,6 +173,7 @@ def build_patterns(solutions):
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
             if time()-start_time > 0.7:
+                print 'didn\'t make it'
                 return []
             patterns.remove(current_pattern)
             for element, position_element in current_pattern:
@@ -245,8 +246,8 @@ def find_position(best_pattern):
     length = 100000000000000000000000000000
     x = 0
     y = 0
-    for (cx, cy) in middle_of_shapes:
-        length2 = sqrt((cx - mx)**2 + (cy - my)**2)
+    for (cx, cy), (ox, oy) in middle_of_shapes:
+        length2 = sqrt((ox - mx)**2 + (oy - my)**2)
         if length2 < length:
             length = length2
             x = cx
