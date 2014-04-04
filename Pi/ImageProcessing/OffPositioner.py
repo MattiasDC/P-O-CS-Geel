@@ -167,23 +167,24 @@ def build_patterns(solutions):
             return True
         return False
 
+    seen_patterns = set(copy(map(frozenset, patterns)))
     start_time = time()
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
             if time()-start_time > 0.7:
                 return []
-            if not len(current_pattern) == len(solutions):
-                patterns.remove(current_pattern)
-                for element, position_element in current_pattern:
-                    for neighbour in element.neighbours:
-                        for position_neighbour in neighbour.possible_positions.keys():
-                            if position_element in neighbour.possible_positions[position_neighbour]\
-                                    and not neighbour in map(lambda (x, y): x, current_pattern)\
-                                    and not position_neighbour in map(lambda (x, y): y, current_pattern)\
-                                    and not current_pattern in patterns:
-                                new_pattern = copy(current_pattern)
-                                new_pattern.append((neighbour, position_neighbour))
+            patterns.remove(current_pattern)
+            for element, position_element in current_pattern:
+                for neighbour in element.neighbours:
+                    for position_neighbour in neighbour.possible_positions.keys():
+                        if position_element in neighbour.possible_positions[position_neighbour]\
+                                and not neighbour in map(lambda (x, y): x, current_pattern)\
+                                and not position_neighbour in map(lambda (x, y): y, current_pattern):
+                            new_pattern = copy(current_pattern)
+                            new_pattern.append((neighbour, position_neighbour))
+                            if not frozenset(new_pattern) in seen_patterns:
                                 patterns.append(new_pattern)
+                                seen_patterns.add(frozenset(new_pattern))
 
     return list(set(map(tuple, map(sorted, patterns))))
 
