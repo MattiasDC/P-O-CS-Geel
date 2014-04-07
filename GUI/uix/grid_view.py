@@ -12,56 +12,40 @@ from kivy.clock import Clock
 from util.colour import *
 
 
-class ZeppelinScatter(Scatter):
-    """
-    The zeppelin scatter displays the zeppelin object on the grid.
-    """
-
-    direction = NumericProperty(0)
-    """ The direction of this zeppelin. """
-
-    location_local = (0, 0)
-    """ The local location of this zeppelin on the grid. """
+class GridObject(Scatter):
+    #-------------------------------------------------------------------------
+    # Properties
+    #-------------------------------------------------------------------------
     grid = ObjectProperty(None)
     """ The internal grid object that this zeppelin is displayed on. """
 
-    x_left_bound = NumericProperty(0)
-    """ The left bound of the x-axis of the GridView in window values that this zeppelin is on. """
-    x_right_bound = NumericProperty(0)
-    """ The right bound of the x-axis of the GridView in window values that this zeppelin is on. """
-
-    y_top_bound = NumericProperty(0)
-    """ The top bound of the y-axis of the GridView in window values that this zeppelin is on. """
-    y_bottom_bound = NumericProperty(0)
-    """ The bottom bound of this y-axis of the GridView in window values that this zeppelin si on. """
-    team = StringProperty("None")
-    """ The team colour of this zeppelin scatter. """
-
-    colour_map = {"yellow": YELLOW_ZEPPELIN,
-                  "red": RED_ZEPPELIN}
-    """ A colour map that maps team colours to actual kivy colour tuples. """
-
+    #-------------------------------------------------------------------------
+    # Display information.
+    #-------------------------------------------------------------------------
     img = ObjectProperty(None)
-    """ The image that represents this zeppelin object on the GridView. """
+    """ The image that represents this GridObject on the GridView. """
 
+    img_path = StringProperty("")
+    """ The path to the image that represents this GridObject. """
+
+    location_local = (0, 0)
+    """ The local location of this GridObject on the grid. """
+
+    #-------------------------------------------------------------------------
+    # Constructor
+    #-------------------------------------------------------------------------
     def __init__(self, **kwargs):
         """
-        Create a new instance of this Zeppelin scatter with the given
-        ZeppelinView object.
-
-        Parameters
-        ----------
-        zeppelin : ZeppelinView
-            The domain object that represents the actual zeppelin logic.
+        Create a new instance of this GridObject.
         """
-        super(ZeppelinScatter, self).__init__(**kwargs)
-
-        self._zeppelin = kwargs['zeppelin']
-        self.team = self._zeppelin.identifier
+        super(GridObject, self).__init__(**kwargs)
 
         self.trigger_resize = Clock.create_trigger(self.calculate_bounds, 0)
         self.trigger_reposition = Clock.create_trigger(self.calculate_bounds, 0)
 
+    #-------------------------------------------------------------------------
+    # Callback methods.
+    #-------------------------------------------------------------------------
     def on_grid(self, instance, value):
         """
          Reposition this ZeppelinScatter on the grid when the window resizes.
@@ -69,11 +53,15 @@ class ZeppelinScatter(Scatter):
         self.grid.bind(size=self.trigger_resize)
         self.grid.bind(pos=self.trigger_reposition)
 
-    def on_team(self, instance, value):
-        """
-        Change the colour to the team colour when the team is set.
-        """
-        self.img.color = self.colour_map[value]
+    def calculate_bounds(self, *args):
+        (x_l, x_r, y_b, y_t) = self.grid.get_bounds()
+        self.pos = [x_l - 0.5 * self.size[0], y_t - 0.5 * self.size[1]]
+
+    #-------------------------------------------------------------------------
+    # Update methods.
+    #-------------------------------------------------------------------------
+    def _get_position(self):
+        return NotImplemented
 
     def update(self, dt):
         """
@@ -86,7 +74,7 @@ class ZeppelinScatter(Scatter):
         """
         x_l, x_r, y_b, y_t = self.grid.get_bounds()
 
-        loc_x, loc_y = self._zeppelin.position
+        loc_x, loc_y = self._get_position()
         grid = self.grid.grid
 
         # There are n-1 + 0.5 steps of 400 mm to get the size of grid.
@@ -94,16 +82,93 @@ class ZeppelinScatter(Scatter):
         # we take the sin of 1/3 pi because the edge of 400 mm has a hook of
         location_local_y = float(loc_y) / (sin((1.0/3.0) * pi) * float(400 * (grid.n_rows - 1)))
         self.location_local = (location_local_x, location_local_y)
+
         width = x_r - x_l
         height = y_t - y_b
-        self.pos = (x_l + width * self.location_local[0] - 0.5 * self.size[0], y_t - height * self.location_local[1] - 0.5 * self.size[1])
+        self.pos = (x_l + width * self.location_local[0] - 0.5 * self.size[0],
+                    y_t - height * self.location_local[1] - 0.5 * self.size[1])
 
-        if self._zeppelin.identifier == "yellow":
-            self.direction = self._zeppelin.direction
 
-    def calculate_bounds(self, *args):
-        (x_l, x_r, y_b, y_t) = self.grid.get_bounds()
-        self.pos = [x_l - 0.5 * self.size[0], y_t - 0.5 * self.size[1]]
+class GoalPositionScatter(GridObject):
+    team = StringProperty("None")
+    """ The team colour of this zeppelin scatter. """
+
+    def __init__(self, **kwargs):
+        """
+        Create a new instance of this GridObject.
+        """
+        self.img_path = './img/grid_goal.png'
+        super(GoalPositionScatter, self).__init__(**kwargs)
+
+        self._zeppelin = kwargs['zeppelin']
+        self.team = self._zeppelin.identifier
+
+    def on_team(self, instance, value):
+        """
+        Change the colour to the team colour when the team is set.
+        """
+        self.img.color = util.colour.colour_map[value]
+
+    def _get_position(self):
+        return self._zeppelin.goal_position
+
+
+class EnemyZeppelinScatter(GridObject):
+    team = StringProperty("None")
+    """ The team colour of this zeppelin scatter. """
+
+    def __init__(self, **kwargs):
+        """
+        Create a new instance of this GridObject.
+        """
+        self.img_path = './img/grid_enemy.png'
+        super(EnemyZeppelinScatter, self).__init__(**kwargs)
+
+        self._zeppelin = kwargs['zeppelin']
+        self.team = self._zeppelin.identifier
+
+    def on_team(self, instance, value):
+        """
+        Change the colour to the team colour when the team is set.
+        """
+        self.img.color = util.colour.colour_map[value]
+
+    def _get_position(self):
+        return self._zeppelin.position
+
+
+class OurZeppelinScatter(GridObject):
+    team = StringProperty("None")
+    """ The team colour of this zeppelin scatter. """
+
+    direction = NumericProperty(0)
+    """ The direction of this zeppelin. """
+
+    def __init__(self, **kwargs):
+        """
+        Create a new instance of this GridObject.
+        """
+        self.img_path = './img/grid_zeppelin.png'
+        super(OurZeppelinScatter, self).__init__(**kwargs)
+
+        self._zeppelin = kwargs['zeppelin']
+        self.team = self._zeppelin.identifier
+
+    def on_team(self, instance, value):
+        """
+        Change the colour to the team colour when the team is set.
+        """
+        self.img.color = util.colour.colour_map[value]
+
+    def _get_position(self):
+        return self._zeppelin.position
+
+    def _get_direction(self):
+        return self._zeppelin.direction
+
+    def update(self, dt):
+        super(OurZeppelinScatter, self).update(dt)
+        self.direction = self._get_direction()
 
 
 #=============================================================================
