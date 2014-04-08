@@ -2,14 +2,14 @@ from math import pi, sin
 from kivy.uix.scatter import Scatter
 
 from util import colour as col
+from util import values as val
+
 from kivy.graphics import *
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.properties import OptionProperty, NumericProperty, ListProperty, ObjectProperty, StringProperty
 
 from kivy.clock import Clock
-
-from util.colour import *
 
 
 class GridObject(Scatter):
@@ -19,15 +19,10 @@ class GridObject(Scatter):
     grid = ObjectProperty(None)
     """ The internal grid object that this zeppelin is displayed on. """
 
-    #-------------------------------------------------------------------------
-    # Display information.
-    #-------------------------------------------------------------------------
     img = ObjectProperty(None)
     """ The image that represents this GridObject on the GridView. """
-
     img_path = StringProperty("")
     """ The path to the image that represents this GridObject. """
-
     location_local = (0, 0)
     """ The local location of this GridObject on the grid. """
 
@@ -107,10 +102,14 @@ class GoalPositionScatter(GridObject):
         """
         Change the colour to the team colour when the team is set.
         """
-        self.img.color = util.colour.colour_map[value]
+        self.img.color = col.COLOUR_MAP_ZEP[value]
 
     def _get_position(self):
         return self._zeppelin.goal_position
+
+    def update(self, dt):
+        super(GoalPositionScatter, self).update(dt)
+        self.pos[1] += 0.5 * self.width
 
 
 class EnemyZeppelinScatter(GridObject):
@@ -131,7 +130,7 @@ class EnemyZeppelinScatter(GridObject):
         """
         Change the colour to the team colour when the team is set.
         """
-        self.img.color = util.colour.colour_map[value]
+        self.img.color = col.COLOUR_MAP_ZEP[value]
 
     def _get_position(self):
         return self._zeppelin.position
@@ -158,7 +157,7 @@ class OurZeppelinScatter(GridObject):
         """
         Change the colour to the team colour when the team is set.
         """
-        self.img.color = util.colour.colour_map[value]
+        self.img.color = col.COLOUR_MAP_ZEP[value]
 
     def _get_position(self):
         return self._zeppelin.position
@@ -225,11 +224,21 @@ class GridViewContainer(FloatLayout):
         zeppelin : ZeppelinView
             The new zeppelin that is added to this GridView
         """
-        new_scatter = ZeppelinScatter(zeppelin=zeppelin)
-        new_scatter.grid = self.grid_view
+        if zeppelin.identifier == val.OUR_TEAM:
+            new_zep_scatter = OurZeppelinScatter(zeppelin=zeppelin)
+            new_zep_scatter.grid = self.grid_view
 
-        self.zeppelin_scatters.append(new_scatter)
-        self.add_widget(new_scatter)
+            new_goal_scatter = GoalPositionScatter(zeppelin=zeppelin)
+            new_goal_scatter.grid = self.grid_view
+
+            self.zeppelin_scatters.append(new_zep_scatter)
+            self.zeppelin_scatters.append(new_goal_scatter)
+        else:
+            new_scatter = EnemyZeppelinScatter(zeppelin=zeppelin)
+            new_scatter.grid = self.grid_view
+
+            self.zeppelin_scatters.append(new_scatter)
+            self.add_widget(new_scatter)
 
     def update(self, dt):
         """
