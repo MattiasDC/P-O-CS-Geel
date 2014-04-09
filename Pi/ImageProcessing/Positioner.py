@@ -7,35 +7,38 @@ import glob
 from PIL import Image
 import Grid
 from Shapes import *
-import Recognizer
+import OffRecognizer
 from values import *
+from Simulator import Simulator
+import threading
 
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
 _core = None                    # The core
-_imageprocessor = Recognizer    # The image processing
-grd = None                      # The grid
+_imageprocessor = OffRecognizer    # The image processing
+grd = None
 
 
-def set_core(core):
-    global _core, _imageprocessor, grd
+def set_core(core, off):
+    global _core, _imageprocessor
 
     _core = core
-    grd = _core.get_grid()
-    _imageprocessor = Recognizer
+    if off:
+        grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
+    else:
+        grd = _core.get_grid()
+    _imageprocessor = OffRecognizer
 
 
-def find_location(pil):
+def find_location(pil, off):
     global _core, _imageprocessor, grd
     shapes = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
         return None, None, None
 
     connected_shapes = interconnect_shapes(shapes)
-    st = time()
-    (x, y), found_pos = find_in_grid(connected_shapes, _core.get_grid())
-    print "find in grid: " + str(time()-st)
+    (x, y), found_pos = find_in_grid(connected_shapes, grd)
     if len(found_pos) == 0:
         return None, None, None
 
@@ -104,7 +107,7 @@ def find_in_grid(shapes, grid):
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
 
     best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(x, _core.get_position()), x, y),
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(x, (0, 0)), x, y),
                                    best_patterns_shape_and_pos))
     #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
     #                               best_patterns_shape_and_pos))
@@ -173,7 +176,6 @@ def build_patterns(solutions):
     while same_size_stop_condition(patterns, len(solutions)):
         for current_pattern in patterns[:]:
             if time()-start_time > 0.7:
-                print 'didn\'t make it'
                 return []
             patterns.remove(current_pattern)
             for element, position_element in current_pattern:
@@ -252,6 +254,8 @@ def find_position(best_pattern):
             length = length2
             x = cx
             y = cy
+    print 'Coordinate in grid: ', str((x, y))
+    print 'Coordinate in mm: ', str(map_to_mm((x, y)))
     return map_to_mm((x, y))
 
 
@@ -261,7 +265,8 @@ def calc_rotation(shapes):
     shape_1, x, y = None, None, None
     for shape1, (a, b) in shapes:
         for shape2, (c, d) in shapes:
-            if (c, d) in _core.get_grid().get_neighbour_points(a, b):
+            if (c, d) in grd.get_neighbour_points(a, b):
+            #if (a, b) in _core.get_grid().get_neighbour_points(x, y):
                 shape_1 = shape1
                 x = a
                 y = b
@@ -401,3 +406,19 @@ class ColorPoint(object):
         for value in self.possible_positions:
             build_string += str(value) + " "
         return "Color: " + str(self.color) + " Positions: " + build_string
+
+if __name__ == '__main__':
+    sim = Simulator(None)
+    threading.Thread(target=sim.start, args=[False, False]).start()
+    sim.start(False, False)
+    os.chdir("C:\Users\Mattias\Desktop\_neural_network_oracle\Pi")
+    for filee in sorted(glob.glob("*.jpeg"), key=len):
+        if not 'a' in str(filee):
+            continue
+        print str(filee)
+        pos, _, pangle = find_location(Image.open('C:\Users\Mattias\Desktop\_neural_network_oracle\Pi\\' + filee))
+        if not pos is None:
+            (x, y) = pos
+            print str(pos)
+            sim._our_zeppelin.set_current_position(x, y)
+        raw_input()

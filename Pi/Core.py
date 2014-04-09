@@ -78,7 +78,8 @@ class Core(object):
 
         # Get current position
         self._positioner = Positioner
-        self._positioner.set_core(self)
+        #   Boolean: true = offline, false= on the pi
+        self._positioner.set_core(self, False)
 
         # Start navigation
         self.set_navigation_mode(True)

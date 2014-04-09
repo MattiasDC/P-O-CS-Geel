@@ -7,7 +7,7 @@ import colorsys
 import os
 import glob
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.customxml import NetworkReader
+from pybrain.tools.xml import NetworkReader
 
 
 
@@ -22,9 +22,13 @@ shape_map = {0: Rectangle,
              1: Ellipse,
              2: Heart,
              3: Star}
-i = 0
+
 feature_size = (30, 30)
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/ImageProcessing/Networks/network40.xml")
+i = 0
+
+start_time = time()
+oracle = NetworkReader.readFrom("C:/Users/Mattias/Dropbox/neural/network40.xml")
+print "Oracle read in time: ", str(time()-start_time)
 
 
 def process_picture(image):
@@ -92,7 +96,8 @@ def process_picture(image):
                 print "neural time: " + str(time()-st)
                 r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
-                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color), tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
             cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
@@ -190,11 +195,3 @@ def is_full_shape(contour):
     area = cv2.contourArea(contour)
     return area/cv2.arcLength(contour, True) > 3
 
-
-# ---------------------------------------------------------------------------------------------------------------------
-if __name__ == "__main__":
-    path = "/home/nooby4ever/Desktop/benjamin/600x450/"
-    os.chdir(path)
-    for file in glob.glob("*.jpg"):
-        print file
-        map(lambda x: x.__class__, process_picture(Image.open(path + file)))
