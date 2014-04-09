@@ -18,6 +18,7 @@ factor_edge_max_edge = 1.5      # The factor which determines how long an edge b
 _core = None                    # The core
 _imageprocessor = OffRecognizer    # The image processing
 grd = None
+_last_position = (0, 0)
 
 
 def set_core(core, off):
@@ -68,6 +69,7 @@ def interconnect_shapes(shapes):
 
 
 def find_in_grid(shapes, grid):
+    global _last_position
     #Haal de echte nodes uit alle edges en maak een tuple met een bijhorende colorpoint
     color_points_and_shapes = map(lambda x: (ColorPoint(x.color), x), list(set(list(sum(shapes, ())))))
 
@@ -107,11 +109,9 @@ def find_in_grid(shapes, grid):
     best_patterns_shape = map(lambda x: add_shapes_to_pattern(x, color_points_and_shapes), best_patterns)
 
     best_patterns_shape_and_pos = map(lambda x: (find_position(x), x), best_patterns_shape)
-    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(x, (0, 0)), x, y),
+    _, pos, best_pattern = min(map(lambda (x, y): (calc_distance(x, _last_position), x, y),
                                    best_patterns_shape_and_pos))
-    #_, pos, best_pattern = min(map(lambda (x, y): (calc_distance(map_to_mm(x), (0, 0)), map_to_mm(x), y),
-    #                               best_patterns_shape_and_pos))
-
+    _last_position = pos
     return pos, best_pattern
 
 
@@ -260,7 +260,7 @@ def find_position(best_pattern):
 
 
 def calc_rotation(shapes):
-
+    global grd
     shape_2, q, z = None, None, None
     shape_1, x, y = None, None, None
     for shape1, (a, b) in shapes:
@@ -360,6 +360,11 @@ def diff_row_angle((lx, ly), (hx, hy)):
             angle = (1.0/3.0)*pi
 
     return angle
+
+
+def get_currentposition():
+    global _last_position
+    return _last_position
 
 
 def find_angle(a, b, c):

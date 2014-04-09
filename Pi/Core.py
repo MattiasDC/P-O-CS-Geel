@@ -32,7 +32,6 @@ class Core(object):
 
     _grid = None                    # The grid
 
-    _current_position = (0, 0)        # The current position of the zeppelin
     _current_direction = (0, 0)       # The direction of the zeppelin
     _current_angle = 0                # The current angle of the zeppelin
 
@@ -277,11 +276,10 @@ class Core(object):
             self._current_direction = (q*400.0, z*400.0)
         else:
             self._current_direction = (q*400.0+200, z*400.0)
-        self._current_position = (x, y)
         self._senderPi_position.sent_position(x, y)
         self._senderPi_direction.sent_direction(self.get_angle())
         self._current_angle = (angle * 180.0) / pi
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self._current_position))
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self.get_position()))
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_grid(self):
@@ -306,7 +304,7 @@ class Core(object):
         """
         Returns the current position in (x,y) coordinates
         """
-        return self._current_position
+        return self._positioner.get_currentposition()
 
     def get_angle(self):
         return self._current_angle
