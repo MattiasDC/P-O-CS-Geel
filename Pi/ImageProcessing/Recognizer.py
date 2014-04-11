@@ -7,7 +7,7 @@ import colorsys
 import os
 import glob
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.xml import NetworkReader
+from pybrain.tools.customxml import NetworkReader
 
 
 
@@ -27,7 +27,8 @@ feature_size = (30, 30)
 i = 0
 
 start_time = time()
-oracle = NetworkReader.readFrom("C:/Users/Mattias/Dropbox/neural/network40.xml")
+#oracle = NetworkReader.readFrom("C:/Users/Mattias/Desktop/Networks/network40.xml")
+oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Networks/network40.xml")
 print "Oracle read in time: ", str(time()-start_time)
 
 
@@ -93,7 +94,6 @@ def process_picture(image):
             if features is not None and not is_on_edge(contour, gray_image.shape):
                 st = time()
                 oracle_return = oracle.activate(features)
-                print "neural time: " + str(time()-st)
                 r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
                 cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
@@ -194,4 +194,3 @@ def is_gray(contour, image):
 def is_full_shape(contour):
     area = cv2.contourArea(contour)
     return area/cv2.arcLength(contour, True) > 3
-

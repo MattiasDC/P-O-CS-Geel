@@ -7,29 +7,28 @@ import glob
 from PIL import Image
 import Grid
 from Shapes import *
-import OffRecognizer
+import Recognizer
 from values import *
-from Simulator import Simulator
 import threading
 
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
                                 # with respect to the minimum edge
 _core = None                    # The core
-_imageprocessor = OffRecognizer    # The image processing
+_imageprocessor = Recognizer    # The image processing
 grd = None
 _last_position = (0, 0)
 
 
 def set_core(core, off):
-    global _core, _imageprocessor
+    global _core, _imageprocessor, grd
 
     _core = core
     if off:
         grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
     else:
         grd = _core.get_grid()
-    _imageprocessor = OffRecognizer
+    _imageprocessor = Recognizer
 
 
 def find_location(pil, off):
@@ -44,6 +43,7 @@ def find_location(pil, off):
         return None, None, None
 
     angle = calc_rotation(found_pos)
+    print "positioner: ", str((x, y))
     return (x, y), (-sin(angle)+x, cos(angle)+y), angle
 
 
@@ -254,8 +254,6 @@ def find_position(best_pattern):
             length = length2
             x = cx
             y = cy
-    print 'Coordinate in grid: ', str((x, y))
-    print 'Coordinate in mm: ', str(map_to_mm((x, y)))
     return map_to_mm((x, y))
 
 
@@ -411,7 +409,7 @@ class ColorPoint(object):
         for value in self.possible_positions:
             build_string += str(value) + " "
         return "Color: " + str(self.color) + " Positions: " + build_string
-
+"""
 if __name__ == '__main__':
     sim = Simulator(None)
     threading.Thread(target=sim.start, args=[False, False]).start()
@@ -421,9 +419,11 @@ if __name__ == '__main__':
         if not 'a' in str(filee):
             continue
         print str(filee)
-        pos, _, pangle = find_location(Image.open('C:\Users\Mattias\Desktop\_neural_network_oracle\Pi\\' + filee))
+        set_core(None, True)
+        pos, _, pangle = find_location(Image.open('C:\Users\Mattias\Desktop\_neural_network_oracle\Pi\\' + filee), True)
         if not pos is None:
             (x, y) = pos
             print str(pos)
             sim._our_zeppelin.set_current_position(x, y)
         raw_input()
+"""

@@ -36,7 +36,7 @@ class Core(object):
     _current_angle = 0                # The current angle of the zeppelin
 
     _goal_height = 100            # The height where the zeppelin has to be at the moment
-    _goal_position = (0,0)           # The (x,y)- coordinate the zeppelin has to be at the moment
+    _goal_position = (0, 0)           # The (x,y)- coordinate the zeppelin has to be at the moment
 
     _prev_error = 0                 # Prev error for the PID algorithm
     _prev_errors = [0]*10           # List of integral values for PID
@@ -69,7 +69,7 @@ class Core(object):
         self._camera.initialise(self)
 
         # Sets the grid
-        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/grid.txt")
+        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel-2/Pi/grid.csv")
 
         # Start height control
         self._goal_height = ground_height
@@ -215,15 +215,13 @@ class Core(object):
             angle *= -1         # angle is negative if the goal lies to the right of the current direction
         return angle
 
-
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
-
     def _update_position_thread(self):
         while self._stay_on_position_flag:
             start = time()
-            a, b, c = self._positioner.find_location(self._camera.take_picture())
-            if not (a is None or b is None or c is None):
-                self._update_position(a, b, c)
+            pos, direc, angle = self._positioner.find_location(self._camera.take_picture(), False)
+            if not (pos is None or direc is None or angle is None):
+                self._update_position(pos, direc, angle)
            # if (self._position_update_interval - (time() - start)) > 0:
             #    sleep(self._position_update_interval - (time() - start))
 
@@ -276,10 +274,12 @@ class Core(object):
             self._current_direction = (q*400.0, z*400.0)
         else:
             self._current_direction = (q*400.0+200, z*400.0)
+        print "core: ", str((x, y))
         self._senderPi_position.sent_position(x, y)
         self._senderPi_direction.sent_direction(self.get_angle())
         self._current_angle = (angle * 180.0) / pi
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self.get_position()))
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] "
+                            + "Current position: " + str(self.get_position()))
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_grid(self):
