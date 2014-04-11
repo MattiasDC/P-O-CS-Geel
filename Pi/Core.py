@@ -274,7 +274,6 @@ class Core(object):
             self._current_direction = (q*400.0, z*400.0)
         else:
             self._current_direction = (q*400.0+200, z*400.0)
-        print "core: ", str((x, y))
         self._senderPi_position.sent_position(x, y)
         self._senderPi_direction.sent_direction(self.get_angle())
         self._current_angle = (angle * 180.0) / pi

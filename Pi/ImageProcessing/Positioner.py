@@ -43,7 +43,6 @@ def find_location(pil, off):
         return None, None, None
 
     angle = calc_rotation(found_pos)
-    print "positioner: ", str((x, y))
     return (x, y), (-sin(angle)+x, cos(angle)+y), angle
 
 
@@ -132,7 +131,7 @@ def map_to_mm((x, y)):
 
 
 def calc_distance((x, y), (a, b)):
-    return sqrt((x + a)**2 + (y+b)**2)
+    return sqrt((x - a)**2 + (y - b)**2)
 
 
 def reduce_solutions(points):
