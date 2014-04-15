@@ -26,13 +26,16 @@ class VirtualZeppelin(object):
     _senderPi_position = None       # The sender-object used for sending position-messages to the server
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
+    _senderPi_tablets = None        # The sender-object used for sending tablet-messages to the server
 
     def __init__(self, x, y, goal_x, goal_y, height, dir_x, dir_y, color):
         self._senderPi_position = SenderPi.SenderPi(color)
         self._senderPi_height = SenderPi.SenderPi(color)
-        self.senderPi_direction = SenderPi.SenderPi(color)
+        self._senderPi_direction = SenderPi.SenderPi(color)
+        self._senderPi_tablets = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
+        self._goal_tablet = 0
         self._goal_height = height
         self._current_height = height
         self._current_direction = (dir_x, dir_y)
@@ -54,6 +57,12 @@ class VirtualZeppelin(object):
     def set_goal_position(self, x, y):
         self._goal_position = (x, y)
 
+    def get_goal_tablet(self):
+        return self._goal_tablet
+
+    def set_goal_tablet(self, i):
+        self._goal_tablet = i
+
     def get_goal_height(self):
         return self._goal_height
 
@@ -72,7 +81,7 @@ class VirtualZeppelin(object):
 
     def set_current_direction(self, direction):
         self._current_direction = direction
-        self.senderPi_direction.sent_direction(Simulator._direction_to_degrees(self))
+        self._senderPi_direction.sent_direction(Simulator._direction_to_degrees(self))
 
     def get_color(self):
         return self._color
@@ -104,17 +113,29 @@ class Simulator(object):
     _our_zeppelin = None
     _other_zeppelin = None
 
+    _tablets = None
+
     #_senderPi_Console = None        # The sender-object used for sending console-messages to the server
 
-    def __init__(self, other_zep):
+    def __init__(self, other_zep, tablets):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-        self._our_zeppelin = VirtualZeppelin(500, 500, 100, 100, 100, 600, 700, team)
+
+        self._tablets = tablets
+
+        self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 100, 600, 700, team)
+        goal = random.randint(1, len(self._tablets))
+        self._our_zeppelin.set_goal_position(tablets[goal-1][0], tablets[goal-1][1])
+        self._our_zeppelin.set_goal_tablet(goal)
+
         ReceiverPi.receive(self._our_zeppelin)
         if not other_zep is None:
             self._other_zeppelin = other_zep
             self._with_other_zeppelin_flag = True
+            goal = random.randint(1, len(self._tablets))
+            self._other_zeppelin.set_goal_position(tablets[goal-1][0], tablets[goal-1][1])
+            self._other_zeppelin.set_goal_tablet(goal)
 
     def start(self, height_flag, pos_flag):
         self.set_height_control(height_flag)
@@ -147,7 +168,7 @@ class Simulator(object):
             self._update_position_thread_zep(self._our_zeppelin, sleep_interval)
             if self._with_other_zeppelin_flag == True:
                 self._update_position_thread_zep(self._other_zeppelin, sleep_interval)
-            sleep(2)
+            sleep(sleep_interval)
 
 
     def _update_position_thread_zep(self, zeppelin, sleep_interval):
@@ -256,6 +277,8 @@ class Simulator(object):
         zeppelin.set_current_position(new_x, new_y)
         zeppelin.set_current_direction((new_dir_x, new_dir_y))
 
+        self._handle_tablets(zeppelin)
+
     def _pid_moving(self, zeppelin, sleep_interval):
         error = self._calculate_distance_between(zeppelin.get_current_position(), zeppelin.get_goal_position())
         integral = (sum(zeppelin.get_prev_errors_soft()[1:]) + zeppelin.get_prev_error_soft()) * sleep_interval
@@ -303,6 +326,15 @@ class Simulator(object):
             #print "drift_dir_y:" + str(drift[3])
             return drift
         return [x, y, dir_x, dir_y]
+
+    def _handle_tablets(self, zeppelin):
+        distance = self._calculate_distance_between(zeppelin.get_current_position(), zeppelin.get_goal_position())
+        if distance < distance_threshold:
+            zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), "PUBLIC KEY")
+            next_tablet = random.randint(1, len(self._tablets))
+            zeppelin.set_goal_position(self._tablets[next_tablet-1][0],self._tablets[next_tablet-1][1])
+            zeppelin.set_goal_tablet(next_tablet)
+
 
     @staticmethod
     def _calculate_distance_between(start, end):
@@ -417,7 +449,8 @@ class Simulator(object):
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     _other_zep = VirtualZeppelin(400, 400, 300, 300, 100, 0, 0, 'rood')
-    _simulator = Simulator(None)
+    tablets = [(1000,1000), (2000, 2000)]
+    _simulator = Simulator(None, tablets)
     _simulator.start(False, True)
 
 

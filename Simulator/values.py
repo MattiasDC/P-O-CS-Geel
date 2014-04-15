@@ -48,3 +48,5 @@ team = 'geel'                  #Name of the controlled zeppelin
 max_speed = 274               #The maximum speed of the zeppelin
 drift_threshold = 0.2           #The value under which drift will occur
 drift_chance = 0.2              #If the pwm-value is below the threshold-value, drift will occur with this chance
+
+distance_threshold = 10
