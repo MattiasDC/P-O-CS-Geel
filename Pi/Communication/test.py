@@ -1,6 +1,5 @@
 from ReceiverGUI import receive
 import SenderGUI
-from time import sleep
 import GUIDummy
 
 _dummy = GUIDummy.GUIDummy()

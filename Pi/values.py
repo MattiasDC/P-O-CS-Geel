@@ -15,6 +15,7 @@ pid_derivative = 5              # 4 0.38 6
 pid_boundary = 100              # TODO nog te testen
 
 # ------------------------------- Software PWM
+software_pid_interval = 1.0
 software_frequency = 50                 # Frequency of the duty cycle
 #software_percentage_correction = (100 - minimal_cycle) / 10.0    # PWM percentual correction
 power_ratio = 0.17                  # The ratio of the motor in backward/forward direction, used for calibrating
