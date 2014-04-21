@@ -26,6 +26,7 @@ def callback(ch, method, properties, body):
     if (team + '.hcommand.elevate') in str(method.routing_key):
         #Height-command received
         #Set the new goal-height in the core-class
+        print 'message received'
         _core.set_goal_height(int(body))
     if (team + '.lcommand') in str(method.routing_key):
         #Low-level command received

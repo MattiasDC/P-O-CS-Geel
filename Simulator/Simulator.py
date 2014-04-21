@@ -104,7 +104,7 @@ class Simulator(object):
     _our_zeppelin = None
     _other_zeppelin = None
 
-    #_senderPi_Console = None        # The sender-object used for sending console-messages to the server
+    _senderPi_Console = None        # The sender-object used for sending console-messages to the server
 
     def __init__(self, other_zep):
         """
@@ -347,7 +347,7 @@ class Simulator(object):
         """
         Adds a new line to the console
         """
-        #self._senderPi_Console.sent_console_information(line)
+        self._senderPi_Console.sent_console_information(line)
 
     def quit_core(self):
         self._our_zeppelin.set_goal_height(ground_height)
