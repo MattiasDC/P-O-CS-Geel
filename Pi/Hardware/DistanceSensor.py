@@ -26,6 +26,7 @@ def initialise(core):
     _core = core
     _core_set = True
 
+
 def _get_height_list():
     measurements = []
     for i in range(samples):

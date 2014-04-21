@@ -4,7 +4,6 @@ import io
 import Image
 
 import PiCamera
-from values import *
 
 
 _core = None
@@ -13,6 +12,7 @@ _last_picture = None                    # Last taken picture (PIL object)
 _camera = PiCamera.PiCamera()
 _cam_height = 500
 _cam_width = 666
+
 
 def initialise(core):
     global _core, _flag_initialised

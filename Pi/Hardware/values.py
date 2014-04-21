@@ -2,7 +2,7 @@
 delimiter = "#"                # Delimiter for the console lines
 maximum_height = 200           # Maximum height of the zeppelin in cm
 
-ground_height = 10            # Base height to hover over the ground (used to initialise the goal height and land)
+ground_height = 10             # Base height to hover over the ground (used to initialise the goal height and land)
 extention = ".jpg"              # Extentions for the images
 
 # -------------------------------- PID
@@ -15,7 +15,7 @@ pid_derivative = 5              # 4 0.38 6
 pid_boundary = 100              # TODO nog te testen
 
 # ------------------------------- Software PWM
-software_frequency = 50                 # Frequency of the duty cycle
+software_frequency = 1.0               # Frequency of the duty cycle
 #software_percentage_correction = (100 - minimal_cycle) / 10.0    # PWM percentual correction
 power_ratio = 0.17                  # The ratio of the motor in backward/forward direction, used for calibrating
                                     # the turning
@@ -37,7 +37,8 @@ echo_gpio = 22                 # = 15 on the pi
 trig_gpio = 27                 # = 13 on the pi
 
 # ------------------------------- Camera
-cam_resolution = 500            # The camera resolution
+cam_height = 500            # The camera resolution
+cam_width = 666
 
 # ------------------------------- Network
 port = 10000                   # The port used in the connection

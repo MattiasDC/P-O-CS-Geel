@@ -36,7 +36,7 @@ class Core(object):
     _current_angle = 0                # The current angle of the zeppelin
 
     _goal_height = 100            # The height where the zeppelin has to be at the moment
-    _goal_position = (0,0)           # The (x,y)- coordinate the zeppelin has to be at the moment
+    _goal_position = (0, 0)           # The (x,y)- coordinate the zeppelin has to be at the moment
 
     _prev_error = 0                 # Prev error for the PID algorithm
     _prev_errors = [0]*10           # List of integral values for PID
@@ -59,6 +59,7 @@ class Core(object):
         # Initialisation the motors
         self._motors = MotorControl(self)
 
+
         # Initialisation of the Distance Sensor
         self._sensor = DistanceSensor
         self._sensor.initialise(self)
@@ -69,16 +70,22 @@ class Core(object):
         self._camera.initialise(self)
 
         # Sets the grid
-        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/grid.txt")
+        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel-2/Pi/grid.csv")
 
         # Start height control
         self._goal_height = ground_height
-        self.set_height_control(True)
+        self.set_height_control(False)
 
         # Get current position
         self._positioner = Positioner
         #   Boolean: true = offline, false= on the pi
         self._positioner.set_core(self, False)
+
+        self._motors._motor1.move_clockwise()
+        self._motors._motor2.move_clockwise()
+        sleep(2)
+        self._motors._motor1.stop_moving()
+        self._motors._motor2.stop_moving()
 
         # Start navigation
         self.set_navigation_mode(True)
@@ -91,7 +98,7 @@ class Core(object):
         while self._stay_on_height_flag:
             self._motors.set_pwm(self._pid())
             self._senderPi_height.sent_height(self._sensor.get_height()*10.0)
-            sleep(pid_interval)                             # time in seconds
+            sleep(software_pid_interval)                             # time in seconds
 
     def _pid(self):
         """
@@ -121,44 +128,53 @@ class Core(object):
         SoftwarePWM thread
         Motor 1 is the left motor, motor 2 is the right motor.
         """
+        print "navigation thread"
         while self._stay_on_position_flag:
             start = self.get_position()
             finish = self.get_goal_position()
             direction = self.get_direction()
             angle = self._calculate_angle(start, finish, direction)
+            print "angle: " + str(angle)
             pid_value = self._pid_moving(start, finish)
             # The pwm value calculated with the pid method has a maximum and minimum boundary
             if pid_value > pid_boundary:
                 pid_value = pid_boundary
             elif pid_value < -pid_boundary:
                 pid_value = -pid_boundary
+            print "pid: " + str(pid_value)
 
             if 0 <= angle <= 45:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (45-angle)/45)
                 self._motors.motor2_pwm(pid_value)
+                print "case1"
             elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
                 self._motors.motor1_pwm(pid_value * (angle-45) * -1/90)
                 self._motors.motor2_pwm(pid_value * (angle-135) * -1/90 * power_ratio)
+                print "case2"
             elif 135 < angle <= 180:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * -1)
                 self._motors.motor2_pwm(pid_value * (angle-135) * -1/45)
+                print "case3"
             elif -45 <= angle < 0:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value)
                 self._motors.motor2_pwm(pid_value * (45+angle)/45)
+                print "case4"
             elif -135 <= angle < -45:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/90 * power_ratio)
                 self._motors.motor2_pwm(pid_value * (angle+45) * 1/90)
+                print "case5"
             elif -180 <= angle < -135:
                 # Both motors are used forwards
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/45)
                 self._motors.motor2_pwm(pid_value * -1)
+                print "case6"
             sleep(pid_interval)
 
     def _pid_moving(self, start, finish):
@@ -215,15 +231,13 @@ class Core(object):
             angle *= -1         # angle is negative if the goal lies to the right of the current direction
         return angle
 
-
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
-
     def _update_position_thread(self):
         while self._stay_on_position_flag:
             start = time()
-            a, b, c = self._positioner.find_location(self._camera.take_picture())
-            if not (a is None or b is None or c is None):
-                self._update_position(a, b, c)
+            pos, direc, angle = self._positioner.find_location(self._camera.take_picture(), False)
+            if not (pos is None or direc is None or angle is None):
+                self._update_position(pos, direc, angle)
            # if (self._position_update_interval - (time() - start)) > 0:
             #    sleep(self._position_update_interval - (time() - start))
 
@@ -279,7 +293,8 @@ class Core(object):
         self._senderPi_position.sent_position(x, y)
         self._senderPi_direction.sent_direction(self.get_angle())
         self._current_angle = (angle * 180.0) / pi
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Current position: " + str(self.get_position()))
+        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] "
+                            + "Current position: " + str(self.get_position()))
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_grid(self):
@@ -388,7 +403,7 @@ class Core(object):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._update_position_thread).start()
-            #Thread(target=self._navigation_thread).start()
+            Thread(target=self._navigation_thread).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
@@ -402,5 +417,7 @@ if __name__ == "__main__":
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
     core.set_goal_height(1300)
+
+
 
 # ---------------------------------------------------------------------------------------------------------------------
