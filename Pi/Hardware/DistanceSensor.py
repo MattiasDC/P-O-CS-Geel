@@ -84,8 +84,10 @@ def _measure_height_thread():
             sorted_list = deepcopy(list)
             sorted_list.sort()
             _prev_height = _current_height
-            _current_height = sum(sorted_list[samples / 4:len(sorted_list) - samples / 4]) / \
+            cache =  sum(sorted_list[samples / 4:len(sorted_list) - samples / 4]) / \
                               (len(sorted_list) - samples / 2)
+            if cache < 190:
+                _current_height = cache
         sleep(interval)
 
 
