@@ -101,11 +101,11 @@ def process_picture(image):
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
             cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
-    if i < 200:
-        i += 1
-        print i
-        image.save(str(i) + "a.jpeg", "JPEG")
-        cv2.imwrite(str(i) + ".jpeg", gray_image)
+    #if i < 200:
+    #    i += 1
+    #    print i
+    #    image.save(str(i) + "a.jpeg", "JPEG")
+    #    cv2.imwrite(str(i) + ".jpeg", gray_image)
 
     return found_shapes
 

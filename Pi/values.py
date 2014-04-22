@@ -8,14 +8,18 @@ extention = ".jpg"              # Extentions for the images
 # -------------------------------- PID
 pid_interval = 0.3
 
-pid_error = 2.3                 # 1.95;0.12;3.2/ 3      -> Origineel
-pid_integral = 1.2              # 2.3 1.2 5             -> goede
-pid_derivative = 5              # 4 0.38 6
+pid_error = 2.3/10.0                 # 1.95;0.12;3.2/ 3      -> Origineel
+pid_integral = 1.2/10.0              # 2.3 1.2 5             -> goede
+pid_derivative = 5/10.0              # 4 0.38 6
                                 # 3.5 0.45 6            -> laatste test
 pid_boundary = 100              # TODO nog te testen
 
 # ------------------------------- Software PWM
 software_pid_interval = 1.0
+software_pid_error = 2.3/10.0                 # 1.95;0.12;3.2/ 3      -> Origineel
+software_pid_integral = 1.2/10.0              # 2.3 1.2 5             -> goede
+software_pid_derivative = 5/10.0              # 4 0.38 6
+                                # 3.5 0.45 6            -> laatste test
 software_frequency = 50                 # Frequency of the duty cycle
 #software_percentage_correction = (100 - minimal_cycle) / 10.0    # PWM percentual correction
 power_ratio = 0.17                  # The ratio of the motor in backward/forward direction, used for calibrating
@@ -45,6 +49,6 @@ cam_width = 666
 port = 10000                   # The port used in the connection
 
 # ------------------------------- Server
-host = '192.168.1.9'             #The ip-adress of the server
+host = '192.168.1.6'             #The ip-adress of the server
 exchange = 'server'            #Name of the exchange used in the protocol
 team = 'geel'                  #Name of the controlled zeppelin
