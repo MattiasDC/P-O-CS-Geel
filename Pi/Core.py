@@ -75,18 +75,12 @@ class Core(object):
 
         # Start height control
         self._goal_height = ground_height
-        self.set_height_control(False)
+        self.set_height_control(True)
 
         # Get current position
         self._positioner = Positioner
         #   Boolean: true = offline, false= on the pi
         self._positioner.set_core(self, False)
-
-        self._motors._motor1.move_clockwise()
-        self._motors._motor2.move_clockwise()
-        sleep(2)
-        self._motors._motor1.stop_moving()
-        self._motors._motor2.stop_moving()
 
         # Start navigation
         self.set_navigation_mode(True)
@@ -124,18 +118,17 @@ class Core(object):
         return pid_error*error + pid_integral*integral + pid_derivative*derivative
 
 # ------------------------------------------ Navigation Control --------------------------------------------------------
-    def _navigation_thread(self):
+    def _navigation_thread_motor1(self):
         """
         SoftwarePWM thread
         Motor 1 is the left motor, motor 2 is the right motor.
         """
-        print "navigation thread"
         while self._stay_on_position_flag:
             start = self.get_position()
             finish = self.get_goal_position()
             direction = self.get_direction()
             angle = self._calculate_angle(start, finish, direction)
-            print "angle: " + str(angle)
+            print "angle motor1: " + str(angle)
             pid_value = self._pid_moving(start, finish)
             # The pwm value calculated with the pid method has a maximum and minimum boundary
             if pid_value > pid_boundary:
@@ -146,36 +139,77 @@ class Core(object):
 
             if 0 <= angle <= 45:
                 # Both motors are used forwards
-                self._motors.motor1_pwm(pid_value * (45-angle)/45)
-                self._motors.motor2_pwm(pid_value)
-                print "case1"
+                self.set_motor1(pid_value * (45-angle)/45)
+                print "m1 case1"
             elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
-                self._motors.motor1_pwm(pid_value * (angle-45) * -1/90)
-                self._motors.motor2_pwm(pid_value * (angle-135) * -1/90 * power_ratio)
-                print "case2"
+                self.set_motor1(pid_value * (angle-45) * -1/90)
+                print "m1 case2"
             elif 135 < angle <= 180:
                 # Both motors are used forwards
-                self._motors.motor1_pwm(pid_value * -1)
-                self._motors.motor2_pwm(pid_value * (angle-135) * -1/45)
-                print "case3"
+                self.set_motor1(pid_value * -1)
+                print "m1 case3"
             elif -45 <= angle < 0:
                 # Both motors are used forwards
-                self._motors.motor1_pwm(pid_value)
-                self._motors.motor2_pwm(pid_value * (45+angle)/45)
-                print "case4"
+                self.set_motor1(pid_value)
+                print "m1 case4"
             elif -135 <= angle < -45:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
-                self._motors.motor1_pwm(pid_value * (angle+135) * 1/90 * power_ratio)
-                self._motors.motor2_pwm(pid_value * (angle+45) * 1/90)
-                print "case5"
+                self.set_motor1(pid_value * (angle+135) * 1/90 * power_ratio)
+                print "m1 case5"
             elif -180 <= angle < -135:
                 # Both motors are used forwards
-                self._motors.motor1_pwm(pid_value * (angle+135) * 1/45)
-                self._motors.motor2_pwm(pid_value * -1)
-                print "case6"
+                self.set_motor1(pid_value * (angle+135) * 1/45)
+                print "m1 case6"
+            sleep(software_pid_interval)
+
+    def _navigation_thread_motor2(self):
+        """
+        SoftwarePWM thread
+        Motor 1 is the left motor, motor 2 is the right motor.
+        """
+        while self._stay_on_position_flag:
+            start = self.get_position()
+            finish = self.get_goal_position()
+            direction = self.get_direction()
+            angle = self._calculate_angle(start, finish, direction)
+            print "angle motor2: " + str(angle)
+            pid_value = self._pid_moving(start, finish)
+            # The pwm value calculated with the pid method has a maximum and minimum boundary
+            if pid_value > pid_boundary:
+                pid_value = pid_boundary
+            elif pid_value < -pid_boundary:
+                pid_value = -pid_boundary
+            print "pid: " + str(pid_value)
+
+            if 0 <= angle <= 45:
+                # Both motors are used forwards
+                self.set_motor2(pid_value)
+                print "m2 case1"
+            elif 45 < angle <= 135:
+                # Right motor is used forwards, but because left motor is used backwards,
+                # power ratio must be taken into account
+                self.set_motor2(pid_value * (angle-135) * -1/90 * power_ratio)
+                print "m2 case2"
+            elif 135 < angle <= 180:
+                # Both motors are used forwards
+                self.set_motor2(pid_value * (angle-135) * -1/45)
+                print "m2 case3"
+            elif -45 <= angle < 0:
+                # Both motors are used forwards
+                self.set_motor2(pid_value * (45+angle)/45)
+                print "m2 case4"
+            elif -135 <= angle < -45:
+                # Left motor is used forwards, but because right motor is used backwards,
+                # power ratio must be taken into account
+                self.set_motor2(pid_value * (angle+45) * 1/90)
+                print "m2 case5"
+            elif -180 <= angle < -135:
+                # Both motors are used forwards
+                self.set_motor2(pid_value * -1)
+                print "m2 case6"
             sleep(software_pid_interval)
 
     def _pid_moving(self, start, finish):
@@ -404,7 +438,8 @@ class Core(object):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._update_position_thread).start()
-            Thread(target=self._navigation_thread).start()
+            Thread(target=self._navigation_thread_motor1()).start()
+            Thread(target=self._navigation_thread_motor2()).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False

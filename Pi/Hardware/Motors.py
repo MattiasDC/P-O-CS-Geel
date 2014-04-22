@@ -14,7 +14,7 @@ class MotorControl(object):
     _pwm_motor = None   # motor4 = below
 
     _core = None
-    _pid_interval = 0
+    _pid_interval = 1.0
 
     def __init__(self, core):
         # Arguments not checked
@@ -59,21 +59,19 @@ class MotorControl(object):
             pwm = -100
         total_time = self._pid_interval
         #The total duration of one duty cycle
-        print "motor 1: total time: " + str(total_time)
         #The duration of the motor-movement in one duty cycle
         up_time = abs(total_time*pwm/100.0)
-        print "motor 1: up_time time: " + str(up_time)
         print "motor1_pwm: " + str(pwm)
         if (pwm >= 0 and pwm <= 100):
             #Let the motor turn for the up_time
-            print "motor 1: case 1"
+            print "motor 1: counterclockwise"
             self._motor1.move_counterclockwise()
             sleep(up_time)
              #Stop the motor and sleep for the remaining of the duty_cycle
             self._motor1.stop_moving()
             sleep (total_time-up_time)
         if (pwm < 0 and pwm >= -100):
-            print "motor 1: case 2"
+            print "motor 1: clockwise"
             #Let the motor turn for the up_time
             self._motor1.move_clockwise()
             sleep(up_time)
@@ -83,7 +81,7 @@ class MotorControl(object):
 
     def motor2_pwm(self, pwm):
         """
-        Let the first motor turn at percentage determined by the PWM-argument
+        Let the second motor turn at percentage determined by the PWM-argument
         """
 
         #If the pwm-value is outside the range [-100,100], adjust it
@@ -96,8 +94,10 @@ class MotorControl(object):
         total_time = self._pid_interval
         #The duration of the motor-movement in one duty cycle
         up_time = abs(total_time*pwm/100.0)
+        print "motor2_pwm: " + str(pwm)
 
         if (pwm >= 0 and pwm <= 100):
+            print "motor 2: counterclockwise"
             #Let the motor turn for the up_time
             self._motor2.move_counterclockwise()
             sleep(up_time)
@@ -105,6 +105,7 @@ class MotorControl(object):
             self._motor2.stop_moving()
             sleep(total_time-up_time)
         if (pwm < 0 and pwm >= -100):
+            print "motor 2: clockwise"
             #Let the motor turn for the up_time
             self._motor2.move_clockwise()
             sleep(up_time)
@@ -112,9 +113,10 @@ class MotorControl(object):
             self._motor2.stop_moving()
             sleep(total_time-up_time)
 
-    def set_pwm(self, pwm):
-        #Controls the PWM-motor
-        self._pwm_motor.set_pwm(pwm)
+
+    #def set_pwm(self, pwm):
+    #    #Controls the PWM-motor
+    #    self._pwm_motor.set_pwm(pwm)
 
     def get_fixed_motors_status(self):
         """
