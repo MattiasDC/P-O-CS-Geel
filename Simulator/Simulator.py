@@ -113,13 +113,8 @@ class Simulator(object):
     _our_zeppelin = None
     _other_zeppelin = None
 
-<<<<<<< HEAD
     _senderPi_Console = None        # The sender-object used for sending console-messages to the server
-=======
     _tablets = None
-
-    #_senderPi_Console = None        # The sender-object used for sending console-messages to the server
->>>>>>> 339f58ea010ebbd576cfc6a41b0ea62d7fd7237f
 
     def __init__(self, other_zep, tablets):
         """
