@@ -176,11 +176,11 @@ class Core(object):
                 self._motors.motor1_pwm(pid_value * (angle+135) * 1/45)
                 self._motors.motor2_pwm(pid_value * -1)
                 print "case6"
-            sleep(pid_interval)
+            sleep(software_pid_interval)
 
     def _pid_moving(self, start, finish):
         error = self._calculate_distance_between(start, finish)
-        integral = (sum(self._prev_errors_soft[1:]) + self._prev_error_soft) * pid_interval
+        integral = (sum(self._prev_errors_soft[1:]) + self._prev_error_soft) * software_pid_interval
         self._prev_errors_soft = self._prev_errors_soft[1:]
         self._prev_errors_soft.append(error)
 
@@ -195,7 +195,7 @@ class Core(object):
         # print "curr : " + str(self.get_height()) + " goal : " + str(self._goal_height)
         # print "Error : " + str(pid_error*error) + " integral : " + str(pid_integral*integral) + " derivative : " \
         #      + str(pid_derivative*derivative)
-        return pid_error*error + pid_integral*integral + pid_derivative*derivative
+        return software_pid_error*error + software_pid_integral*integral + software_pid_derivative*derivative
 
     @staticmethod
     def _calculate_distance_between(start, end):
@@ -420,6 +420,13 @@ if __name__ == "__main__":
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
     core.set_goal_height(1300)
+    while (True):
+        software_pid_integral = raw_input("integral")
+        software_pid_derivative = raw_input("derivative")
+        software_pid_error = raw_input("error")
+        new_interval = raw_input("interval")
+        software_pid_interval = new_interval
+        core._motors._pid_interval = new_interval
 
 
 

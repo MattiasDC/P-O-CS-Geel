@@ -15,7 +15,8 @@ pid_derivative = 5              # 4 0.38 6
 pid_boundary = 100              # TODO nog te testen
 
 # ------------------------------- Software PWM
-software_frequency = 1.0               # Frequency of the duty cycle
+              # Frequency of the duty cycle
+software_pid_interval = 1.0
 #software_percentage_correction = (100 - minimal_cycle) / 10.0    # PWM percentual correction
 power_ratio = 0.17                  # The ratio of the motor in backward/forward direction, used for calibrating
                                     # the turning
@@ -44,6 +45,6 @@ cam_width = 666
 port = 10000                   # The port used in the connection
 
 # ------------------------------- Server
-host = '192.168.1.9'             #The ip-adress of the server
+host = '192.168.1.6'             #The ip-adress of the server
 exchange = 'server'            #Name of the exchange used in the protocol
 team = 'geel'                  #Name of the controlled zeppelin

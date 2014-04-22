@@ -14,6 +14,7 @@ class MotorControl(object):
     _pwm_motor = None   # motor4 = below
 
     _core = None
+    _pid_interval = 0
 
     def __init__(self, core):
         # Arguments not checked
@@ -56,9 +57,8 @@ class MotorControl(object):
             pwm = 100
         if pwm < -100:
             pwm = -100
-
+        total_time = self._pid_interval
         #The total duration of one duty cycle
-        total_time = 1.0/software_frequency
         print "motor 1: total time: " + str(total_time)
         #The duration of the motor-movement in one duty cycle
         up_time = abs(total_time*pwm/100.0)
@@ -93,7 +93,7 @@ class MotorControl(object):
             pwm = -100
 
         #The total duration of one duty cycle
-        total_time = 1.0/software_frequency
+        total_time = self._pid_interval
         #The duration of the motor-movement in one duty cycle
         up_time = abs(total_time*pwm/100.0)
 
