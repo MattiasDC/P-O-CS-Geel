@@ -3,7 +3,6 @@ from values import *
 from threading import Thread
 from time import sleep
 
-
 #The GUI-object which the callback-function must use
 _GUI = None
 #The receiver-object for receiving messages
@@ -108,9 +107,6 @@ class ReceiverGUI(object):
             self._channel.start_consuming()
         else:
             return 'Not connected'
-
-
-
 
 
 

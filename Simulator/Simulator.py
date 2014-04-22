@@ -7,6 +7,7 @@ import random
 import ReceiverPi
 import SenderPi
 from math import copysign
+import logging
 
 class VirtualZeppelin(object):
 
@@ -113,9 +114,17 @@ class Simulator(object):
     _our_zeppelin = None
     _other_zeppelin = None
 
+<<<<<<< HEAD
+    _senderPi_Console = SenderPi.SenderPi(team)        # The sender-object used for sending console-messages to the server
+    _tablets = None
+
+
+
+=======
     _senderPi_Console = None        # The sender-object used for sending console-messages to the server
     _tablets = None
 
+>>>>>>> 353ef3df9da3ac6bf8900febe4dc5e943a6d8999
     def __init__(self, other_zep, tablets):
         """
         Initialised all the variables, and initialises all the hardware components

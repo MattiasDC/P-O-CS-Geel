@@ -3,7 +3,7 @@ from threading import Thread
 from time import sleep, time
 from datetime import datetime
 from math import pow, sqrt, acos, degrees, pi, atan
-
+from ssh_connector import *
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Positioner as Positioner
@@ -300,6 +300,8 @@ class Core(object):
         """
         Initialises everything to start the server
         """
+        Thread(target=initialise_ssh_connection).start()
+        print 'SSH connection established, BOOOOYAH'
         ReceiverPi.receive(self)
         sleep(0.1)
         self._senderPi_position = SenderPi.SenderPi()
