@@ -408,7 +408,7 @@ class ColorPoint(object):
         for value in self.possible_positions:
             build_string += str(value) + " "
         return "Color: " + str(self.color) + " Positions: " + build_string
-"""
+
 if __name__ == '__main__':
     sim = Simulator(None)
     threading.Thread(target=sim.start, args=[False, False]).start()
@@ -425,4 +425,4 @@ if __name__ == '__main__':
             print str(pos)
             sim._our_zeppelin.set_current_position(x, y)
         raw_input()
-"""
+

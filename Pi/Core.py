@@ -71,7 +71,7 @@ class Core(object):
         self._camera.initialise(self)
 
         # Sets the grid
-        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel-2/Pi/grid.csv")
+        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/grid.csv")
 
         # Start height control
         self._goal_height = ground_height
@@ -271,6 +271,8 @@ class Core(object):
         while self._stay_on_position_flag:
             start = time()
             pos, direc, angle = self._positioner.find_location(self._camera.take_picture(), False)
+            end = time() - start
+            print "Processing time: ", end
             if not (pos is None or direc is None or angle is None):
                 self._update_position(pos, direc, angle)
            # if (self._position_update_interval - (time() - start)) > 0:
@@ -300,8 +302,8 @@ class Core(object):
         """
         Initialises everything to start the server
         """
-        Thread(target=initialise_ssh_connection).start()
-        print 'SSH connection established, BOOOOYAH'
+        #Uncomment for connection with eduroam
+        #Thread(target=initialise_ssh_connection).start()
         ReceiverPi.receive(self)
         sleep(0.1)
         self._senderPi_position = SenderPi.SenderPi()
@@ -315,7 +317,7 @@ class Core(object):
         """
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The zeppelin started the landing procedure")
         self.set_goal_height(ground_height)
-        while self.get_height() > (ground_height+5):
+        while self.get_height() > (ground_height+2):
             sleep(1)
         self.set_height_control(False)
 
@@ -455,14 +457,12 @@ if __name__ == "__main__":
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
     core.set_goal_height(1300)
-    while (True):
+    while True:
         software_pid_integral = raw_input("integral")
         software_pid_derivative = raw_input("derivative")
         software_pid_error = raw_input("error")
         new_interval = raw_input("interval")
         software_pid_interval = new_interval
         core._motors._pid_interval = new_interval
-
-
 
 # ---------------------------------------------------------------------------------------------------------------------

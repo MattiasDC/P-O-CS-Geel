@@ -27,8 +27,8 @@ feature_size = (30, 30)
 i = 0
 
 start_time = time()
-#oracle = NetworkReader.readFrom("C:/Users/Mattias/Desktop/Networks/network40.xml")
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Networks/network40.xml")
+#oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network40.xml")
+oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network40.xml")
 print "Oracle read in time: ", str(time()-start_time)
 
 
@@ -84,6 +84,8 @@ def process_picture(image):
 
     contours = filter(lambda c: len(c) > 2, contours)
 
+    test_image = np.asarray(image)
+    test_image = test_image[:, :, ::-1].copy()
     for contour in contours:
         color = find_shape_color(contour, image)
         center = find_center(contour)
@@ -96,8 +98,12 @@ def process_picture(image):
                 oracle_return = oracle.activate(features)
                 r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
-                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
-                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                # cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                #             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                # cv2.putText(test_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                #             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                # cv2.imshow('hallo', test_image)
+                # cv2.waitKey(0)
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
             cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
@@ -194,3 +200,14 @@ def is_gray(contour, image):
 def is_full_shape(contour):
     area = cv2.contourArea(contour)
     return area/cv2.arcLength(contour, True) > 3
+
+
+# if __name__ == '__main__':
+#     i = 0
+#     path = "/home/nooby4ever/Desktop/pictures"
+#     os.chdir(path)
+#     for filee in sorted(glob.glob("*.jpeg"), key=len):
+#         print str(filee)
+#         a = process_picture(Image.open(path + "/" + filee))
+#         i = i + len(a)
+#     print "Shapes " + str(i)
