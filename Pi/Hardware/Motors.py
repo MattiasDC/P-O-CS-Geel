@@ -58,18 +58,22 @@ class MotorControl(object):
             pwm = -100
 
         #The total duration of one duty cycle
-        total_time = 1/software_frequency
+        total_time = 1.0/software_frequency
+        print "motor 1: total time: " + str(total_time)
         #The duration of the motor-movement in one duty cycle
-        up_time = abs(total_time*pwm/100)
-
+        up_time = abs(total_time*pwm/100.0)
+        print "motor 1: up_time time: " + str(up_time)
+        print "motor1_pwm: " + str(pwm)
         if (pwm >= 0 and pwm <= 100):
             #Let the motor turn for the up_time
+            print "motor 1: case 1"
             self._motor1.move_counterclockwise()
             sleep(up_time)
              #Stop the motor and sleep for the remaining of the duty_cycle
             self._motor1.stop_moving()
             sleep (total_time-up_time)
-        if (pwm < 0 and pwm >= 100):
+        if (pwm < 0 and pwm >= -100):
+            print "motor 1: case 2"
             #Let the motor turn for the up_time
             self._motor1.move_clockwise()
             sleep(up_time)
@@ -89,9 +93,9 @@ class MotorControl(object):
             pwm = -100
 
         #The total duration of one duty cycle
-        total_time = 1/software_frequency
+        total_time = 1.0/software_frequency
         #The duration of the motor-movement in one duty cycle
-        up_time = abs(total_time*pwm/100)
+        up_time = abs(total_time*pwm/100.0)
 
         if (pwm >= 0 and pwm <= 100):
             #Let the motor turn for the up_time
@@ -100,7 +104,7 @@ class MotorControl(object):
             #Stop the motor and sleep for the remaining of the duty_cycle
             self._motor2.stop_moving()
             sleep(total_time-up_time)
-        if (pwm < 0 and pwm >= 100):
+        if (pwm < 0 and pwm >= -100):
             #Let the motor turn for the up_time
             self._motor2.move_clockwise()
             sleep(up_time)

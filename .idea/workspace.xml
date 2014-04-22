@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4541108d-fb1b-4397-aa32-98b2e9c0f052" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/ReceiverPi.py" afterPath="$PROJECT_DIR$/Simulator/ReceiverPi.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/SenderGUI.py" afterPath="$PROJECT_DIR$/Simulator/SenderGUI.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Simulator.py" afterPath="$PROJECT_DIR$/Simulator/Simulator.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/test.py" afterPath="$PROJECT_DIR$/Simulator/test.py" />
+    </list>
+    <ignored path="P-O-Geel-2.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="P-O-Geel-2" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="SenderGUI.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/SenderGUI.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="45" column="30" selection-start="1864" selection-end="1864" vertical-scroll-proportion="-23.88889" vertical-offset="165" max-vertical-offset="2106">
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Core.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Pi/Core.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="7398">
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_connection.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file:///usr/lib/python2.7/site-packages/pika/adapters/base_connection.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="61" column="0" selection-start="2210" selection-end="2210" vertical-scroll-proportion="0.0" vertical-offset="1098" max-vertical-offset="6894">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="connection.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file:///usr/lib/python2.7/site-packages/pika/connection.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="589" column="0" selection-start="21734" selection-end="21734" vertical-scroll-proportion="0.0" vertical-offset="10602" max-vertical-offset="27756">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="blocking_connection.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file:///usr/lib/python2.7/site-packages/pika/adapters/blocking_connection.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="106" column="0" selection-start="3832" selection-end="3832" vertical-scroll-proportion="0.0" vertical-offset="1908" max-vertical-offset="20934">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReceiverPi.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/ReceiverPi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="16" selection-start="928" selection-end="928" vertical-scroll-proportion="0.0" vertical-offset="486" max-vertical-offset="2178">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SenderPi.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/SenderPi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2286">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="19" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0" vertical-offset="144" max-vertical-offset="522">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Simulator.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="121" column="16" selection-start="4090" selection-end="4093" vertical-scroll-proportion="0.0" vertical-offset="2011" max-vertical-offset="8028">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GUIDummy.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/GUIDummy.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="UPDATE_CHANGES_POLICY" value="SHELVE" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLogSettings">
+    <option name="myDateState">
+      <MyDateState />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/Pi/Communication/SenderPi.py" />
+        <option value="$PROJECT_DIR$/Pi/Hardware/Motors.py" />
+        <option value="$PROJECT_DIR$/Pi/Communication/ReceiverGUI.py" />
+        <option value="$PROJECT_DIR$/Pi/Communication/SenderGUI.py" />
+        <option value="$PROJECT_DIR$/Pi/Communication/ReceiverPi.py" />
+        <option value="$PROJECT_DIR$/Pi/ImageProcessing/values.py" />
+        <option value="$PROJECT_DIR$/Pi/Hardware/Camera.py" />
+        <option value="$PROJECT_DIR$/Pi/ImageProcessing/OffPositioner.py" />
+        <option value="$PROJECT_DIR$/Pi/ImageProcessing/OffRecognizer.py" />
+        <option value="$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py" />
+        <option value="$PROJECT_DIR$/Pi/ImageProcessing/Positioner.py" />
+        <option value="$PROJECT_DIR$/Pi/Core.py" />
+        <option value="$PROJECT_DIR$/Simulator/Simulator.py" />
+        <option value="$PROJECT_DIR$/Simulator/ReceiverPi.py" />
+        <option value="$PROJECT_DIR$/Simulator/test.py" />
+        <option value="$PROJECT_DIR$/Simulator/SenderGUI.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-1" />
+    <option name="width" value="1922" />
+    <option name="height" value="1055" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Portability issues</id>
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyPep8NamingInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel-2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel-2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel-2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Simulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel-2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Pi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel-2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Pi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ImageProcessing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel-2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P-O-Geel2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Pi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Communication" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="ChangesBrowser.SHOW_FLATTEN" value="false" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="recentsLimit" value="5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="FullScreen" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="P-O-Geel-2" is-module-sdk="true">
+        <envs>
+          <env key="PYTHON_PATH" value="/usr/local/lib/python2.7/site-packages:$PYTHON_PATH" />
+        </envs>
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="P-O-Geel-2" />
+        <option name="myEnvs">
+          <map>
+            <entry key="PYTHON_PATH" value="/usr/local/lib/python2.7/site-packages:$PYTHON_PATH" />
+          </map>
+        </option>
+        <option name="myAddSourceRoots" value="true" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="PyDebuggerOptionsProvider">
+    <option name="mySaveCallSignatures" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Pi/ImageProcessing" />
+      <recent name="$PROJECT_DIR$/Pi/Hardware" />
+      <recent name="$PROJECT_DIR$/Pi/ImageProcessing/Networks" />
+      <recent name="$PROJECT_DIR$/Pi" />
+      <recent name="$PROJECT_DIR$/Simulator" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Simulator" />
+      <recent name="$PROJECT_DIR$/Pi/ImageProcessing" />
+      <recent name="$PROJECT_DIR$/Pi/Hardware" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.test">
+    <configuration default="false" name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Simulator" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Simulator/test.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Recognizer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Pi/ImageProcessing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="OffRecognizer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Pi/ImageProcessing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Pi/ImageProcessing/OffRecognizer.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="GUIDummy" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Simulator" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Simulator/GUIDummy.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Simulator" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Simulator" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Simulator/Simulator.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="P-O-Geel-2" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="Python.test" />
+      <item index="1" class="java.lang.String" itemvalue="Python.Recognizer" />
+      <item index="2" class="java.lang.String" itemvalue="Python.OffRecognizer" />
+      <item index="3" class="java.lang.String" itemvalue="Python.GUIDummy" />
+      <item index="4" class="java.lang.String" itemvalue="Python.Simulator" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.test" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Simulator" />
+        <item index="2" class="java.lang.String" itemvalue="Python.GUIDummy" />
+        <item index="3" class="java.lang.String" itemvalue="Python.OffRecognizer" />
+        <item index="4" class="java.lang.String" itemvalue="Python.Recognizer" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <recycled_changelist date="1394547521666">
+      <option name="PATH" value="$USER_HOME$/.PyCharm30/config/shelf/Uncommitted_changes_before_update_operation_at_11_03_14_14_18_[Default].patch" />
+      <option name="DESCRIPTION" value="Uncommitted changes before update operation at 11/03/14 14:18 [Default]" />
+    </recycled_changelist>
+  </component>
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="all">
+    <option name="USER" value="" />
+    <option name="PASSWORD" value="" />
+    <option name="mySSHConnectionTimeout" value="30000" />
+    <option name="mySSHReadTimeout" value="30000" />
+    <option name="LAST_MERGED_REVISION" />
+    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
+    <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
+    <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
+    <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4541108d-fb1b-4397-aa32-98b2e9c0f052" name="Default" comment="" />
+      <created>1392393641476</created>
+      <updated>1392393641476</updated>
+    </task>
+    <task id="LOCAL-00001" summary="fuck opencv">
+      <created>1392580509890</created>
+      <updated>1392580509890</updated>
+    </task>
+    <task id="LOCAL-00002" summary="edited">
+      <created>1392981126938</created>
+      <updated>1392981126938</updated>
+    </task>
+    <task id="LOCAL-00003" summary="cleaned core">
+      <created>1392996792233</created>
+      <updated>1392996792233</updated>
+    </task>
+    <task id="LOCAL-00004" summary="cleaned core">
+      <created>1392996814964</created>
+      <updated>1392996814964</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fixes">
+      <created>1393322270365</created>
+      <updated>1393322270365</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fixes2">
+      <created>1393324577831</created>
+      <updated>1393324577831</updated>
+    </task>
+    <task id="LOCAL-00007" summary="positioner">
+      <created>1393330036687</created>
+      <updated>1393330036687</updated>
+    </task>
+    <task id="LOCAL-00008" summary="test">
+      <created>1393338456951</created>
+      <updated>1393338456952</updated>
+    </task>
+    <task id="LOCAL-00009" summary="pos">
+      <created>1393344151435</created>
+      <updated>1393344151435</updated>
+    </task>
+    <task id="LOCAL-00010" summary="pos">
+      <created>1393350685775</created>
+      <updated>1393350685775</updated>
+    </task>
+    <task id="LOCAL-00011" summary="added grid file">
+      <created>1393361333726</created>
+      <updated>1393361333726</updated>
+    </task>
+    <task id="LOCAL-00012" summary="pep8 update">
+      <created>1393361814143</created>
+      <updated>1393361814143</updated>
+    </task>
+    <task id="LOCAL-00013" summary="begonnen aan simulator">
+      <created>1393365218201</created>
+      <updated>1393365218201</updated>
+    </task>
+    <task id="LOCAL-00014" summary="finished simulator">
+      <created>1393401609766</created>
+      <updated>1393401609766</updated>
+    </task>
+    <task id="LOCAL-00015" summary="no idea what i've changed">
+      <created>1393796779280</created>
+      <updated>1393796779280</updated>
+    </task>
+    <task id="LOCAL-00016" summary="small changes">
+      <created>1393941172643</created>
+      <updated>1393941172643</updated>
+    </task>
+    <task id="LOCAL-00017" summary="added sending to the server">
+      <created>1393942256420</created>
+      <updated>1393942256420</updated>
+    </task>
+    <task id="LOCAL-00018" summary="added sending to the server">
+      <created>1393942838609</created>
+      <updated>1393942838609</updated>
+    </task>
+    <task id="LOCAL-00019" summary="server should work now">
+      <created>1393943176823</created>
+      <updated>1393943176823</updated>
+    </task>
+    <task id="LOCAL-00020" summary="edited simulator, edited core">
+      <created>1393946550667</created>
+      <updated>1393946550667</updated>
+    </task>
+    <task id="LOCAL-00021" summary="fixed error in simulator">
+      <created>1393946852530</created>
+      <updated>1393946852530</updated>
+    </task>
+    <task id="LOCAL-00022" summary="fixes">
+      <created>1393947334976</created>
+      <updated>1393947334976</updated>
+    </task>
+    <task id="LOCAL-00023" summary="fixed core">
+      <created>1393950259671</created>
+      <updated>1393950259671</updated>
+    </task>
+    <task id="LOCAL-00024" summary="added grid">
+      <created>1393951465150</created>
+      <updated>1393951465150</updated>
+    </task>
+    <task id="LOCAL-00025" summary="added shit">
+      <created>1394115826889</created>
+      <updated>1394115826889</updated>
+    </task>
+    <task id="LOCAL-00026" summary="you will never believe this, it works!! :D">
+      <created>1394392692118</created>
+      <updated>1394392692118</updated>
+    </task>
+    <task id="LOCAL-00027" summary="you will never believe this, it works!! :D Realy!">
+      <created>1394392725392</created>
+      <updated>1394392725392</updated>
+    </task>
+    <task id="LOCAL-00028" summary="small fixes">
+      <created>1394392877994</created>
+      <updated>1394392877994</updated>
+    </task>
+    <task id="LOCAL-00029" summary="finished all the todo's">
+      <created>1394474420319</created>
+      <updated>1394474420319</updated>
+    </task>
+    <task id="LOCAL-00030" summary="finished all the todo's2">
+      <created>1394474467576</created>
+      <updated>1394474467576</updated>
+    </task>
+    <task id="LOCAL-00031" summary="lalala">
+      <created>1394479463755</created>
+      <updated>1394479463755</updated>
+    </task>
+    <task id="LOCAL-00032" summary="lalala sfskfjkldsjkldsfq">
+      <created>1394492567833</created>
+      <updated>1394492567833</updated>
+    </task>
+    <task id="LOCAL-00033" summary="23.29">
+      <created>1394494155501</created>
+      <updated>1394494155501</updated>
+    </task>
+    <task id="LOCAL-00034" summary="03.26">
+      <created>1394508404653</created>
+      <updated>1394508404653</updated>
+    </task>
+    <task id="LOCAL-00035" summary="14.35">
+      <created>1394548534222</created>
+      <updated>1394548534222</updated>
+    </task>
+    <task id="LOCAL-00036" summary="from demo">
+      <created>1395150969325</created>
+      <updated>1395150969325</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fixed an error">
+      <created>1395156791653</created>
+      <updated>1395156791653</updated>
+    </task>
+    <task id="LOCAL-00038" summary="fixed an error2">
+      <created>1395166951561</created>
+      <updated>1395166951561</updated>
+    </task>
+    <task id="LOCAL-00039" summary="changes on core, positionner, ... a lot">
+      <created>1395772819536</created>
+      <updated>1395772819536</updated>
+    </task>
+    <task id="LOCAL-00040" summary="fixed orientation">
+      <created>1395942110904</created>
+      <updated>1395942110904</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Commit before the big commit">
+      <created>1396017337091</created>
+      <updated>1396017337091</updated>
+    </task>
+    <task id="LOCAL-00042" summary="edited offrecog">
+      <created>1396275405304</created>
+      <updated>1396275405304</updated>
+    </task>
+    <task id="LOCAL-00043" summary="changes">
+      <created>1396276756453</created>
+      <updated>1396276756453</updated>
+    </task>
+    <task id="LOCAL-00044" summary="small edits">
+      <created>1396362734275</created>
+      <updated>1396362734275</updated>
+    </task>
+    <task id="LOCAL-00045" summary="small edits">
+      <created>1396365452785</created>
+      <updated>1396365452785</updated>
+    </task>
+    <task id="LOCAL-00046" summary="all edits">
+      <created>1396388181747</created>
+      <updated>1396388181747</updated>
+    </task>
+    <task id="LOCAL-00047" summary="changed resolution">
+      <created>1396434137372</created>
+      <updated>1396434137372</updated>
+    </task>
+    <task id="LOCAL-00048" summary="changed resolution">
+      <created>1396435540624</created>
+      <updated>1396435540624</updated>
+    </task>
+    <task id="LOCAL-00049" summary="bug position">
+      <created>1396445606573</created>
+      <updated>1396445606573</updated>
+    </task>
+    <task id="LOCAL-00050" summary="bug position2">
+      <created>1396449215652</created>
+      <updated>1396449215652</updated>
+    </task>
+    <task id="LOCAL-00051" summary="debug debugging info">
+      <created>1396450421968</created>
+      <updated>1396450421968</updated>
+    </task>
+    <task id="LOCAL-00052" summary="debugged">
+      <created>1396455272468</created>
+      <updated>1396455272468</updated>
+    </task>
+    <task id="LOCAL-00053" summary="no more loops!">
+      <created>1396617472845</created>
+      <updated>1396617472845</updated>
+    </task>
+    <task id="LOCAL-00054" summary="komk">
+      <created>1396625736614</created>
+      <updated>1396625736614</updated>
+    </task>
+    <task id="LOCAL-00055" summary="fixed recognize and postioner">
+      <created>1397043421511</created>
+      <updated>1397043421511</updated>
+    </task>
+    <task id="LOCAL-00056" summary="bug fix">
+      <created>1397044103288</created>
+      <updated>1397044103288</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-1" y="0" width="1922" height="1055" extended-state="7" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17708333" sideWeight="0.67058825" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3989305" sideWeight="0.8229167" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17326203" sideWeight="0.8229167" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3379679" sideWeight="0.8229167" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17023554" sideWeight="0.82273203" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.8578125" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.8578125" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3989305" sideWeight="0.85833335" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17326203" sideWeight="0.15745568" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.171123" sideWeight="0.82239586" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17760417" sideWeight="0.67058825" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3379679" sideWeight="0.85833335" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+    <MESSAGE value="lalala" />
+    <MESSAGE value="lalala sfskfjkldsjkldsfq" />
+    <MESSAGE value="23.29" />
+    <MESSAGE value="03.26" />
+    <MESSAGE value="14.35" />
+    <MESSAGE value="from demo" />
+    <MESSAGE value="fixed an error" />
+    <MESSAGE value="fixed an error2" />
+    <MESSAGE value="changes on core, positionner, ... a lot" />
+    <MESSAGE value="fixed orientation" />
+    <MESSAGE value="Commit before the big commit" />
+    <MESSAGE value="edited offrecog" />
+    <MESSAGE value="changes" />
+    <MESSAGE value="small edits" />
+    <MESSAGE value="all edits" />
+    <MESSAGE value="changed resolution" />
+    <MESSAGE value="bug position" />
+    <MESSAGE value="bug position2" />
+    <MESSAGE value="debug debugging info" />
+    <MESSAGE value="debugged" />
+    <MESSAGE value="no more loops!" />
+    <MESSAGE value="komk" />
+    <MESSAGE value="removed off recog and pos, -&gt; hopefully without introducing bugs :p" />
+    <MESSAGE value="fixed recognize and postioner" />
+    <MESSAGE value="bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fix" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="108" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Pi/Communication/SenderPi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="23" selection-start="1761" selection-end="1772" vertical-scroll-proportion="0.33254156" vertical-offset="494" max-vertical-offset="2232" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="153" column="18" selection-start="5733" selection-end="5735" vertical-scroll-proportion="0.0" vertical-offset="2599" max-vertical-offset="3492" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/Communication/ReceiverGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="52" selection-start="859" selection-end="870" vertical-scroll-proportion="0.0" vertical-offset="468" max-vertical-offset="2196" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/Communication/SenderGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2106" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/Communication/ReceiverPi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="27" selection-start="3667" selection-end="3667" vertical-scroll-proportion="0.0" vertical-offset="1200" max-vertical-offset="2106" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/ReceiverGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="84" column="36" selection-start="2945" selection-end="2945" vertical-scroll-proportion="0.0" vertical-offset="1072" max-vertical-offset="2196">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/GUIDummy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/SenderPi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2286">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="16" selection-start="4090" selection-end="4093" vertical-scroll-proportion="0.0" vertical-offset="2011" max-vertical-offset="8028">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/site-packages/pika/adapters/base_connection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="0" selection-start="2210" selection-end="2210" vertical-scroll-proportion="0.0" vertical-offset="802" max-vertical-offset="6786">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/site-packages/pika/connection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="589" column="0" selection-start="21734" selection-end="21734" vertical-scroll-proportion="0.0" vertical-offset="10090" max-vertical-offset="27432">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/site-packages/pika/adapters/blocking_connection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="106" column="0" selection-start="3832" selection-end="3832" vertical-scroll-proportion="0.0" vertical-offset="1522" max-vertical-offset="20736">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="19" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="468">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/ReceiverPi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="16" selection-start="928" selection-end="928" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2178">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/SenderGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="30" selection-start="1864" selection-end="1864" vertical-scroll-proportion="-23.88889" vertical-offset="165" max-vertical-offset="2106">
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="7398">
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+
