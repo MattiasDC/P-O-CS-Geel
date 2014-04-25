@@ -117,3 +117,17 @@ class SenderPi(object):
                       routing_key=routing_key,
                       body=message)
             return 'succes'
+
+    #Sent tablet information to the sever
+    def sent_tablet(self, i, public_key):
+        if not self._connected:
+            #No connection to a server, so the message can not be delivered
+            return 'Not connected'
+        else:
+            #Publish the console-information to the exchange with the correct routing key
+            routing_key = team + '.tablets.tablet' + str(i)
+            message = str(public_key)
+            self._channel.basic_publish(exchange=exchange,
+                      routing_key=routing_key,
+                      body=message)
+            return 'succes'
