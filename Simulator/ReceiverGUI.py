@@ -59,6 +59,7 @@ def receive_thread():
     global _receiver
     _receiver.receive()
 
+
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
 class ReceiverGUI(object):
     #Flag to determine if the sender is connected to a receiver

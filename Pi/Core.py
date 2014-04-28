@@ -2,8 +2,8 @@ from threading import Thread
 from threading import Thread
 from time import sleep, time
 from datetime import datetime
-from math import pow, sqrt, acos, degrees, pi, atan
-from ssh_connector import *
+from math import pow, sqrt, acos, degrees, pi
+import Communication.ssh_connector as ssh_connector
 import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Positioner as Positioner
@@ -272,7 +272,11 @@ class Core(object):
             start = time()
             pos, direc, angle = self._positioner.find_location(self._camera.take_picture(), False)
             end = time() - start
-            print "Processing time: ", end
+
+            #comment to not log
+            with open('processtimes.txt', 'a') as f:
+                f.write(str(end))
+
             if not (pos is None or direc is None or angle is None):
                 self._update_position(pos, direc, angle)
            # if (self._position_update_interval - (time() - start)) > 0:
@@ -302,9 +306,9 @@ class Core(object):
         """
         Initialises everything to start the server
         """
-        #Uncomment for connection with eduroam
-        #Thread(target=initialise_ssh_connection).start()
-        ReceiverPi.receive(self)
+        #Uncomment for connection with campusnet rabbitMQ
+       # Thread(target=ssh_connector.initialise_ssh_connection).start()
+        #ReceiverPi.receive(self)
         sleep(0.1)
         self._senderPi_position = SenderPi.SenderPi()
         self._senderPi_height = SenderPi.SenderPi()

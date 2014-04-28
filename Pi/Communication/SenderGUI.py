@@ -18,12 +18,11 @@ class SenderGUI(object):
     def __init__(self):
         self.open_connection()
 
-
     #Open a connection to the server (also sets the connected-flag to true)
     def open_connection(self):
         print host
-        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
-           # host='localhost', port=5673, credentials=pika.PlainCredentials('geel', 'geel')))
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(
+            host='localhost', port=5673, credentials=pika.PlainCredentials('geel', 'geel')))
         self._channel = self._connection.channel()
         self._channel.exchange_declare(exchange=exchange,
                              type='topic')

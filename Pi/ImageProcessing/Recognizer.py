@@ -28,7 +28,7 @@ i = 0
 
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network40.xml")
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network40.xml")
+oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
 print "Oracle read in time: ", str(time()-start_time)
 
 
