@@ -32,7 +32,7 @@ def set_core(core, off):
 
 
 def find_location(pil, off):
-    global _core, _imageprocessor, grd
+    global _imageprocessor, grd
     shapes = _imageprocessor.process_picture(pil)
     if len(shapes) == 0:
         return None, None, None
@@ -263,7 +263,6 @@ def calc_rotation(shapes):
     for shape1, (a, b) in shapes:
         for shape2, (c, d) in shapes:
             if (c, d) in grd.get_neighbour_points(a, b):
-            #if (a, b) in _core.get_grid().get_neighbour_points(x, y):
                 shape_1 = shape1
                 x = a
                 y = b
@@ -410,19 +409,23 @@ class ColorPoint(object):
         return "Color: " + str(self.color) + " Positions: " + build_string
 
 if __name__ == '__main__':
-    sim = Simulator(None)
-    threading.Thread(target=sim.start, args=[False, False]).start()
-    sim.start(False, False)
-    os.chdir("C:\Users\Mattias\Desktop\_neural_network_oracle\Pi")
-    for filee in sorted(glob.glob("*.jpeg"), key=len):
-        if not 'a' in str(filee):
-            continue
-        print str(filee)
-        set_core(None, True)
-        pos, _, pangle = find_location(Image.open('C:\Users\Mattias\Desktop\_neural_network_oracle\Pi\\' + filee), True)
-        if not pos is None:
-            (x, y) = pos
-            print str(pos)
-            sim._our_zeppelin.set_current_position(x, y)
-        raw_input()
+    i = 0
+    path = "/home/pi/pictures"
+    os.chdir(path)
+    som = 0
+    set_core(None, True)
 
+    for filee in sorted(glob.glob("*.jpeg"), key=len):
+        print str(filee)
+        start = time()
+        find_location(Image.open(path + "/" + filee), True)
+        end = time() - start
+        som += end
+
+        #comment to not log
+        with open('processtimes.txt', 'a') as f:
+            f.write(str(end))
+
+    print "Avg: ", str(som/200)
+    with open('processtimes.txt', 'a') as f:
+            f.write(str(som/200))

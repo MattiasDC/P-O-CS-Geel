@@ -23,11 +23,11 @@ shape_map = {0: Rectangle,
              2: Heart,
              3: Star}
 
-feature_size = (30, 30)
+feature_size = (20, 20)
 i = 0
 
 start_time = time()
-#oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network40.xml")
+#oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
 oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
 print "Oracle read in time: ", str(time()-start_time)
 
@@ -202,12 +202,12 @@ def is_full_shape(contour):
     return area/cv2.arcLength(contour, True) > 3
 
 
-# if __name__ == '__main__':
-#     i = 0
-#     path = "/home/nooby4ever/Desktop/pictures"
-#     os.chdir(path)
-#     for filee in sorted(glob.glob("*.jpeg"), key=len):
-#         print str(filee)
-#         a = process_picture(Image.open(path + "/" + filee))
-#         i = i + len(a)
-#     print "Shapes " + str(i)
+if __name__ == '__main__':
+    i = 0
+    path = "/home/nooby4ever/Desktop/pictures"
+    os.chdir(path)
+    for filee in sorted(glob.glob("*.jpeg"), key=len):
+        print str(filee)
+        a = process_picture(Image.open(path + "/" + filee))
+        i = i + len(a)
+    print "Shapes " + str(i)
