@@ -71,7 +71,7 @@ class Core(object):
         self._camera.initialise(self)
 
         # Sets the grid
-        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel2/Pi/grid.csv")
+        self._grid = Grid.Grid.from_file("/home/pi/P-O-Geel-2/Pi/grid.csv")
 
         # Start height control
         self._goal_height = ground_height
@@ -127,8 +127,7 @@ class Core(object):
             start = self.get_position()
             finish = self.get_goal_position()
             direction = self.get_direction()
-            angle = self._calculate_angle(start, finish, direction)
-            print "angle motor1: " + str(angle)
+            angle = self.get_angle()
             pid_value = self._pid_moving(start, finish)
             # The pwm value calculated with the pid method has a maximum and minimum boundary
             if pid_value > pid_boundary:
@@ -140,29 +139,29 @@ class Core(object):
             if 0 <= angle <= 45:
                 # Both motors are used forwards
                 self.set_motor1(pid_value * (45-angle)/45)
-                print "m1 case1"
+                print "motor1: " + str(pid_value * (45-angle)/45)
             elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
                 self.set_motor1(pid_value * (angle-45) * -1/90)
-                print "m1 case2"
+                print "motor1: " + str(pid_value * (angle-45) * -1/90)
             elif 135 < angle <= 180:
                 # Both motors are used forwards
                 self.set_motor1(pid_value * -1)
-                print "m1 case3"
+                print "motor1: " + str(pid_value * -1)
             elif -45 <= angle < 0:
                 # Both motors are used forwards
                 self.set_motor1(pid_value)
-                print "m1 case4"
+                print "motor1: " + str(pid_value)
             elif -135 <= angle < -45:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
                 self.set_motor1(pid_value * (angle+135) * 1/90 * power_ratio)
-                print "m1 case5"
+                print "motor1: " + str(pid_value * (angle+135) * 1/90 * power_ratio)
             elif -180 <= angle < -135:
                 # Both motors are used forwards
                 self.set_motor1(pid_value * (angle+135) * 1/45)
-                print "m1 case6"
+                print "motor1: " + str(pid_value * (angle+135) * 1/45)
             sleep(software_pid_interval)
 
     def _navigation_thread_motor2(self):
@@ -174,8 +173,7 @@ class Core(object):
             start = self.get_position()
             finish = self.get_goal_position()
             direction = self.get_direction()
-            angle = self._calculate_angle(start, finish, direction)
-            print "angle motor2: " + str(angle)
+            angle = self.get_angle()
             pid_value = self._pid_moving(start, finish)
             # The pwm value calculated with the pid method has a maximum and minimum boundary
             if pid_value > pid_boundary:
@@ -187,29 +185,29 @@ class Core(object):
             if 0 <= angle <= 45:
                 # Both motors are used forwards
                 self.set_motor2(pid_value)
-                print "m2 case1"
+                print "motor2: " + str(pid_value)
             elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
                 self.set_motor2(pid_value * (angle-135) * -1/90 * power_ratio)
-                print "m2 case2"
+                print "motor2: " + str(pid_value * (angle-135) * -1/90 * power_ratio)
             elif 135 < angle <= 180:
                 # Both motors are used forwards
                 self.set_motor2(pid_value * (angle-135) * -1/45)
-                print "m2 case3"
+                print "motor2: " + str(pid_value * (angle-135) * -1/45)
             elif -45 <= angle < 0:
                 # Both motors are used forwards
                 self.set_motor2(pid_value * (45+angle)/45)
-                print "m2 case4"
+                print "motor2: " + str(pid_value * (45+angle)/45)
             elif -135 <= angle < -45:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
                 self.set_motor2(pid_value * (angle+45) * 1/90)
-                print "m2 case5"
+                print "motor2: " + str(pid_value * (angle+45) * 1/90)
             elif -180 <= angle < -135:
                 # Both motors are used forwards
                 self.set_motor2(pid_value * -1)
-                print "m2 case6"
+                print "motor2: " + str(pid_value * -1)
             sleep(software_pid_interval)
 
     def _pid_moving(self, start, finish):
@@ -237,34 +235,6 @@ class Core(object):
         distance = sqrt(pow(vector[0], 2) + pow(vector[1], 2))
         return distance
 
-    @staticmethod
-    def _calculate_angle(start_point, destination_point, direction_point):
-        vector_a = destination_point[0] - direction_point[0], destination_point[1] - direction_point[1]
-        vector_b = direction_point[0] - start_point[0], direction_point[1] - start_point[1]
-        vector_c = destination_point[0] - start_point[0], destination_point[1] - start_point[1]
-
-        length_a = sqrt(pow(vector_a[0], 2) + pow(vector_a[1], 2))
-        length_b = sqrt(pow(vector_b[0], 2) + pow(vector_b[1], 2))
-        length_c = sqrt(pow(vector_c[0], 2) + pow(vector_c[1], 2))
-
-        # Angle between the current direction and the direction to the goal point in degrees.
-        if length_b == 0 or length_c == 0:
-            return 0
-
-        x = (pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)
-
-        if -1.0 <= x <= 1.0:
-            angle = degrees(acos((pow(length_b, 2) + pow(length_c, 2) - pow(length_a, 2)) / (2 * length_b * length_c)))
-        elif x <= -1.0:
-            angle = -pi
-        else:
-            angle = 0
-
-        cross = vector_b[0] * vector_c[1] - vector_b[1] * vector_c[0]       # Cross product
-
-        if cross < 0:
-            angle *= -1         # angle is negative if the goal lies to the right of the current direction
-        return angle
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
     def _update_position_thread(self):
@@ -279,8 +249,6 @@ class Core(object):
 
             if not (pos is None or direc is None or angle is None):
                 self._update_position(pos, direc, angle)
-           # if (self._position_update_interval - (time() - start)) > 0:
-            #    sleep(self._position_update_interval - (time() - start))
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
 
@@ -446,8 +414,8 @@ class Core(object):
         if flag:
             self._stay_on_position_flag = True
             Thread(target=self._update_position_thread).start()
-            Thread(target=self._navigation_thread_motor1()).start()
-            Thread(target=self._navigation_thread_motor2()).start()
+            Thread(target=self._navigation_thread_motor1).start()
+            Thread(target=self._navigation_thread_motor2).start()
             self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Autonomous navigation has started")
         else:
             self._stay_on_position_flag = False
@@ -460,12 +428,12 @@ if __name__ == "__main__":
     print "Job's done"
     core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
     core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
-    core.set_goal_height(1300)
+    core.set_goal_height(1000)
     while True:
-        software_pid_integral = raw_input("integral")
-        software_pid_derivative = raw_input("derivative")
-        software_pid_error = raw_input("error")
-        new_interval = raw_input("interval")
+        software_pid_integral = float(raw_input("integral"))
+        software_pid_derivative = float(raw_input("derivative"))
+        software_pid_error = float(raw_input("error"))
+        new_interval = float(raw_input("interval"))
         software_pid_interval = new_interval
         core._motors._pid_interval = new_interval
 
