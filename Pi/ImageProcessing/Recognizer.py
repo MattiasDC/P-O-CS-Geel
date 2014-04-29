@@ -27,6 +27,8 @@ i = 0
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
 oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\Pi\\network_460.xml")
+#oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
+
 print "Oracle read in time: ", str(time()-start_time)
 
 
@@ -40,7 +42,7 @@ def process_picture(image):
         max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
         #Load image gray scale
-        gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         gray_image = cv2.cvtColor(gray_image, cv2.COLOR_RGB2GRAY)
         gray_image = cv2.GaussianBlur(gray_image, (5, 5), 2)
         #Find edges in image
@@ -82,6 +84,7 @@ def process_picture(image):
 
     contours = filter(lambda c: len(c) > 2, contours)
 
+    test_image = image.copy()
     for contour in contours:
         color = find_shape_color(contour, image)
         center = find_center(contour)
@@ -92,15 +95,15 @@ def process_picture(image):
                 oracle_return = oracle.activate(features)
                 r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
-                # cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
-                #             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
-                # cv2.putText(test_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
-                #             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
-                # cv2.imshow('hallo', test_image)
-                # cv2.waitKey(0)
+                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                cv2.putText(test_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
             cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
+    cv2.imshow('hallo', test_image)
+    cv2.waitKey(0)
     #if i < 200:
     #    i += 1
     #    print i
@@ -141,9 +144,9 @@ def find_shape_color(contour, image):
     """
     center = find_center(contour)
 
-    x, y, z = tuple(image[center[1], center[0]])
-    print str((x, y, z))
-    h, s, v = colorsys.rgb_to_hsv(x/255.0, y/255.0, z/255.0)
+    b, g, r = tuple(image[center[1], center[0]])
+
+    h, s, v = colorsys.rgb_to_hsv(r/255.0, g/255.0, b/255.0)
     if 0 <= s*100 <= 25 and v*100 >= 80:
         return 'white'
     if 30 <= h*360 < 75:
@@ -201,5 +204,4 @@ def is_full_shape(contour):
 
 
 if __name__ == '__main__':
-    path = "C:\Users\Mattias\Desktop\_neural_network_oracle\Pi\\4a.jpeg"
-    a = process_picture(cv2.imread(path))
+    process_picture(cv2.imread("C:\Users\Mattias\Desktop\\a.jpg"))
