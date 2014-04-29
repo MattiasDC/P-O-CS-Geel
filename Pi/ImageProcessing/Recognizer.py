@@ -27,7 +27,7 @@ i = 0
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
 #oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\Pi\\network_460.xml")
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
+oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Pi/network_460.xml")
 
 print "Oracle read in time: ", str(time()-start_time)
 
@@ -95,15 +95,15 @@ def process_picture(image):
                 oracle_return = oracle.activate(features)
                 r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
-                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
-                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
-                cv2.putText(test_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
-                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                #cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                #cv2.putText(test_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
-            cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
-    cv2.imshow('hallo', test_image)
-    cv2.waitKey(0)
+            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
+    #cv2.imshow('hallo', test_image)
+    #cv2.waitKey(0)
     #if i < 200:
     #    i += 1
     #    print i
