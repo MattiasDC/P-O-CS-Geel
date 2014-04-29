@@ -7,9 +7,7 @@ import colorsys
 import os
 import glob
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.customxml import NetworkReader
-
-
+from pybrain.tools.xml import NetworkReader
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
 max_contour_factor = 0.6
@@ -28,7 +26,7 @@ i = 0
 
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
+oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\Pi\\network_460.xml")
 print "Oracle read in time: ", str(time()-start_time)
 
 
@@ -38,11 +36,11 @@ def process_picture(image):
 
     try:
         #Filter giant rectangle of the image itself
-        res_x, res_y = image.size
+        res_x, res_y, _ = image.shape
         max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
         #Load image gray scale
-        gray_image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2LAB)
+        gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
         gray_image = cv2.cvtColor(gray_image, cv2.COLOR_RGB2GRAY)
         gray_image = cv2.GaussianBlur(gray_image, (5, 5), 2)
         #Find edges in image
@@ -84,17 +82,13 @@ def process_picture(image):
 
     contours = filter(lambda c: len(c) > 2, contours)
 
-    test_image = np.asarray(image)
-    test_image = test_image[:, :, ::-1].copy()
     for contour in contours:
         color = find_shape_color(contour, image)
         center = find_center(contour)
-        features = None
 
         if is_valid_shape(contour, image):
             features = get_features(contour, gray_image)
             if features is not None and not is_on_edge(contour, gray_image.shape):
-                st = time()
                 oracle_return = oracle.activate(features)
                 r = oracle_return.argmax(axis=0)
                 found_shapes.append(shape_map[r](color, center))
@@ -146,7 +140,9 @@ def find_shape_color(contour, image):
     This function uses the center of mass, and get the pixel color from it from the image
     """
     center = find_center(contour)
-    x, y, z = image.getpixel(center)
+
+    x, y, z = tuple(image[center[1], center[0]])
+    print str((x, y, z))
     h, s, v = colorsys.rgb_to_hsv(x/255.0, y/255.0, z/255.0)
     if 0 <= s*100 <= 25 and v*100 >= 80:
         return 'white'
@@ -188,10 +184,12 @@ def is_gray(contour, image):
     white = 220
 
     center = find_center(contour)
-    x, y, z = image.getpixel(center)
+    x, y, z = tuple(image[center[1], center[0]])
+    x, y, z = map(int, (x, y, z))
 
     if x > white or y > white or z > white:
         return False
+
     if abs(x - y) < offset and abs(x - z) < offset and abs(y - z) < offset:
         return True
     return False
@@ -203,11 +201,5 @@ def is_full_shape(contour):
 
 
 if __name__ == '__main__':
-    i = 0
-    path = "/home/nooby4ever/Desktop/pictures"
-    os.chdir(path)
-    for filee in sorted(glob.glob("*.jpeg"), key=len):
-        print str(filee)
-        a = process_picture(Image.open(path + "/" + filee))
-        i = i + len(a)
-    print "Shapes " + str(i)
+    path = "C:\Users\Mattias\Desktop\_neural_network_oracle\Pi\\4a.jpeg"
+    a = process_picture(cv2.imread(path))
