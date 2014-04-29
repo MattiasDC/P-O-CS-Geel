@@ -7,7 +7,7 @@ import colorsys
 import os
 import glob
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.xml import NetworkReader
+from pybrain.tools.customxml import NetworkReader
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
 max_contour_factor = 0.6
@@ -26,8 +26,8 @@ i = 0
 
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
-oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\Pi\\network_460.xml")
-#oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
+#oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\Pi\\network_460.xml")
+oracle = NetworkReader.readFrom("/home/pi/P-O-Geel2/Pi/network_460.xml")
 
 print "Oracle read in time: ", str(time()-start_time)
 
