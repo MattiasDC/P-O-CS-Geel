@@ -149,6 +149,7 @@ def find_shape_color(contour, image):
     h, s, v = colorsys.rgb_to_hsv(r/255.0, g/255.0, b/255.0)
     if 0 <= s*100 <= 25 and v*100 >= 80:
         return 'white'
+
     if 30 <= h*360 < 75:
         return 'yellow'
     elif 0 <= h*360 <= 30 or 329 <= h*360 <= 360:
