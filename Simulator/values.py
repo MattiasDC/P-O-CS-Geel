@@ -43,7 +43,7 @@ port = 10000                   # The port used in the connection
 # ------------------------------- Server
 host = 'localhost'              #The ip-adress of the server
 exchange = 'server'            #Name of the exchange used in the protocol
-team = 'rood'                  #Name of the controlled zeppelin
+team = 'geel'                  #Name of the controlled zeppelin
 
 max_speed = 274               #The maximum speed of the zeppelin
 drift_threshold = 0.2           #The value under which drift will occur
