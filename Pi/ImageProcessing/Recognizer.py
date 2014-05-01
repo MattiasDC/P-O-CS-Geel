@@ -7,7 +7,7 @@ import colorsys
 import os
 import glob
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.customxml import NetworkReader
+from pybrain.tools.xml import NetworkReader
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
 max_contour_factor = 0.6
@@ -26,8 +26,8 @@ i = 0
 
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
-#oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\Pi\\network_460.xml")
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Pi/network_460.xml")
+oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\\network_460.xml")
+#oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Pi/network_460.xml")
 
 print "Oracle read in time: ", str(time()-start_time)
 
@@ -84,7 +84,7 @@ def process_picture(image):
 
     contours = filter(lambda c: len(c) > 2, contours)
 
-    test_image = image.copy()
+    #test_image = image.copy()
     for contour in contours:
         color = find_shape_color(contour, image)
         center = find_center(contour)
@@ -205,4 +205,4 @@ def is_full_shape(contour):
 
 
 if __name__ == '__main__':
-    process_picture(cv2.imread("C:\Users\Mattias\Desktop\\a.jpg"))
+    process_picture(cv2.imread("C:\Users\Mattias\Desktop\sample.png"))

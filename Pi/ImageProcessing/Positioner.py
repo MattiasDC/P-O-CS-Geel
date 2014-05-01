@@ -10,6 +10,7 @@ from Shapes import *
 import Recognizer
 from values import *
 import threading
+import cv2
 
 
 factor_edge_max_edge = 1.5      # The factor which determines how long an edge between points can be
@@ -25,15 +26,15 @@ def set_core(core, off):
 
     _core = core
     if off:
-        grd = Grid.Grid.from_file("C:\Users\Mattias\Desktop\grid.csv")
+        grd = Grid.Grid.from_file("/home/pi/P-O-Geel-2/Pi/grid.csv")
     else:
         grd = _core.get_grid()
     _imageprocessor = Recognizer
 
 
-def find_location(pil, off):
+def find_location(image, off):
     global _imageprocessor, grd
-    shapes = _imageprocessor.process_picture(pil)
+    shapes = _imageprocessor.process_picture(image)
     if len(shapes) == 0:
         return None, None, None
 
@@ -418,14 +419,14 @@ if __name__ == '__main__':
     for filee in sorted(glob.glob("*.jpeg"), key=len):
         print str(filee)
         start = time()
-        find_location(Image.open(path + "/" + filee), True)
+        _imageprocessor.process_picture(cv2.imread(path + "/" + filee))
         end = time() - start
         som += end
-
+        print end
         #comment to not log
         with open('processtimes.txt', 'a') as f:
             f.write(str(end))
 
-    print "Avg: ", str(som/200)
+    print "Avg: ", str(som/200.0)
     with open('processtimes.txt', 'a') as f:
             f.write(str(som/200))

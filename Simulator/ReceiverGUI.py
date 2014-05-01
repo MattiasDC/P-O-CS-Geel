@@ -26,21 +26,31 @@ def callback(ch, method, properties, body):
     if 'private.goal_position' in method.routing_key:
         #goal position received
         team_name = team
-        pos = [0,0]
-        pos[0] = int(body.split(',')[0])
-        pos[1] = int(body.split(',')[1])
-        _GUI.set_goal_position(team_name, pos)
+        if method.routing_key.split('.')[0] == team:
+            pos = [0,0]
+            pos[0] = int(body.split(',')[0])
+            pos[1] = int(body.split(',')[1])
+            _GUI.set_goal_position(team_name, pos)
     if 'private.goal_height' in method.routing_key:
         #goal height received
-        team_name = method.routing_key.split('.')[0]
-        _GUI.set_goal_height(team_name, int(body))
+        if method.routing_key.split('.')[0] == team:
+            _GUI.set_goal_height(int(body))
     if 'private.direction' in method.routing_key:
         #direction information received
-        team_name = method.routing_key.split('.')[0]
-        _GUI.set_direction(team_name, body)
+        if method.routing_key.split('.')[0] == team:
+            _GUI.set_direction(team, body)
     if 'private.console' in method.routing_key:
         #console information received
-        _GUI.add_to_console(body)
+        if method.routing_key.split('.')[0] == team:
+            _GUI.add_to_console(team, body)
+    if 'tablets.tablet' in method.routing_key:
+        #tablet found
+        if method.routing_key.split('.')[0] == team:
+            i = method.routing_key.split('.')[3]
+            _GUI.tablet_found(team, i)
+    if 'private.qr' in method.routing_key:
+        if method.routing_key.split('.')[0] == team:
+            _GUI.qr_found(team, body)
 
 #Run this function to start receiving messages
 #Starts a new thread (because receiving involves an infinite loop)
@@ -58,7 +68,6 @@ def receive(GUI):
 def receive_thread():
     global _receiver
     _receiver.receive()
-
 
 #!!!!!Always put a sleep after making a receiver, otherwise first message can be lost!!!!!
 class ReceiverGUI(object):

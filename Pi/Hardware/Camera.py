@@ -1,8 +1,8 @@
 from datetime import datetime
 import io
-
+import numpy as np
 import Image
-
+import cv2
 import PiCamera
 
 
@@ -36,16 +36,16 @@ def take_picture():
             _camera.resolution = (_cam_width, _cam_height)
             stream = io.BytesIO()
             _camera.capture(stream, format='jpeg')
-            stream.seek(0)
-            _last_picture = Image.open(stream)
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            _last_picture = cv2.imdecode(data, 1)
 
             _core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Took a picture")
-        except Exception:
+        except Exception as e:
+            print e
             return _last_picture
     return _last_picture
 
 # ------------------------------------------------- GETTERS
-
 def get_last_picture():
     global _last_picture
 
