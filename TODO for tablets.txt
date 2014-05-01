@@ -44,10 +44,12 @@ Add in initialise:
 
 #Sets the tablets
 		self._tablets = []
-		with open("/home/pi/P-O-Geel2/Pi/grid.csv", 'r') as tablet_file:
-            for line in tablet_file.read().split('\n'):
-				if not (str(line[0]) is X or str(line[0]) is Y or str(line[0]) is B or str(line[0] is R or str(line[0]) is G or str(line[0]) is W):
-					self._tablets.append((line.split(";")[0], line.split(";")[1]))
+		with open("grid.csv", 'r') as tablet_file:
+			for line in tablet_file.read().split('\n'):
+				if (line is ""):
+					pass
+				elif not (str(line[0]) is "X" or str(line[0]) is "Y" or str(line[0]) is "B" or str(line[0]) is "R" or str(line[0]) is "G" or str(line[0]) is "W"):
+					self._tablets.append((int(line.split(",")[0]), int(line.split(",")[1])))
 
 Add in values:
 
