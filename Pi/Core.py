@@ -138,30 +138,55 @@ class Core(object):
 
             if 0 <= angle <= 45:
                 # Both motors are used forwards
-                self.set_motor1(pid_value * (45-angle)/45)
-                print "motor1: " + str(pid_value * (45-angle)/45)
+                self.set_motor1(pid_value)
+                print "motor1: " + str(pid_value)
+                # self.set_motor1(pid_value * (45-angle)/45)
+                # print "motor1: " + str(pid_value * (45-angle)/45)
             elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
-                self.set_motor1(pid_value * (angle-45) * -1/90)
-                print "motor1: " + str(pid_value * (angle-45) * -1/90)
+                self.set_motor1(pid_value * (angle-135) * -1/90)
+                print "motor1: " + str(pid_value * (angle-135) * -1/90)
+                # self.set_motor1(pid_value * (angle-45) * -1/90)
+                # print "motor1: " + str(pid_value * (angle-45) * -1/90)
             elif 135 < angle <= 180:
-                # Both motors are used forwards
-                self.set_motor1(pid_value * -1)
-                print "motor1: " + str(pid_value * -1)
-            elif -45 <= angle < 0:
-                # Both motors are used forwards
-                self.set_motor1(pid_value)
-                print "motor1: " + str(pid_value)
-            elif -135 <= angle < -45:
+                # Both motors are used backwards
+                self.set_motor1(pid_value * (angle-135) * -1/45)
+                print "motor1: " + str(pid_value * (angle-135) * -1/45)
+                # self.set_motor1(pid_value * -1)
+                # print "motor1: " + str(pid_value * -1)
+            elif 180 < angle <= 225:
+                # Both motors are used backwards
+                self.set_motor1(-pid_value)
+                print "motor1: " + str(-pid_value)
+                # self.set_motor1(pid_value * (angle-225) * 1/45)
+                # print "motor1: " + str(pid_value * (angle-225) * 1/45)
+            elif 225 < angle <= 315:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
-                self.set_motor1(pid_value * (angle+135) * 1/90 * power_ratio)
-                print "motor1: " + str(pid_value * (angle+135) * 1/90 * power_ratio)
-            elif -180 <= angle < -135:
+                self.set_motor1(pid_value * (angle-315) * 1/90)
+                print "motor1: " + str(pid_value * (angle-315) * 1/90)
+                # self.set_motor1(pid_value * (angle-225) * 1/90 * power_ratio)
+                # print "motor1: " + str(pid_value * (angle-225) * 1/90 * power_ratio)
+            elif 315 < angle <= 360:
                 # Both motors are used forwards
-                self.set_motor1(pid_value * (angle+135) * 1/45)
-                print "motor1: " + str(pid_value * (angle+135) * 1/45)
+                self.set_motor1(pid_value * (angle-315) * 1/45)
+                print "motor1: " + str(pid_value * (angle-315) * 1/45)
+                # self.set_motor1(pid_value)
+                # print "motor1: " + str(pid_value)
+            # elif -45 <= angle < 0:
+            #     # Both motors are used forwards
+            #     self.set_motor1(pid_value)
+            #     print "motor1: " + str(pid_value)
+            # elif -135 <= angle < -45:
+            #     # Left motor is used forwards, but because right motor is used backwards,
+            #     # power ratio must be taken into account
+            #     self.set_motor1(pid_value * (angle+135) * 1/90 * power_ratio)
+            #     print "motor1: " + str(pid_value * (angle+135) * 1/90 * power_ratio)
+            # elif -180 <= angle < -135:
+            #     # Both motors are used forwards
+            #     self.set_motor1(pid_value * (angle+135) * 1/45)
+            #     print "motor1: " + str(pid_value * (angle+135) * 1/45)
             sleep(software_pid_interval)
 
     def _navigation_thread_motor2(self):
@@ -184,30 +209,55 @@ class Core(object):
 
             if 0 <= angle <= 45:
                 # Both motors are used forwards
-                self.set_motor2(pid_value)
-                print "motor2: " + str(pid_value)
+                self.set_motor2(pid_value * (angle-45) * -1/45)
+                print "motor2: " + str(pid_value * (angle-45) * -1/45)
+                # self.set_motor2(pid_value)
+                # print "motor2: " + str(pid_value)
             elif 45 < angle <= 135:
                 # Right motor is used forwards, but because left motor is used backwards,
                 # power ratio must be taken into account
-                self.set_motor2(pid_value * (angle-135) * -1/90 * power_ratio)
-                print "motor2: " + str(pid_value * (angle-135) * -1/90 * power_ratio)
+                self.set_motor2(pid_value * (angle-45) * -1/90 * power_ratio)
+                print "motor2: " + str(pid_value * (angle-45) * -1/90 * power_ratio)
+                # self.set_motor2(pid_value * (angle-135) * -1/90 * power_ratio)
+                # print "motor2: " + str(pid_value * (angle-135) * -1/90 * power_ratio)
             elif 135 < angle <= 180:
                 # Both motors are used forwards
-                self.set_motor2(pid_value * (angle-135) * -1/45)
-                print "motor2: " + str(pid_value * (angle-135) * -1/45)
-            elif -45 <= angle < 0:
+                self.set_motor2(-pid_value)
+                print "motor2: " + str(-pid_value)
+                # self.set_motor2(pid_value * (angle-135) * -1/45)
+                # print "motor2: " + str(pid_value * (angle-135) * -1/45)
+            elif 180 < angle <= 225:
                 # Both motors are used forwards
-                self.set_motor2(pid_value * (45+angle)/45)
-                print "motor2: " + str(pid_value * (45+angle)/45)
-            elif -135 <= angle < -45:
+                self.set_motor2(pid_value * (angle-225) * 1/45)
+                print "motor2: " + str(pid_value * (angle-225) * 1/45)
+                # self.set_motor2(pid_value * -1)
+                # print "motor2: " + str(pid_value * -1)
+            elif 225 < angle <= 315:
                 # Left motor is used forwards, but because right motor is used backwards,
                 # power ratio must be taken into account
-                self.set_motor2(pid_value * (angle+45) * 1/90)
-                print "motor2: " + str(pid_value * (angle+45) * 1/90)
-            elif -180 <= angle < -135:
+                self.set_motor2(pid_value * (angle-225) * 1/90)
+                print "motor2: " + str(pid_value * (angle-225) * 1/90)
+                # self.set_motor2(pid_value * (angle-315) * 1/90)
+                # print "motor2: " + str(pid_value * (angle-315) * 1/90)
+            elif 315 < angle <= 360:
                 # Both motors are used forwards
-                self.set_motor2(pid_value * -1)
-                print "motor2: " + str(pid_value * -1)
+                self.set_motor2(pid_value)
+                print "motor2: " + str(pid_value)
+                # self.set_motor2(pid_value * (angle-315)/45)
+                # print "motor2: " + str(pid_value * (angle-315)/45)
+            # elif -45 <= angle < 0:
+            #     # Both motors are used forwards
+            #     self.set_motor2(pid_value * (45+angle)/45)
+            #     print "motor2: " + str(pid_value * (45+angle)/45)
+            # elif -135 <= angle < -45:
+            #     # Left motor is used forwards, but because right motor is used backwards,
+            #     # power ratio must be taken into account
+            #     self.set_motor2(pid_value * (angle+45) * 1/90)
+            #     print "motor2: " + str(pid_value * (angle+45) * 1/90)
+            # elif -180 <= angle < -135:
+            #     # Both motors are used forwards
+            #     self.set_motor2(pid_value * -1)
+            #     print "motor2: " + str(pid_value * -1)
             sleep(software_pid_interval)
 
     def _pid_moving(self, start, finish):

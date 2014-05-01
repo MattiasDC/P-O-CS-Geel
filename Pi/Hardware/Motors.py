@@ -113,10 +113,9 @@ class MotorControl(object):
             self._motor2.stop_moving()
             sleep(total_time-up_time)
 
-
-    #def set_pwm(self, pwm):
-    #    #Controls the PWM-motor
-    #    self._pwm_motor.set_pwm(pwm)
+    def set_pwm(self, pwm):
+        #Controls the PWM-motor
+        self._pwm_motor.set_pwm(pwm)
 
     def get_fixed_motors_status(self):
         """
