@@ -283,15 +283,15 @@ class Core(object):
         self._SenderPi_Console = SenderPi.SenderPi()
         self._senderPi_direction = SenderPi.SenderPi()
 
-    def land(self):
-        """
-        Lands the zeppelin and quits heightcontrol
-        """
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The zeppelin started the landing procedure")
-        self.set_goal_height(ground_height)
-        while self.get_height() > (ground_height+2):
-            sleep(1)
-        self.set_height_control(False)
+    # def land(self):
+    #     """
+    #     Lands the zeppelin and quits heightcontrol
+    #     """
+    #     self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The zeppelin started the landing procedure")
+    #     self.set_goal_height(ground_height)
+    #     while self.get_height() > (ground_height+2):
+    #         sleep(1)
+    #     self.set_height_control(False)
 
     def _update_position(self, (x, y), (q, z), angle):
         """

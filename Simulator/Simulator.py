@@ -6,9 +6,9 @@ from values import *
 import random
 import ReceiverPi
 import SenderPi
+
 from math import copysign
 import logging
-import ssh_connector as ssh_connector
 
 class VirtualZeppelin(object):
 
@@ -29,14 +29,14 @@ class VirtualZeppelin(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _senderPi_tablets = None        # The sender-object used for sending tablet-messages to the server
-    _senderPi_qr = None             # The sender-object used for sending qr-messages to the server
+    _senderPi_goal_position = None
 
     def __init__(self, x, y, goal_x, goal_y, height, dir_x, dir_y, color):
         self._senderPi_position = SenderPi.SenderPi(color)
         self._senderPi_height = SenderPi.SenderPi(color)
         self._senderPi_direction = SenderPi.SenderPi(color)
         self._senderPi_tablets = SenderPi.SenderPi(color)
-        self.senderPi_qr = SenderPi.SenderPi(color)
+        self._senderPi_goal_position = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
         self._goal_tablet = 0
@@ -59,6 +59,9 @@ class VirtualZeppelin(object):
         return self._goal_position
 
     def set_goal_position(self, x, y):
+        self._senderPi_goal_position.sent_goal_position(x, y)
+        print x
+        print y
         self._goal_position = (x, y)
 
     def get_goal_tablet(self):
@@ -78,7 +81,7 @@ class VirtualZeppelin(object):
 
     def set_current_height(self, h):
         self._current_height = h
-        self._senderPi_position.sent_height(h)
+        self._senderPi_height.sent_height(h)
 
     def get_current_direction(self):
         return self._current_direction
@@ -120,15 +123,15 @@ class Simulator(object):
     _senderPi_Console = SenderPi.SenderPi(team)        # The sender-object used for sending console-messages to the server
     _tablets = None
 
+
     def __init__(self, other_zep, tablets):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-        Thread(target=ssh_connector.initialise_ssh_connection).start()
 
         self._tablets = tablets
 
-        self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 100, 600, 700, team)
+        self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 1000, 600, 700, team)
         goal = random.randint(1, len(self._tablets))
         self._our_zeppelin.set_goal_position(tablets[goal-1][0], tablets[goal-1][1])
         self._our_zeppelin.set_goal_tablet(goal)
@@ -151,7 +154,7 @@ class Simulator(object):
         """
         Runs the _steady_on_height algorithm every second and updates the current speed
         """
-        sleep_interval = 1.5
+        sleep_interval = 1
 
         while self._stay_on_height_flag:
             self._stay_on_height_thread_zep(self._our_zeppelin)
@@ -161,7 +164,7 @@ class Simulator(object):
 
     def _stay_on_height_thread_zep(self, zeppelin):
         #Fluctuation of maximum 10cm
-        new_height = self._deviation(zeppelin.get_goal_height(), 10)
+        new_height = self._deviation(zeppelin.get_goal_height(), 50)
         zeppelin.set_current_height(new_height)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
@@ -334,11 +337,11 @@ class Simulator(object):
     def _handle_tablets(self, zeppelin):
         distance = self._calculate_distance_between(zeppelin.get_current_position(), zeppelin.get_goal_position())
         if distance < distance_threshold:
-            #zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), "PUBLIC KEY")
+            zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), "PUBLIC KEY")
             next_tablet = random.randint(1, len(self._tablets))
             zeppelin.set_goal_position(self._tablets[next_tablet-1][0],self._tablets[next_tablet-1][1])
             zeppelin.set_goal_tablet(next_tablet)
-            #zeppelin._senderPi_tablets.sent_qr_string("BEWEEG NAAR NIEUWE TABLET")
+
 
     @staticmethod
     def _calculate_distance_between(start, end):
@@ -453,9 +456,16 @@ class Simulator(object):
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     _other_zep = VirtualZeppelin(400, 400, 300, 300, 100, 0, 0, 'rood')
-    tablets = [(1000,1000), (2000, 2000)]
+    #Sets the tablets
+    tablets = []
+    with open("grid.csv", 'r') as tablet_file:
+        for line in tablet_file.read().split('\n'):
+            if (line is ""):
+                pass
+            elif not (str(line[0]) is "X" or str(line[0]) is "Y" or str(line[0]) is "B" or str(line[0]) is "R" or str(line[0]) is "G" or str(line[0]) is "W"):
+                tablets.append((int(line.split(",")[0]), int(line.split(",")[1])))
     _simulator = Simulator(None, tablets)
-    _simulator.start(False, True)
+    _simulator.start(True, True)
 
 
 # ---------------------------------------------------------------------------------------------------------------------

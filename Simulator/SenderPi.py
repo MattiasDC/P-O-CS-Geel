@@ -23,8 +23,7 @@ class SenderPi(object):
 
     #Open a connection to the server (also sets the connected-flag to true)
     def open_connection(self):
-        self._connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host='localhost', port=5673, credentials=pika.PlainCredentials('geel', 'geel')))
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5673, credentials=pika.PlainCredentials('geel', 'geel')))
         self._channel = self._connection.channel()
         self._channel.exchange_declare(exchange=exchange,
                              type='topic')
@@ -130,20 +129,6 @@ class SenderPi(object):
             #Publish the console-information to the exchange with the correct routing key
             routing_key = self._color + '.tablets.tablet' + str(i)
             message = str(public_key)
-            self._channel.basic_publish(exchange=exchange,
-                      routing_key=routing_key,
-                      body=message)
-            return 'succes'
-
-       #Sent a string representing the found qr-code to the server
-    def sent_qr_string(self, qr_string):
-        if not self._connected:
-            #No connection to a server, so the message can not be delivered
-            return 'Not connected'
-        else:
-            #Publish the console-information to the exchange with the correct routing key
-            routing_key = self._color + '.private.qr'
-            message = str(qr_string)
             self._channel.basic_publish(exchange=exchange,
                       routing_key=routing_key,
                       body=message)

@@ -1,0 +1,60 @@
+Changes for tablet in core:
+
+Add method:
+
+def _handle_tablets(self):
+        distance = self._calculate_distance_between(self.get_current_position(), self.get_goal_position())
+        if distance < distance_threshold:
+			if self._last_tablet == True:
+				self.land()
+            zeppelin._senderPi_tablets.sent_tablet(self.get_goal_tablet(), QRPProcessing.get_public_key())
+            #DECODE QR
+            qr_string = QRPProcessing.decrypt_pil(self._camera.take_picture())
+            if not (qr_string is None):
+                if (str(qr_string.split(":")[0]) is "tablet"):
+					#move to tablet
+					tablet_number = qr_string.split(":")[1]
+					x = self._tablets[tablet_number][0]
+					y = self._tablets[tablet_number][1]
+					self.set_goal_position((x,y))
+				if (str(qr_string.split(:)[0]) is "position"):
+					#move to position
+					x = qr_string.split(:)[0].split(",")[0]
+					y = qr_string.split(:)[0].split(",")[1]
+					self.set_goal_position((x,y))
+					self._last_tablet = True
+					
+Add Fields:
+					
+_last_tablet = False
+
+_senderPi_goal_position = None
+
+_tablets = None
+
+Add in start server
+
+self._senderPi_goal_position = SenderPi.SenderPi()
+
+Add in set_goal_position
+
+self._senderPi_goal_position(x,y)
+
+Add in initialise:
+
+#Sets the tablets
+		self._tablets = []
+		with open("grid.csv", 'r') as tablet_file:
+			for line in tablet_file.read().split('\n'):
+				if (line is ""):
+					pass
+				elif not (str(line[0]) is "X" or str(line[0]) is "Y" or str(line[0]) is "B" or str(line[0]) is "R" or str(line[0]) is "G" or str(line[0]) is "W"):
+					self._tablets.append((int(line.split(",")[0]), int(line.split(",")[1])))
+
+Add in values:
+
+distance_threshold = 50
+
+Add in _update_position_thread:
+
+self._handle_tablets
