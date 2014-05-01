@@ -6,6 +6,7 @@ from values import *
 import random
 import ReceiverPi
 import SenderPi
+
 from math import copysign
 import logging
 
@@ -75,7 +76,7 @@ class VirtualZeppelin(object):
 
     def set_current_height(self, h):
         self._current_height = h
-        self._senderPi_position.sent_height(h)
+        self._senderPi_height.sent_height(h)
 
     def get_current_direction(self):
         return self._current_direction
@@ -114,17 +115,10 @@ class Simulator(object):
     _our_zeppelin = None
     _other_zeppelin = None
 
-<<<<<<< HEAD
     _senderPi_Console = SenderPi.SenderPi(team)        # The sender-object used for sending console-messages to the server
     _tablets = None
 
 
-
-=======
-    _senderPi_Console = None        # The sender-object used for sending console-messages to the server
-    _tablets = None
-
->>>>>>> 353ef3df9da3ac6bf8900febe4dc5e943a6d8999
     def __init__(self, other_zep, tablets):
         """
         Initialised all the variables, and initialises all the hardware components
@@ -132,7 +126,7 @@ class Simulator(object):
 
         self._tablets = tablets
 
-        self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 100, 600, 700, team)
+        self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 1000, 600, 700, team)
         goal = random.randint(1, len(self._tablets))
         self._our_zeppelin.set_goal_position(tablets[goal-1][0], tablets[goal-1][1])
         self._our_zeppelin.set_goal_tablet(goal)
@@ -155,7 +149,7 @@ class Simulator(object):
         """
         Runs the _steady_on_height algorithm every second and updates the current speed
         """
-        sleep_interval = 3
+        sleep_interval = 1
 
         while self._stay_on_height_flag:
             self._stay_on_height_thread_zep(self._our_zeppelin)
@@ -165,7 +159,7 @@ class Simulator(object):
 
     def _stay_on_height_thread_zep(self, zeppelin):
         #Fluctuation of maximum 10cm
-        new_height = self._deviation(zeppelin.get_goal_height(), 10)
+        new_height = self._deviation(zeppelin.get_goal_height(), 50)
         zeppelin.set_current_height(new_height)
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
@@ -459,7 +453,7 @@ if __name__ == "__main__":
     _other_zep = VirtualZeppelin(400, 400, 300, 300, 100, 0, 0, 'rood')
     tablets = [(1000,1000), (2000, 2000)]
     _simulator = Simulator(None, tablets)
-    _simulator.start(False, True)
+    _simulator.start(True, True)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
