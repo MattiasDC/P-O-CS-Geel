@@ -136,7 +136,7 @@ class Core(object):
                 pid_value = -pid_boundary
             print "pid: " + str(pid_value)
 
-            if 0 <= angle <= 45:
+s            if 0 <= angle <= 45:
                 # Both motors are used forwards
                 self.set_motor1(pid_value)
                 print "motor1: " + str(pid_value)
