@@ -5,5 +5,5 @@ TODO:
     PID navigeren testen + debuggen + finetunen
     Pootjes
     IP tests (exactheid + snelheid)
-    GUI
+    GUI + GUI update time aanpassen
     Tablets?

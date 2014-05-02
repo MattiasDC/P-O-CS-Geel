@@ -29,12 +29,14 @@ class VirtualZeppelin(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _senderPi_tablets = None        # The sender-object used for sending tablet-messages to the server
+    _senderPi_goal_position = None
 
     def __init__(self, x, y, goal_x, goal_y, height, dir_x, dir_y, color):
         self._senderPi_position = SenderPi.SenderPi(color)
         self._senderPi_height = SenderPi.SenderPi(color)
         self._senderPi_direction = SenderPi.SenderPi(color)
         self._senderPi_tablets = SenderPi.SenderPi(color)
+        self._senderPi_goal_position = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
         self._goal_tablet = 0
@@ -57,6 +59,9 @@ class VirtualZeppelin(object):
         return self._goal_position
 
     def set_goal_position(self, x, y):
+        self._senderPi_goal_position.sent_goal_position(x, y)
+        print x
+        print y
         self._goal_position = (x, y)
 
     def get_goal_tablet(self):
@@ -451,7 +456,14 @@ class Simulator(object):
 # ---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     _other_zep = VirtualZeppelin(400, 400, 300, 300, 100, 0, 0, 'rood')
-    tablets = [(1000,1000), (2000, 2000)]
+    #Sets the tablets
+    tablets = []
+    with open("grid.csv", 'r') as tablet_file:
+        for line in tablet_file.read().split('\n'):
+            if (line is ""):
+                pass
+            elif not (str(line[0]) is "X" or str(line[0]) is "Y" or str(line[0]) is "B" or str(line[0]) is "R" or str(line[0]) is "G" or str(line[0]) is "W"):
+                tablets.append((int(line.split(",")[0]), int(line.split(",")[1])))
     _simulator = Simulator(None, tablets)
     _simulator.start(True, True)
 

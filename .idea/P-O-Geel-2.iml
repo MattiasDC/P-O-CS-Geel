@@ -15,15 +15,15 @@
       <sourceFolder url="file://$MODULE_DIR$/Pi/QRProcessing" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
     </content>
+<<<<<<< HEAD
     <orderEntry type="jdk" jdkName="Python 2.7.6 (/usr/bin/python2.7)" jdkType="Python SDK" />
+=======
+    <orderEntry type="jdk" jdkName="Python 2.7.5 virtualenv at C:\Users\Bart\Pycharm" jdkType="Python SDK" />
+>>>>>>> a8084093bbef9bd0d6e4c00d7039c645d875778a
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="myDocStringFormat" value="Plain" />
-  </component>
-  <component name="TestRunnerService">
-    <option name="projectConfiguration" value="Unittests" />
-    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
   </component>
 </module>
 
