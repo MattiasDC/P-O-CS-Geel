@@ -12,11 +12,10 @@ def _handle_tablets(self):
             if self._last_tablet == True:
                 self.land()
                 return "zeppelin landed"
-            qr_processor = QRProcessing.QRProcessing()
             self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), qr_processor.get_public_key())
             sleep(0.5)
             #DECODE QR
-            qr_string = qr_processor.decrypt_pil(self._camera.take_picture())
+            qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())
             if not (qr_string is None):
                 if (str(qr_string.split(":")[0]) == "tablet"):
                     #move to tablet
@@ -38,6 +37,7 @@ _last_tablet = False
 _senderPi_goal_position = None
 
 _tablets = None
+qr_processor = QRProcessing.QRProcessing()
 
 Add in start server
 
@@ -45,7 +45,7 @@ self._senderPi_goal_position = SenderPi.SenderPi()
 
 Add in set_goal_position
 
-self._senderPi_goal_position(x,y)
+self._senderPi_goal_position.sent_goal_position(x,y)
 
 Add in initialise:
 
@@ -69,3 +69,7 @@ self._handle_tablets
 Set bits in QR-processing to 512
 
 !!!!!TYPFOUT in QRProcessing => enkele P in klassenaam!!!!!!!!!!!
+
+IN QR-processing:
+
+catch exception if decryption fails

@@ -45,6 +45,32 @@ def take_picture():
             return _last_picture
     return _last_picture
 
+
+def take_picture_pil():
+    """
+    Takes a picture with a resolution in function of the height
+    """
+    global _core, _flag_initialised, _last_picture, _camera, _cam_width, _cam_height
+
+    _last_picture = None
+    if _flag_initialised:
+        try:
+            #height = _core.get_height()
+            #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
+            #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
+            _camera.resolution = (_cam_width, _cam_height)
+            stream = io.BytesIO()
+            _camera.capture(stream, format='jpeg')
+            stream.seek(0)
+            _last_picture = Image.open(stream)
+
+            _core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Looking for a QR-code")
+        except Exception:
+            return _last_picture
+    return _last_picture
+
+
+
 # ------------------------------------------------- GETTERS
 def get_last_picture():
     global _last_picture
