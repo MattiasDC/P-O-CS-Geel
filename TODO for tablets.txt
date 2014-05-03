@@ -65,11 +65,3 @@ distance_threshold = 50
 Add in _update_position_thread:
 
 self._handle_tablets
-
-Set bits in QR-processing to 512
-
-!!!!!TYPFOUT in QRProcessing => enkele P in klassenaam!!!!!!!!!!!
-
-IN QR-processing:
-
-catch exception if decryption fails
