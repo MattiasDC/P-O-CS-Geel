@@ -16,9 +16,9 @@ pid_boundary = 100              # TODO nog te testen
 
 # ------------------------------- Software PWM
 software_pid_interval = 1.0
-software_pid_error = 2.3/100.0                 # 1.95;0.12;3.2/ 3      -> Origineel
-software_pid_integral = 1.2/100.0              # 2.3 1.2 5             -> goede
-software_pid_derivative = 5/100.0              # 4 0.38 6
+software_pid_error = 2.3/30.0                 # 1.95;0.12;3.2/ 3      -> Origineel
+software_pid_integral = 1.2/30.0              # 2.3 1.2 5             -> goede
+software_pid_derivative = 5/30.0              # 4 0.38 6
                                 # 3.5 0.45 6            -> laatste test
 software_frequency = 50                 # Frequency of the duty cycle
 #software_percentage_correction = (100 - minimal_cycle) / 10.0    # PWM percentual correction

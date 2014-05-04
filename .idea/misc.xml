@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-<<<<<<< HEAD
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.6 (/usr/bin/python2.7)" project-jdk-type="Python SDK" />
-=======
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.5 virtualenv at C:\Users\Bart\Pycharm" project-jdk-type="Python SDK" />
->>>>>>> a8084093bbef9bd0d6e4c00d7039c645d875778a
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.5 (C:/Python27_32/python.exe)" project-jdk-type="Python SDK" />
 </project>
 
