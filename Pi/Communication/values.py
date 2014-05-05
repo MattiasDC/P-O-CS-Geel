@@ -43,6 +43,9 @@ cam_resolution = 500            # The camera resolution
 #port = 5673                   # The port used in the connection
 
 # ------------------------------- Server
-host = '192.168.2.134'           #The ip-adress of the server
+#host = '192.168.2.134'           #The ip-adress of the server
+#port = 5672
+port = 10000
+host = 'localhost'
 exchange = 'server'            #Name of the exchange used in the protocol
 team = 'geel'                  #Name of the controlled zeppelin

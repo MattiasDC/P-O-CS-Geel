@@ -58,10 +58,11 @@ class QRProcessing(object):
 
     def decrypt_pil(self, pil):
         qr_string = self._decode_pil(pil)
+        print qr_string
         if not qr_string is None:
             return self.decrypt(b64decode(qr_string))
-            print 'decryption failed'
         return None
+
 
 
 
