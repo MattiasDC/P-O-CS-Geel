@@ -1,9 +1,10 @@
 from datetime import datetime
 import io
+
 import numpy as np
 import Image
 import cv2
-import PiCamera
+from Pi import PiCamera
 
 
 _core = None
@@ -64,7 +65,7 @@ def take_picture_pil():
             stream.seek(0)
             _last_picture = Image.open(stream)
 
-            _core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Looking for a QR-code")
+            #_core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Looking for a QR-code")
         except Exception:
             return _last_picture
     return _last_picture

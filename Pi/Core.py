@@ -1,16 +1,14 @@
 from threading import Thread
-from threading import Thread
 from time import sleep, time
 from datetime import datetime
-from math import pow, sqrt, acos, degrees, pi
-import Communication.ssh_connector as ssh_connector
-import Hardware.Camera as Cam
+from math import pow, sqrt, acos, degrees
+import QRProcessing.QRProcessing as QRProcessing
+import Pi.Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
 from values import *
-import Communication.ReceiverPi as ReceiverPi
 import Communication.SenderPi as SenderPi
 
 
@@ -26,6 +24,13 @@ class Core(object):
     _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
 
     _positioner = None              # Positioner
+
+    _last_tablet = False
+
+    _senderPi_goal_position = None
+
+    _tablets = None
+    qr_processor = QRProcessing.QRProcessing()
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
@@ -54,7 +59,14 @@ class Core(object):
         """
         Initialised all the variables, and initialises all the hardware components
         """
-
+        #Sets the tablets
+        self._tablets = []
+        with open("grid.csv", 'r') as tablet_file:
+            for line in tablet_file.read().split('\n'):
+                if (line is ""):
+                    pass
+                elif not (str(line[0]) is "X" or str(line[0]) is "Y" or str(line[0]) is "B" or str(line[0]) is "R" or str(line[0]) is "G" or str(line[0]) is "W"):
+                    self._tablets.append((int(line.split(",")[0]), int(line.split(",")[1])))
         # Start the server
         self._start_server()
 
@@ -317,6 +329,30 @@ class Core(object):
         except:
             return 1
 
+    def _handle_tablets(self):
+        distance = self._calculate_distance_between(self.get_current_position(), self.get_goal_position())
+        if distance < distance_threshold:
+            if self._last_tablet == True:
+                self.land()
+                return "zeppelin landed"
+            self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), qr_processor.get_public_key_pem())
+            sleep(0.5)
+            #DECODE QR
+            qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())
+            if not (qr_string is None):
+                if (str(qr_string.split(":")[0]) == "tablet"):
+                    #move to tablet
+                    tablet_number = int(qr_string.split(":")[1])
+                    x = self._tablets[tablet_number][0]
+                    y = self._tablets[tablet_number][1]
+                    self.set_goal_position((x,y))
+                if (str(qr_string.split(":")[0]) == "position"):
+                    #move to position
+                    x = int(qr_string.split(":")[1].split(",")[0])
+                    y = int(qr_string.split(":")[1].split(",")[1])
+                    self.set_goal_position((x,y))
+                    self._last_tablet = True
+
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
     def _update_position_thread(self):
         while self._stay_on_position_flag:
@@ -330,6 +366,8 @@ class Core(object):
 
             if not (pos is None or direc is None or angle is None):
                 self._update_position(pos, direc, angle)
+
+            #self._handle_tablets
 
 # -------------------------------------------- Commands ----------------------------------------------------------------
 
@@ -363,16 +401,17 @@ class Core(object):
         self._senderPi_height = SenderPi.SenderPi()
         self._SenderPi_Console = SenderPi.SenderPi()
         self._senderPi_direction = SenderPi.SenderPi()
+        self._senderPi_goal_position = SenderPi.SenderPi()
 
-    # def land(self):
-    #     """
-    #     Lands the zeppelin and quits heightcontrol
-    #     """
-    #     self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The zeppelin started the landing procedure")
-    #     self.set_goal_height(ground_height)
-    #     while self.get_height() > (ground_height+2):
-    #         sleep(1)
-    #     self.set_height_control(False)
+    def land(self):
+     """
+     Lands the zeppelin and quits heightcontrol
+     """
+     self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The zeppelin started the landing procedure")
+     self.set_goal_height(ground_height)
+     while self.get_height() > (ground_height+2):
+         sleep(1)
+         self.set_height_control(False)
 
     def _update_position(self, (x, y), (q, z), angle):
         """
@@ -488,7 +527,7 @@ class Core(object):
         Sets a new position in (x,y)- coordinates
         """
         self._goal_position = (x, y)
-        self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
+        self._senderPi_goal_position.sent_goal_position(x, )
 
     def set_navigation_mode(self, flag):
         if flag:
