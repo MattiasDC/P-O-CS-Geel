@@ -410,23 +410,5 @@ class ColorPoint(object):
         return "Color: " + str(self.color) + " Positions: " + build_string
 
 if __name__ == '__main__':
-    i = 0
-    path = "/home/pi/pictures"
-    os.chdir(path)
-    som = 0
-    set_core(None, True)
-
-    for filee in sorted(glob.glob("*.jpeg"), key=len):
-        print str(filee)
-        start = time()
-        _imageprocessor.process_picture(cv2.imread(path + "/" + filee))
-        end = time() - start
-        som += end
-        print end
-        #comment to not log
-        with open('processtimes.txt', 'a') as f:
-            f.write(str(end))
-
-    print "Avg: ", str(som/200.0)
-    with open('processtimes.txt', 'a') as f:
-            f.write(str(som/200))
+    for i in range(100):
+        cv2.imwrite(str(i) + ".jpeg",_core._camera.take_picture())

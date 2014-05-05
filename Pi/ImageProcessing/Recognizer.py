@@ -6,12 +6,11 @@ from math import pi
 from Shapes import *
 import colorsys
 import os
-import glob
 from pybrain.structure import FeedForwardNetwork
 from pybrain.tools.customxml import NetworkReader
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
-max_contour_factor = 0.6
+max_contour_length = 550
 canny_threshold1 = 5       # Thresholds for the canny edge detection algorithm
 canny_threshold2 = 18
 approx_precision = 0.01    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
@@ -35,12 +34,11 @@ print "Oracle read in time: ", str(time()-start_time)
 
 def process_picture(image):
     global shape_map, oracle, feature_size, canny_threshold1, canny_threshold2, max_contour_factor, min_contour_length,\
-        approx_precision, iterations, max_shape_offset, i
+        approx_precision, iterations, max_shape_offset, i, max_contour_length
 
     try:
         #Filter giant rectangle of the image itself
         res_x, res_y, _ = image.shape
-        max_contour_length = (2*res_x + 2*res_y)*max_contour_factor
 
         #Load image gray scale
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
@@ -54,7 +52,6 @@ def process_picture(image):
         dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
         #Fill the rest of the image => result = black shapes, rest is white
         #Find contours of black shapes
-
         contours, _ = cv2.findContours(dilated_edge_image, 1, 2)
 
         #Filter small elements out of the contours and filter to large elements
@@ -94,14 +91,32 @@ def process_picture(image):
             if features is not None and not is_on_edge(contour, gray_image.shape):
                 oracle_return = oracle.activate(features)
                 r = oracle_return.argmax(axis=0)
+                if shape_map[r] == Rectangle:
+                    _, (width, height), _ = cv2.minAreaRect(contour)
+                    if width/height < 1:
+                        ratio = float(height)/width
+                    else:
+                        ratio = float(width)/height
+                    if ratio > 2:
+                        continue
+                else:
+                    _, (width, height), _ = cv2.minAreaRect(contour)
+                    if width/height < 1:
+                        ratio = float(height)/width
+                    else:
+                        ratio = float(width)/height
+                    if ratio > 3:
+                        continue
+
                 found_shapes.append(shape_map[r](color, center))
                 #cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
                 #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
-                #cv2.putText(test_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                #cv2.putText(test_image, shape_map[r](color, center).__class__.__name__[0] + " " + str(color)[0]
+                #            + " " + str(ratio),
                 #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
-            #cv2.drawContours(test_image, [contour], 0, (255, 0, 0), -1)
+            #cv2.drawContours(test_image, [contour], 0, (255, 0, 0), 1)
     #cv2.imshow('hey', gray_image)
     #cv2.imshow('hallo', test_image)
     #cv2.waitKey(0)
@@ -150,7 +165,6 @@ def find_shape_color(contour, image):
     h, s, v = colorsys.rgb_to_hsv(r/255.0, g/255.0, b/255.0)
     if 0 <= s*100 <= 25 and v*100 >= 80:
         return 'white'
-
     if 30 <= h*360 < 75:
         return 'yellow'
     elif 0 <= h*360 <= 30 or 329 <= h*360 <= 360:
@@ -203,7 +217,3 @@ def is_gray(contour, image):
 def is_full_shape(contour):
     area = cv2.contourArea(contour)
     return area/cv2.arcLength(contour, True) > 3
-
-
-if __name__ == '__main__':
-    process_picture(cv2.imread("C:\Users\Mattias\Desktop\sample.jpg"))
