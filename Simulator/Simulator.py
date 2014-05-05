@@ -70,8 +70,6 @@ class VirtualZeppelin(object):
 
     def set_goal_position(self, x, y):
         self._senderPi_goal_position.sent_goal_position(x, y)
-        print x
-        print y
         self._goal_position = (x, y)
 
     def get_goal_tablet(self):
