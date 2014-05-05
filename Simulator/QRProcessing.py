@@ -1,10 +1,11 @@
 from base64 import b64decode
 from base64 import b64encode
-import qrcode
-import zbar
+#import qrcode
+#import zbar
 import rsa
-import Image
+#import Image
 import io
+import SenderPi
 
 class QRProcessing(object):
     _public = None                  # Public key
@@ -63,14 +64,9 @@ class QRProcessing(object):
         return None
 
 if __name__ == "__main__":
-    import io
-    uri = "http://upload.wikimedia.org/wikipedia/commons/0/0b/QR_code_Wikimedia_Commons_(URL).png"
-    stream = io.BytesIO(uri)
-    print stream
-    stream.seek(0)
-    pil = Image.open(stream)
     qr_processor = QRProcessing()
-    print qr_processor._decode_pil(pil)
+    sender = SenderPi.SenderPi('geel')
+    sender.sent_tablet(1, qr_processor.get_public_key_pem())
 
 
 
