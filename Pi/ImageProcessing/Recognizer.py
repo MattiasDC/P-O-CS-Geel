@@ -53,8 +53,8 @@ def process_picture(image):
         element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
         dilated_edge_image = cv2.dilate(edge_image, element, iterations=iterations)
         #Fill the rest of the image => result = black shapes, rest is white
-
         #Find contours of black shapes
+
         contours, _ = cv2.findContours(dilated_edge_image, 1, 2)
 
         #Filter small elements out of the contours and filter to large elements
@@ -89,7 +89,6 @@ def process_picture(image):
     for contour in contours:
         color = find_shape_color(contour, image)
         center = find_center(contour)
-
         if is_valid_shape(contour, image):
             features = get_features(contour, gray_image)
             if features is not None and not is_on_edge(contour, gray_image.shape):
@@ -102,7 +101,8 @@ def process_picture(image):
                 #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
-            #cv2.drawContours(gray_image, [contour], 0, (255, 0, 0), -1)
+            #cv2.drawContours(test_image, [contour], 0, (255, 0, 0), -1)
+    #cv2.imshow('hey', gray_image)
     #cv2.imshow('hallo', test_image)
     #cv2.waitKey(0)
     #if i < 200:
@@ -185,7 +185,7 @@ def is_valid_shape(contour, image):
 
 
 def is_gray(contour, image):
-    offset = 20
+    offset = 15
     white = 220
 
     center = find_center(contour)
@@ -206,4 +206,4 @@ def is_full_shape(contour):
 
 
 if __name__ == '__main__':
-    process_picture(cv2.imread("C:\Users\Mattias\Desktop\sample.png"))
+    process_picture(cv2.imread("C:\Users\Mattias\Desktop\sample.jpg"))
