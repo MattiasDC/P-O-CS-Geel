@@ -356,10 +356,10 @@ class Simulator(object):
                 return "zeppelin "+ zeppelin.get_color() + " landed"
             if (zeppelin._prev_request is None):
                 zeppelin._prev_request = time()
-            if time() - zeppelin._prev_request  > 10:
+            if time() - zeppelin._prev_request > 5:
                 zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), zeppelin.qr_processor.get_public_key_pem())
                 zeppelin._prev_request = None
-            uri = "http://192.168.2134:5000/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
+            uri = host + "/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
             img = urllib.urlretrieve(uri)[0]
             pil = Image.open(img).convert('L')
             qr_string = zeppelin.qr_processor.decrypt_pil(pil)
