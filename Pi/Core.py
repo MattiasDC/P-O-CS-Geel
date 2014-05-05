@@ -10,6 +10,7 @@ import ImageProcessing.Grid as Grid
 from Hardware.Motors import MotorControl
 from values import *
 import Communication.SenderPi as SenderPi
+from math import pi
 
 
 class Core(object):
@@ -31,6 +32,7 @@ class Core(object):
 
     _tablets = None
     qr_processor = QRProcessing.QRProcessing()
+    _prev_request = None
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
@@ -335,8 +337,11 @@ class Core(object):
             if self._last_tablet == True:
                 self.land()
                 return "zeppelin landed"
-            self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), qr_processor.get_public_key_pem())
-            sleep(0.5)
+            if (self._prev_request is None):
+                self._prev_request = time()
+            if self._prev_request - time() > 10:
+                self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), self.qr_processor.get_public_key_pem())
+                self._prev_request = None
             #DECODE QR
             qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())
             if not (qr_string is None):
@@ -417,14 +422,12 @@ class Core(object):
         """
         Updates the current position, direction and sends it to the server
         """
-        #self._current_position = (x, y)
-        #self._current_direction = (q, z)
-        #self._current_angle = angle
-        # self._senderPi_position.sent_position(x, y)
-        # self._senderPi_direction.sent_direction(self.get_angle())
-        # self._current_angle = (angle * 180.0) / pi
-        # self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] "
-        #                     + "Current position: " + str(self.get_position()))
+        self._current_position = (x, y)
+        self._current_direction = (q, z)
+        self._current_angle = angle
+        self._senderPi_position.sent_position(x, y)
+        self._senderPi_direction.sent_direction(self.get_angle())
+        self._current_angle = (angle * 180.0) / pi
 
 # ------------------------------------------ Getters -------------------------------------------------------------------
     def get_grid(self):

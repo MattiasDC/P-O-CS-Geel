@@ -1,11 +1,15 @@
 from threading import Thread
-from time import sleep
+from time import sleep, time
 from datetime import datetime
 from math import sqrt, cos, sin, acos, degrees, atan2, pi
 from values import *
 import random
 import ReceiverPi
 import SenderPi
+import QRProcessing.QRProcessing as QRProcessing
+import io
+from PIL import Image
+import urllib, cStringIO
 
 from math import copysign
 import logging
@@ -31,6 +35,11 @@ class VirtualZeppelin(object):
     _senderPi_tablets = None        # The sender-object used for sending tablet-messages to the server
     _senderPi_goal_position = None
 
+    qr_processor = None
+
+    _last_tablet = False
+    _prev_request = None
+
     def __init__(self, x, y, goal_x, goal_y, height, dir_x, dir_y, color):
         self._senderPi_position = SenderPi.SenderPi(color)
         self._senderPi_height = SenderPi.SenderPi(color)
@@ -47,6 +56,7 @@ class VirtualZeppelin(object):
         self._prev_error_soft = 0
         self._prev_errors_soft = [0]*10
         self._prev_derivative_soft = 0
+        self.qr_processor = QRProcessing()
 
     def get_current_position(self):
         return self._current_position
@@ -110,6 +120,9 @@ class VirtualZeppelin(object):
 
     def set_prev_derivative_soft(self, value):
         self._prev_derivative_soft = value
+
+    def land(self):
+        self.set_goal_height(10)
 
 class Simulator(object):
 
@@ -337,10 +350,32 @@ class Simulator(object):
     def _handle_tablets(self, zeppelin):
         distance = self._calculate_distance_between(zeppelin.get_current_position(), zeppelin.get_goal_position())
         if distance < distance_threshold:
-            zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), "PUBLIC KEY")
-            next_tablet = random.randint(1, len(self._tablets))
-            zeppelin.set_goal_position(self._tablets[next_tablet-1][0],self._tablets[next_tablet-1][1])
-            zeppelin.set_goal_tablet(next_tablet)
+            if zeppelin._last_tablet == True:
+                zeppelin.land()
+                self.add_to_console(zeppelin.get_color() + 'has landed')
+                return "zeppelin "+ zeppelin.get_color() + " landed"
+            if (zeppelin._prev_request is None):
+                zeppelin._prev_request = time()
+            if zeppelin._prev_request - time() > 10:
+                zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), zeppelin.qr_processor.get_public_key_pem())
+                zeppelin._prev_request = None
+            uri = "http://localhost:5000/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
+            filee = cStringIO.StringIO(urllib.urlopen(uri).read())
+            pil = Image.open(filee)
+            qr_string = self.qr_processor.decrypt_pil(pil)
+            if not (qr_string is None):
+                if (str(qr_string.split(":")[0]) == "tablet"):
+                    #move to tablet
+                    tablet_number = int(qr_string.split(":")[1])
+                    x = self._tablets[tablet_number][0]
+                    y = self._tablets[tablet_number][1]
+                    self.set_goal_position((x,y))
+                if (str(qr_string.split(":")[0]) == "position"):
+                    #move to position
+                    x = int(qr_string.split(":")[1].split(",")[0])
+                    y = int(qr_string.split(":")[1].split(",")[1])
+                    self.set_goal_position((x,y))
+                    self._last_tablet = True
 
 
     @staticmethod
