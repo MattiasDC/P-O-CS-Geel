@@ -82,7 +82,7 @@ def process_picture(image):
 
     contours = filter(lambda c: len(c) > 2, contours)
 
-    #test_image = image.copy()
+    test_image = image.copy()
     for contour in contours:
         color = find_shape_color(contour, image)
         center = find_center(contour)
@@ -109,17 +109,17 @@ def process_picture(image):
                         continue
 
                 found_shapes.append(shape_map[r](color, center))
-                #cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
-                #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
-                #cv2.putText(test_image, shape_map[r](color, center).__class__.__name__[0] + " " + str(color)[0]
-                #            + " " + str(ratio),
-                #            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
+                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
+                cv2.putText(test_image, shape_map[r](color, center).__class__.__name__[0] + " " + str(color)[0]
+                            + " " + str(ratio),
+                            tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
-            #cv2.drawContours(test_image, [contour], 0, (255, 0, 0), 1)
-    #cv2.imshow('hey', gray_image)
-    #cv2.imshow('hallo', test_image)
-    #cv2.waitKey(0)
+            cv2.drawContours(test_image, [contour], 0, (255, 0, 0), 1)
+    cv2.imshow('hey', gray_image)
+    cv2.imshow('hallo', test_image)
+    cv2.waitKey(0)
     #if i < 200:
     #    i += 1
     #    print i
@@ -217,3 +217,7 @@ def is_gray(contour, image):
 def is_full_shape(contour):
     area = cv2.contourArea(contour)
     return area/cv2.arcLength(contour, True) > 3
+
+if __name__ == '__main__':
+    for f in os.listdir("C:\Users\Mattias\Desktop\_neural_network_oracle\\neural"):
+        process_picture(f)

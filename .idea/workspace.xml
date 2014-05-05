@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="35ac75d2-f17d-4a37-9f5f-a9bc3ddd6af4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pi/Hardware/Camera.py" afterPath="$PROJECT_DIR$/Pi/Hardware/Camera.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pi/Core.py" afterPath="$PROJECT_DIR$/Pi/Core.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/P-O-Geel-2.iml" afterPath="$PROJECT_DIR$/.idea/P-O-Geel-2.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pi/ImageProcessing/Positioner.py" afterPath="$PROJECT_DIR$/Pi/ImageProcessing/Positioner.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py" afterPath="$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="P-O-Geel-2.iws" />
@@ -30,10 +27,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="Core.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Pi/Core.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="546" column="119" selection-start="24392" selection-end="24392" vertical-scroll-proportion="0.9160714" vertical-offset="8548" max-vertical-offset="9163">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="ReceiverGUI.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Simulator/ReceiverGUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="2125">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2176">
               <folding />
             </state>
           </provider>
@@ -42,10 +48,8 @@
       <file leaf-file-name="Camera.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pi/Hardware/Camera.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="50" selection-start="2169" selection-end="2169" vertical-scroll-proportion="0.0" vertical-offset="451" max-vertical-offset="1394">
-              <folding>
-                <element signature="e#0#29#0" expanded="true" />
-              </folding>
+            <state line="40" column="49" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0" vertical-offset="680" max-vertical-offset="1394">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -53,19 +57,17 @@
       <file leaf-file-name="QRProcessing.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pi/QRProcessing/QRProcessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="60" column="8" selection-start="1842" selection-end="1842" vertical-scroll-proportion="0.0" vertical-offset="391" max-vertical-offset="1156">
+            <state line="60" column="8" selection-start="1842" selection-end="1842" vertical-scroll-proportion="0.0" vertical-offset="1020" max-vertical-offset="1224">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Recognizer.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Recognizer.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="216" column="27" selection-start="7940" selection-end="7940" vertical-scroll-proportion="0.7679181" vertical-offset="3222" max-vertical-offset="3808">
-              <folding>
-                <element signature="e#0#21#0" expanded="true" />
-              </folding>
+            <state line="105" column="25" selection-start="4390" selection-end="4390" vertical-scroll-proportion="0.0" vertical-offset="3491" max-vertical-offset="3876">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -73,7 +75,7 @@
       <file leaf-file-name="Positioner.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pi/ImageProcessing/Positioner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="409" column="74" selection-start="13886" selection-end="13886" vertical-scroll-proportion="0.0" vertical-offset="5772" max-vertical-offset="6868">
+            <state line="409" column="74" selection-start="13886" selection-end="13886" vertical-scroll-proportion="0.0" vertical-offset="6953" max-vertical-offset="7055">
               <folding />
             </state>
           </provider>
@@ -96,6 +98,7 @@
     </FindUsagesManager>
   </component>
   <component name="Git.Settings">
+    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitLogSettings">
@@ -107,7 +110,6 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/../Test/test.py" />
-        <option value="$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py" />
         <option value="$PROJECT_DIR$/Pi/Communication/SenderPi.py" />
         <option value="$PROJECT_DIR$/Pi/Communication/ReceiverPi.py" />
         <option value="$PROJECT_DIR$/TODO for tablets.txt" />
@@ -119,8 +121,9 @@
         <option value="$PROJECT_DIR$/Simulator/test.py" />
         <option value="$PROJECT_DIR$/Simulator/Simulator.py" />
         <option value="$PROJECT_DIR$/Pi/ImageProcessing/Positioner.py" />
-        <option value="$PROJECT_DIR$/Pi/Core.py" />
         <option value="$PROJECT_DIR$/Pi/Hardware/Camera.py" />
+        <option value="$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py" />
+        <option value="$PROJECT_DIR$/Pi/Core.py" />
       </list>
     </option>
   </component>
@@ -486,6 +489,15 @@
       <created>1399202264855</created>
       <updated>1399202264855</updated>
     </task>
+    <task id="LOCAL-00001" summary="za">
+      <created>1399303953801</created>
+      <updated>1399303953801</updated>
+    </task>
+    <task id="LOCAL-00002" summary="core reset">
+      <created>1399304402204</created>
+      <updated>1399304402204</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -496,7 +508,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2489019" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2489019" sideWeight="0.67156863" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
@@ -506,6 +518,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -523,6 +536,9 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="za" />
+    <MESSAGE value="core reset" />
+    <option name="LAST_COMMIT_MESSAGE" value="core reset" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -537,9 +553,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Pi/PiCamera/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1343">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1343" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Pi/__init__.py">
@@ -580,9 +594,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="356" column="16" selection-start="15821" selection-end="16131" vertical-scroll-proportion="0.23734729" vertical-offset="5678" max-vertical-offset="8738">
-          <folding />
-        </state>
+        <state line="356" column="16" selection-start="15821" selection-end="16131" vertical-scroll-proportion="0.23734729" vertical-offset="5678" max-vertical-offset="8738" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Pi/Hardware/DistanceSensor.py">
@@ -596,24 +608,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="20" selection-start="2619" selection-end="2622" vertical-scroll-proportion="0.79692835" vertical-offset="400" max-vertical-offset="986">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Pi/Core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="345" column="53" selection-start="16597" selection-end="16600" vertical-scroll-proportion="0.42595977" vertical-offset="5632" max-vertical-offset="9792">
-          <folding>
-            <element signature="e#0#28#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Pi/Hardware/Camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="50" selection-start="2169" selection-end="2169" vertical-scroll-proportion="0.0" vertical-offset="451" max-vertical-offset="1394">
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -631,6 +625,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/Hardware/Camera.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="49" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0" vertical-offset="298" max-vertical-offset="1292">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Pi/ImageProcessing/Positioner.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="409" column="74" selection-start="13886" selection-end="13886" vertical-scroll-proportion="0.0" vertical-offset="6282" max-vertical-offset="6868">
@@ -640,10 +641,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Pi/ImageProcessing/Recognizer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="216" column="27" selection-start="7940" selection-end="7940" vertical-scroll-proportion="0.7679181" vertical-offset="3222" max-vertical-offset="3808">
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
+        <state line="105" column="25" selection-start="4390" selection-end="4390" vertical-scroll-proportion="0.0" vertical-offset="3491" max-vertical-offset="3876">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pi/Core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="546" column="119" selection-start="24392" selection-end="24392" vertical-scroll-proportion="0.9160714" vertical-offset="8548" max-vertical-offset="9163">
+          <folding />
         </state>
       </provider>
     </entry>
