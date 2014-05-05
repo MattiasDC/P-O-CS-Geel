@@ -6,6 +6,7 @@ import rsa
 import Image
 import io
 
+
 class QRProcessing(object):
     _public = None                  # Public key
     _private = None                     # Private key
@@ -61,16 +62,6 @@ class QRProcessing(object):
             return self.decrypt(b64decode(qr_string))
             print 'decryption failed'
         return None
-
-if __name__ == "__main__":
-    import io
-    uri = "http://upload.wikimedia.org/wikipedia/commons/0/0b/QR_code_Wikimedia_Commons_(URL).png"
-    stream = io.BytesIO(uri)
-    print stream
-    stream.seek(0)
-    pil = Image.open(stream)
-    qr_processor = QRProcessing()
-    print qr_processor._decode_pil(pil)
 
 
 

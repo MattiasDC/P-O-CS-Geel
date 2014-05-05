@@ -59,8 +59,3 @@ class QRProcessing(object):
             return self.decrypt(b64decode(qr_string))
             print 'decryption failed'
         return None
-
-
-
-
-
