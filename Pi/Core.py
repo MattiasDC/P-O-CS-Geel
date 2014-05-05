@@ -23,6 +23,7 @@ class Core(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
+    _senderPi_tablets = None
 
     _positioner = None              # Positioner
 
@@ -33,6 +34,8 @@ class Core(object):
     _tablets = None
     qr_processor = QRProcessing.QRProcessing()
     _prev_request = None
+
+    _goal_tablet = 1
 
 # ---------------------------------------------------------------------------------------------------------------------
     _stay_on_height_flag = None     # Flag to indicate the zeppelin should stay on the goal height or not.
@@ -359,7 +362,7 @@ class Core(object):
             if self._prev_request is None:
                 self._prev_request = time()
             if time() - self._prev_request > 5:
-                self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), self.qr_processor.get_public_key_pem())
+                self._senderPi_tablets.sent_tablet(self._goal_tablet, self.qr_processor.get_public_key_pem())
                 self._prev_request = None
 
             qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())
@@ -369,12 +372,14 @@ class Core(object):
                     tablet_number = int(qr_string.split(":")[1])
                     x = self._tablets[tablet_number][0]
                     y = self._tablets[tablet_number][1]
+                    goal_tablet = tablet_number
                     self.set_goal_position((x, y))
                 if str(qr_string.split(":")[0]) == "position":
                     #move to position
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
                     self.set_goal_position((x, y))
+                    goal_tablet = 0
                     self._last_tablet = True
 
 # -------------------------------------------- Imageprocessing ---------------------------------------------------------
@@ -419,6 +424,7 @@ class Core(object):
         self._SenderPi_Console = SenderPi.SenderPi()
         self._senderPi_direction = SenderPi.SenderPi()
         self._senderPi_goal_position = SenderPi.SenderPi()
+        self._senderPi_tablets = SenderPi.SenderPi()
 
     def land(self):
         """
