@@ -362,20 +362,20 @@ class Simulator(object):
             uri = "http://localhost:5000/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
             filee = cStringIO.StringIO(urllib.urlopen(uri).read())
             pil = Image.open(filee)
-            qr_string = self.qr_processor.decrypt_pil(pil)
+            qr_string = zeppelin.qr_processor.decrypt_pil(pil)
             if not (qr_string is None):
                 if (str(qr_string.split(":")[0]) == "tablet"):
                     #move to tablet
                     tablet_number = int(qr_string.split(":")[1])
                     x = self._tablets[tablet_number][0]
                     y = self._tablets[tablet_number][1]
-                    self.set_goal_position((x,y))
+                    zeppelin.set_goal_position((x,y))
                 if (str(qr_string.split(":")[0]) == "position"):
                     #move to position
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
-                    self.set_goal_position((x,y))
-                    self._last_tablet = True
+                    zeppelin.set_goal_position((x,y))
+                    zeppelin._last_tablet = True
 
 
     @staticmethod
