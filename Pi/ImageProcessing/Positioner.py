@@ -408,7 +408,3 @@ class ColorPoint(object):
         for value in self.possible_positions:
             build_string += str(value) + " "
         return "Color: " + str(self.color) + " Positions: " + build_string
-
-if __name__ == '__main__':
-    for i in range(100):
-        cv2.imwrite(str(i) + ".jpeg",_core._camera.take_picture())

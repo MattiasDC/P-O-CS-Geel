@@ -3,7 +3,7 @@ from time import sleep, time
 from datetime import datetime
 from math import pow, sqrt, acos, degrees
 import QRProcessing.QRProcessing as QRProcessing
-import Pi.Hardware.Camera as Cam
+import Hardware.Camera as Cam
 import Hardware.DistanceSensor as DistanceSensor
 import ImageProcessing.Positioner as Positioner
 import ImageProcessing.Grid as Grid
