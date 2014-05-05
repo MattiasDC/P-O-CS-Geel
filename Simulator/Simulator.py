@@ -359,10 +359,13 @@ class Simulator(object):
             if time() - zeppelin._prev_request > 5:
                 zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), zeppelin.qr_processor.get_public_key_pem())
                 zeppelin._prev_request = None
-            uri = host + "/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
-            img = urllib.urlretrieve(uri)[0]
-            pil = Image.open(img).convert('L')
-            qr_string = zeppelin.qr_processor.decrypt_pil(pil)
+            try:
+                uri = host + "/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
+                img = urllib.urlretrieve(uri)[0]
+                pil = Image.open(img).convert('L')
+                qr_string = zeppelin.qr_processor.decrypt_pil(pil)
+            except Exception:
+                qr_string = None
             if not (qr_string is None):
                 if (str(qr_string.split(":")[0]) == "tablet"):
                     #move to tablet

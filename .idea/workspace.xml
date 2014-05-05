@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="35ac75d2-f17d-4a37-9f5f-a9bc3ddd6af4" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/QRProcessing.py" afterPath="$PROJECT_DIR$/Simulator/QRProcessing.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Simulator.py" afterPath="$PROJECT_DIR$/Simulator/Simulator.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="P-O-Geel-2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,19 +26,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Simulator.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
+      <file leaf-file-name="SenderPi.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Simulator/SenderPi.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="361" column="96" selection-start="16227" selection-end="16227" vertical-scroll-proportion="0.53125" vertical-offset="5712" max-vertical-offset="8738">
+            <state line="25" column="87" selection-start="1014" selection-end="1014" vertical-scroll-proportion="0.0" vertical-offset="277" max-vertical-offset="2363">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SenderPi.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Simulator/SenderPi.py">
+      <file leaf-file-name="Simulator.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="87" selection-start="1014" selection-end="1014" vertical-scroll-proportion="0.0" vertical-offset="277" max-vertical-offset="2363">
+            <state line="367" column="32" selection-start="16478" selection-end="16478" vertical-scroll-proportion="0.82102275" vertical-offset="5712" max-vertical-offset="8789">
               <folding />
             </state>
           </provider>
@@ -582,7 +582,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-5" y="4" width="1382" height="744" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -592,7 +592,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32569557" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32569557" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -683,9 +683,7 @@
     <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="67" column="36" selection-start="1994" selection-end="1994" vertical-scroll-proportion="0.0" vertical-offset="962" max-vertical-offset="1326">
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -741,9 +739,7 @@
     <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="12" selection-start="1931" selection-end="1931" vertical-scroll-proportion="0.0" vertical-offset="511" max-vertical-offset="1394">
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -892,15 +888,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="24" selection-start="2021" selection-end="2021" vertical-scroll-proportion="0.53424656" vertical-offset="961" max-vertical-offset="1326">
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Pi/Core.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="532" column="105" selection-start="23758" selection-end="23760" vertical-scroll-proportion="14.460274" vertical-offset="3545" max-vertical-offset="9163">
@@ -908,9 +895,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="0" selection-start="58" selection-end="58" vertical-scroll-proportion="-2.3068492" vertical-offset="876" max-vertical-offset="1241">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="361" column="96" selection-start="16227" selection-end="16227" vertical-scroll-proportion="0.53125" vertical-offset="5712" max-vertical-offset="8738">
+        <state line="367" column="32" selection-start="16478" selection-end="16478" vertical-scroll-proportion="0.82102275" vertical-offset="5712" max-vertical-offset="8789">
           <folding />
         </state>
       </provider>

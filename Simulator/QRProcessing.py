@@ -1,11 +1,11 @@
 from base64 import b64decode
 from base64 import b64encode
-#import qrcode
-#import zbar
+import qrcode
+import zbar
 import rsa
 #import Image
 import io
-import SenderPi
+
 
 class QRProcessing(object):
     _public = None                  # Public key
@@ -62,11 +62,6 @@ class QRProcessing(object):
             return self.decrypt(b64decode(qr_string))
             print 'decryption failed'
         return None
-
-if __name__ == "__main__":
-    qr_processor = QRProcessing()
-    sender = SenderPi.SenderPi('geel')
-    sender.sent_tablet(1, qr_processor.get_public_key_pem())
 
 
 
