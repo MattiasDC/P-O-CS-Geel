@@ -3,7 +3,7 @@ from base64 import b64encode
 import qrcode
 import zbar
 import rsa
-#import Image
+import Image
 import io
 
 
