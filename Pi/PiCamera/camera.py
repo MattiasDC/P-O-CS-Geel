@@ -6,22 +6,22 @@ from __future__ import (
     )
 
 # Make Py2's str equivalent to Py3's
+from Pi import PiCamera as mmal, PiCamera
+
 str = type('')
 
 import datetime
 import mimetypes
 import ctypes as ct
 
-import PiCamera.mmal as mmal
-import PiCamera.bcm_host as bcm_host
-from PiCamera.exc import (
+from Pi.PiCamera.exc import (
     PiCameraError,
     PiCameraValueError,
     PiCameraRuntimeError,
     mmal_check,
     )
 
-from PiCamera.encoders import (
+from Pi.PiCamera.encoders import (
     PiVideoEncoder,
     PiImageEncoder,
     PiRawImageEncoder,

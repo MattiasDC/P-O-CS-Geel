@@ -12,7 +12,7 @@ def _handle_tablets(self):
             if self._last_tablet == True:
                 self.land()
                 return "zeppelin landed"
-            self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), qr_processor.get_public_key())
+            self._senderPi_tablets.sent_tablet(self.get_goal_tablet(), qr_processor.get_public_key_pem())
             sleep(0.5)
             #DECODE QR
             qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())

@@ -52,3 +52,5 @@ port = 10000                   # The port used in the connection
 host = 'localhost'             #The ip-adress of the server
 exchange = 'server'            #Name of the exchange used in the protocol
 team = 'geel'                  #Name of the controlled zeppelin
+
+distance_threshold = 500

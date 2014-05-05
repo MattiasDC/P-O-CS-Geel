@@ -35,10 +35,9 @@ from __future__ import (
     )
 
 # Make Py2's str equivalent to Py3's
+from Pi import PiCamera as mmal
+
 str = type('')
-
-import PiCamera.mmal as mmal
-
 
 __all__ = [
     'PiCameraError',
