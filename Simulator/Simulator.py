@@ -48,7 +48,7 @@ class VirtualZeppelin(object):
         self._senderPi_goal_position = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
-        self._goal_tablet = 0
+        self._goal_tablet = 1
         self._goal_height = height
         self._current_height = height
         self._current_direction = (dir_x, dir_y)
@@ -371,11 +371,13 @@ class Simulator(object):
                     x = self._tablets[tablet_number][0]
                     y = self._tablets[tablet_number][1]
                     zeppelin.set_goal_position((x,y))
+                    zeppelin.set_goal_tablet(tablet_number)
                 if (str(qr_string.split(":")[0]) == "position"):
                     #move to position
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
                     zeppelin.set_goal_position((x,y))
+                    zeppelin.set_goal_tablet(0)
                     zeppelin._last_tablet = True
 
 

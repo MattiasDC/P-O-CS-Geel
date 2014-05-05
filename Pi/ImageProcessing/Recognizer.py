@@ -7,10 +7,10 @@ from Shapes import *
 import colorsys
 import os
 from pybrain.structure import FeedForwardNetwork
-from pybrain.tools.customxml import NetworkReader
+from pybrain.tools.xml import NetworkReader
 
 min_contour_length = 100    # The minimum length of the contour of a shape, used to filter
-max_contour_length = 550
+max_contour_length = 400
 canny_threshold1 = 5       # Thresholds for the canny edge detection algorithm
 canny_threshold2 = 18
 approx_precision = 0.01    # The approximation of the contour when using the Ramer-Douglas-Peucker (RDP) algorithm
@@ -26,8 +26,8 @@ i = 0
 
 start_time = time()
 #oracle = NetworkReader.readFrom("/home/nooby4ever/CloudStation/Programmeren/Python/P-O-Geel2/Pi/network_460.xml")
-#oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\\network_460.xml")
-oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Pi/network_460.xml")
+oracle = NetworkReader.readFrom("C:\Users\Mattias\PycharmProjects\P-O-Geel-2\\network_460.xml")
+#oracle = NetworkReader.readFrom("/home/pi/P-O-Geel-2/Pi/network_460.xml")
 
 print "Oracle read in time: ", str(time()-start_time)
 
@@ -112,7 +112,7 @@ def process_picture(image):
                 cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
                             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
                 cv2.putText(test_image, shape_map[r](color, center).__class__.__name__[0] + " " + str(color)[0]
-                            + " " + str(ratio),
+                            + " " + str(ratio) + " " + str(cv2.arcLength(contour, True)),
                             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
@@ -220,4 +220,4 @@ def is_full_shape(contour):
 
 if __name__ == '__main__':
     for f in os.listdir("C:\Users\Mattias\Desktop\_neural_network_oracle\\neural"):
-        process_picture(f)
+        process_picture(cv2.imread("C:\Users\Mattias\Desktop\_neural_network_oracle\\neural\\" + str(f)))
