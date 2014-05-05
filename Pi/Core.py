@@ -370,8 +370,8 @@ class Core(object):
                 if str(qr_string.split(":")[0]) == "tablet":
                      #move to tablet
                     tablet_number = int(qr_string.split(":")[1])
-                    x = self._tablets[tablet_number][0]
-                    y = self._tablets[tablet_number][1]
+                    x = self._tablets[tablet_number-1][0]
+                    y = self._tablets[tablet_number-1][1]
                     goal_tablet = tablet_number
                     self.set_goal_position((x, y))
                 if str(qr_string.split(":")[0]) == "position":

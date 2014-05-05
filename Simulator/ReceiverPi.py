@@ -23,6 +23,11 @@ def callback(ch, method, properties, body):
         y = body[pos+1:len(body)]
         #Set the new goal-position in the core-class
         _core.set_goal_position(int(x), int(y))
+        for i in range(0, len(_core._tablets-1)):
+            if x==_core.tablets[i][0] and y== _core.tablets[i][1]:
+                _core.set_goal_tablet = i+1
+                return 'go to tablet'
+        _core._our_zeppelin._last_tablet = True
     if (team + '.hcommand.elevate') in str(method.routing_key):
         #Height-command received
         #Set the new goal-height in the core-class
