@@ -112,7 +112,7 @@ def process_picture(image):
                 cv2.putText(gray_image, shape_map[r](color, center).__class__.__name__ + " " + str(color),
                             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
                 cv2.putText(test_image, shape_map[r](color, center).__class__.__name__[0] + " " + str(color)[0]
-                            + " " + str(ratio) + " " + str(cv2.arcLength(contour, True)),
+                            + " " + str(cv2.contourArea(contour)/cv2.arcLength(contour, True)) + " " + str(ratio)[0:3],
                             tuple(contour[0].tolist()[0]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
             else:
                 found_shapes.append(UnrecognizedShape(color, center))
@@ -216,7 +216,7 @@ def is_gray(contour, image):
 
 def is_full_shape(contour):
     area = cv2.contourArea(contour)
-    return area/cv2.arcLength(contour, True) > 3
+    return area/cv2.arcLength(contour, True) > 4
 
 if __name__ == '__main__':
     for f in os.listdir("C:\Users\Mattias\Desktop\_neural_network_oracle\\neural"):
