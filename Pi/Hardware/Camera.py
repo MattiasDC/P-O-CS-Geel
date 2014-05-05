@@ -26,7 +26,7 @@ def take_picture():
     """
     Takes a picture with a resolution in function of the height
     """
-    global _core, _flag_initialised, _last_picture, _camera, _cam_width, _cam_height, i
+    global _core, _flag_initialised, _last_picture, _camera, _cam_width, _cam_height
 
     _last_picture = None
     if _flag_initialised:
