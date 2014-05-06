@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="35ac75d2-f17d-4a37-9f5f-a9bc3ddd6af4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/QRProcessing.py" afterPath="$PROJECT_DIR$/Simulator/QRProcessing.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/Simulator.py" afterPath="$PROJECT_DIR$/Simulator/Simulator.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulator/grid.csv" afterPath="$PROJECT_DIR$/Simulator/grid.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="P-O-Geel-2.iws" />
@@ -48,10 +46,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Simulator.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Simulator.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="370" column="59" selection-start="16792" selection-end="16792" vertical-scroll-proportion="-5.3333335" vertical-offset="6516" max-vertical-offset="9504">
+            <state line="375" column="66" selection-start="17077" selection-end="17077" vertical-scroll-proportion="0.74545455" vertical-offset="6340" max-vertical-offset="9522">
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -68,10 +66,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="QRProcessing.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="QRProcessing.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="32" selection-start="1199" selection-end="1199" vertical-scroll-proportion="0.41272727" vertical-offset="475" max-vertical-offset="1116">
+            <state line="0" column="16" selection-start="14" selection-end="16" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="1224">
               <folding />
             </state>
           </provider>
@@ -157,8 +155,8 @@
         <option value="$PROJECT_DIR$/Pi/QRProcessing/QRProcessing.py" />
         <option value="$PROJECT_DIR$/Pi/Core.py" />
         <option value="$PROJECT_DIR$/Simulator/grid.csv" />
-        <option value="$PROJECT_DIR$/Simulator/Simulator.py" />
         <option value="$PROJECT_DIR$/Simulator/QRProcessing.py" />
+        <option value="$PROJECT_DIR$/Simulator/Simulator.py" />
       </list>
     </option>
   </component>
@@ -566,13 +564,18 @@
       <created>1399304402204</created>
       <updated>1399304402204</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Simulator works with QR-codes">
+      <created>1399339485943</created>
+      <updated>1399339485943</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1904" height="1054" extended-state="4" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -581,13 +584,12 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3254818" sideWeight="0.8838065" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3254818" sideWeight="0.8838065" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -607,7 +609,8 @@
     </option>
     <MESSAGE value="za" />
     <MESSAGE value="core reset" />
-    <option name="LAST_COMMIT_MESSAGE" value="core reset" />
+    <MESSAGE value="Simulator works with QR-codes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Simulator works with QR-codes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -722,19 +725,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
+    <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="370" column="59" selection-start="16792" selection-end="16792" vertical-scroll-proportion="-5.3333335" vertical-offset="6516" max-vertical-offset="9504">
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
+        <state line="0" column="16" selection-start="14" selection-end="16" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="1224">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Simulator/QRProcessing.py">
+    <entry file="file://$PROJECT_DIR$/Simulator/Simulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="32" selection-start="1199" selection-end="1199" vertical-scroll-proportion="0.41272727" vertical-offset="475" max-vertical-offset="1116">
-          <folding />
+        <state line="375" column="66" selection-start="17077" selection-end="17077" vertical-scroll-proportion="0.74545455" vertical-offset="6340" max-vertical-offset="9522">
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

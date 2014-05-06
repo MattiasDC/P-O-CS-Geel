@@ -346,6 +346,7 @@ class Simulator(object):
         if distance < distance_threshold:
             if zeppelin._last_tablet == True:
                 zeppelin.land()
+                self.set_navigation_mode(False)
                 self.add_to_console(zeppelin.get_color() + 'has landed')
                 return "zeppelin "+ zeppelin.get_color() + " landed"
             if (zeppelin._prev_request is None):
