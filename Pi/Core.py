@@ -48,7 +48,7 @@ class Core(object):
     _current_angle = 0                # The current angle of the zeppelin
 
     _goal_height = 100            # The height where the zeppelin has to be at the moment
-    _goal_position = (4000, 3000)           # The (x,y)- coordinate the zeppelin has to be at the moment
+    _goal_position = (0, 0)           # The (x,y)- coordinate the zeppelin has to be at the moment
 
     _prev_error = 0                 # Prev error for the PID algorithm
     _prev_errors = [0]*10           # List of integral values for PID
@@ -75,7 +75,7 @@ class Core(object):
                     self._tablets.append((int(line.split(",")[0]), int(line.split(",")[1])))
         # Start the server
         self._start_server()
-
+        self.set_goal_position((self._tablets[self._goal_tablet][0], self._tablets[self._goal_tablet][1]))
         # Initialisation the motors
         self._motors = MotorControl(self)
 
@@ -564,15 +564,11 @@ class Core(object):
 if __name__ == "__main__":
     core = Core()
     core.initialise()
-    qr_processor = QRProcessing.QRProcessing()
-    while True:
-        x = raw_input("take picture")
-        print qr_processor.decrypt_pil(core._camera.take_picture_pil())
 
-    #print "Job's done"
-    #core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
-    #core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
-    #core.set_goal_height(1000)
+    print "Job's done"
+    core.add_to_console("Welcome to the zeppelin of TEAM GEEL")
+    core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "The core on the raspberry pi has started")
+    core.set_goal_height(1000)
     #while True:
         #software_pid_integral = float(raw_input("integral"))
         #software_pid_derivative = float(raw_input("derivative"))

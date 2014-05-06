@@ -46,11 +46,11 @@ class QRProcessing(object):
             for symbol in image:
                 # Zbar scans the image from bottom to top -> all qr codes are found if they can be read BUT when
                 # multiple QR codes on a picture it is less accurate (doesn't find hard to read QR codes)
-                _last_qr = symbol.data
+                _last_qr = symbol.data.strip()
 
         # cleanup
         del image
-        return _last_qr.strip()
+        return _last_qr
 
     def decrypt_pil(self, pil):
         qr_string = self._decode_pil(pil)
