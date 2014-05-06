@@ -33,6 +33,7 @@ class VirtualZeppelin(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _senderPi_tablets = None        # The sender-object used for sending tablet-messages to the server
+    _senderPi_goal_position = None
 
     qr_processor = None
 
@@ -44,6 +45,7 @@ class VirtualZeppelin(object):
         self._senderPi_height = SenderPi.SenderPi(color)
         self._senderPi_direction = SenderPi.SenderPi(color)
         self._senderPi_tablets = SenderPi.SenderPi(color)
+        self._senderPi_goal_position = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
         self._goal_tablet = 1
@@ -67,6 +69,7 @@ class VirtualZeppelin(object):
         return self._goal_position
 
     def set_goal_position(self, x, y):
+        self._senderPi_goal_position.sent_goal_position(x,y)
         self._goal_position = (x, y)
 
     def get_goal_tablet(self):
@@ -141,7 +144,7 @@ class Simulator(object):
 
         self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 1000, 600, 700, team)
         self._our_zeppelin.set_goal_position(tablets[self._our_zeppelin._goal_tablet-1][0], tablets[self._our_zeppelin._goal_tablet-1][1])
-        self.add_to_console("Goal position set to:" + str(_our_zeppelin.get_goal_position[0]) + "," + str(_our_zeppelin.get_goal_position[1]))
+        #self.add_to_console("Goal position set to:" + str(_our_zeppelin.get_goal_position[0]) + "," + str(_our_zeppelin.get_goal_position[1]))
 
         ReceiverPi.receive(self._our_zeppelin)
         if not other_zep is None:
@@ -342,6 +345,7 @@ class Simulator(object):
     def _handle_tablets(self, zeppelin):
         distance = self._calculate_distance_between(zeppelin.get_current_position(), zeppelin.get_goal_position())
         if distance < distance_threshold:
+            self.add_to_console('Above tablet: handle QR-codes')
             if zeppelin._last_tablet == True:
                 zeppelin.land()
                 self.set_navigation_mode(False)
@@ -374,14 +378,16 @@ class Simulator(object):
                     x = self._tablets[tablet_number-1][0]
                     y = self._tablets[tablet_number-1][1]
                     zeppelin.set_goal_position(x,y)
-                    self.add_to_console("Goal position set to:" + str(zeppelin.get_goal_position[0]) + "," + str(our_zeppelin.get_goal_position[1]))
+                    self.add_to_console("Move to tablet:" + str(tablet_number))
+                    #self.add_to_console("Goal position set to:" + str(zeppelin.get_goal_position[0]) + "," + str(our_zeppelin.get_goal_position[1]))
                     zeppelin.set_goal_tablet(tablet_number)
                 if (str(qr_string.split(":")[0]) == "position"):
                     #move to position
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
                     zeppelin.set_goal_position(x,y)
-                    self.add_to_console("Goal position set to:" + str(_our_zeppeln.get_goal_position[0]) + "," + str(_our_zeppeln.get_goal_position[1]))
+                    self.add_to_console("Move to position " + str(x) + "," + str(y) + "and land")
+                    #self.add_to_console("Goal position set to:" + str(_our_zeppeln.get_goal_position[0]) + "," + str(_our_zeppeln.get_goal_position[1]))
                     zeppelin.set_goal_tablet(0)
                     zeppelin._last_tablet = True
 

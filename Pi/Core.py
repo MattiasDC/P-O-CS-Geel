@@ -23,6 +23,7 @@ class Core(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
+    _senderPi_goal_position = None
     _senderPi_tablets = None
 
     _positioner = None              # Positioner
@@ -418,7 +419,7 @@ class Core(object):
         self._senderPi_height = SenderPi.SenderPi()
         self._SenderPi_Console = SenderPi.SenderPi()
         self._senderPi_direction = SenderPi.SenderPi()
-
+        self._senderPi_goal_position = SenderPi.SenderPi()
         self._senderPi_tablets = SenderPi.SenderPi()
 
     def land(self):
@@ -545,6 +546,7 @@ class Core(object):
         Sets a new position in (x,y)- coordinates
         """
         self._goal_position = (x, y)
+        self._senderPi_goal_position.sent_goal_position(x, y)
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
 
     def set_navigation_mode(self, flag):
