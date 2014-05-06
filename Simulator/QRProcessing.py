@@ -47,7 +47,6 @@ class QRProcessing(object):
                 # Zbar scans the image from bottom to top -> all qr codes are found if they can be read BUT when
                 # multiple QR codes on a picture it is less accurate (doesn't find hard to read QR codes)
                 _last_qr = symbol.data
-                print _last_qr
 
         # cleanup
         del image

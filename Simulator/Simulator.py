@@ -143,17 +143,13 @@ class Simulator(object):
         self._tablets = tablets
 
         self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 1000, 600, 700, team)
-        goal = random.randint(1, len(self._tablets))
-        self._our_zeppelin.set_goal_position(tablets[goal-1][0], tablets[goal-1][1])
-        self._our_zeppelin.set_goal_tablet(goal)
+        self._our_zeppelin.set_goal_position(tablets[self._our_zeppelin._goal_tablet-1][0], tablets[self._our_zeppelin._goal_tablet-1][1])
 
         ReceiverPi.receive(self._our_zeppelin)
         if not other_zep is None:
             self._other_zeppelin = other_zep
             self._with_other_zeppelin_flag = True
-            goal = random.randint(1, len(self._tablets))
-            self._other_zeppelin.set_goal_position(tablets[goal-1][0], tablets[goal-1][1])
-            self._other_zeppelin.set_goal_tablet(goal)
+            self._other_zeppelin.set_goal_position(tablets[self._other_zeppelin._goal_tablet-1][0], tablets[self._other_zeppelin._goal_tablet][1])
 
     def start(self, height_flag, pos_flag):
         self.set_height_control(height_flag)
@@ -359,7 +355,7 @@ class Simulator(object):
             if time() - zeppelin._prev_request > 5:
                 zeppelin._prev_request = None
             try:
-                uri = host + ":5000/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
+                uri = "http://" + host + ":5000/static/" + zeppelin.get_color() + str(zeppelin.get_goal_tablet()) + ".png"
                 img = urllib.urlretrieve(uri)[0]
                 pil = Image.open(img).convert('L')
                 qr_string = zeppelin.qr_processor.decrypt_pil(pil)
@@ -371,13 +367,13 @@ class Simulator(object):
                     tablet_number = int(qr_string.split(":")[1])
                     x = self._tablets[tablet_number-1][0]
                     y = self._tablets[tablet_number-1][1]
-                    zeppelin.set_goal_position((x,y))
+                    zeppelin.set_goal_position(x,y)
                     zeppelin.set_goal_tablet(tablet_number)
                 if (str(qr_string.split(":")[0]) == "position"):
                     #move to position
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
-                    zeppelin.set_goal_position((x,y))
+                    zeppelin.set_goal_position(x,y)
                     zeppelin.set_goal_tablet(0)
                     zeppelin._last_tablet = True
 
