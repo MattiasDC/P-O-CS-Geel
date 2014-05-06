@@ -6,7 +6,7 @@ from values import *
 import random
 import ReceiverPi
 import SenderPi
-import QRProcessing.QRProcessing as QRProcessing
+import QRProcessing
 import io
 from PIL import Image
 import urllib, cStringIO
@@ -56,7 +56,7 @@ class VirtualZeppelin(object):
         self._prev_error_soft = 0
         self._prev_errors_soft = [0]*10
         self._prev_derivative_soft = 0
-        self.qr_processor = QRProcessing()
+        self.qr_processor = QRProcessing.QRProcessing()
 
     def get_current_position(self):
         return self._current_position
@@ -354,11 +354,12 @@ class Simulator(object):
                 return "zeppelin "+ zeppelin.get_color() + " landed"
             if (zeppelin._prev_request is None):
                 zeppelin._prev_request = time()
+                zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), zeppelin.qr_processor.pub_key)
+                sleep(2)
             if time() - zeppelin._prev_request > 5:
-                zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), zeppelin.qr_processor.get_public_key_pem())
                 zeppelin._prev_request = None
             try:
-                uri = host + "/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
+                uri = host + ":5000/static/" + zeppelin.get_color() + zeppelin.get_goal_tablet() + ".png"
                 img = urllib.urlretrieve(uri)[0]
                 pil = Image.open(img).convert('L')
                 qr_string = zeppelin.qr_processor.decrypt_pil(pil)

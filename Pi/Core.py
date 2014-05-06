@@ -361,10 +361,10 @@ class Core(object):
                 return "zeppelin landed"
             if self._prev_request is None:
                 self._prev_request = time()
+                self._senderPi_tablets.sent_tablet(self._goal_tablet, self.qr_processor.pub_key)
+                sleep(1)
             if time() - self._prev_request > 5:
-                self._senderPi_tablets.sent_tablet(self._goal_tablet, self.qr_processor.get_public_key_pem())
                 self._prev_request = None
-
             qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())
             if not (qr_string is None):
                 if str(qr_string.split(":")[0]) == "tablet":

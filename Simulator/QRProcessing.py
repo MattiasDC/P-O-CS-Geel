@@ -2,32 +2,29 @@ from base64 import b64decode
 from base64 import b64encode
 import qrcode
 import zbar
-import rsa
-import Image
+from PIL import Image
 import io
+from Crypto.PublicKey import RSA
+
+
 
 
 class QRProcessing(object):
-    _public = None                  # Public key
-    _private = None                     # Private key
+    key = None
+    pub_key = None                    # Private key
     _bits = 512                         # Key encryption size
 
     _error_correction_code = 'L'        # QR error code
 
     def __init__(self):
-        self._public, self._private = rsa.newkeys(self._bits)
-
-    def get_public_key(self):
-        return self._public
-
-    def get_public_key_pem(self):
-        return self._public.save_pkcs1(format='PEM')
+        self.key = RSA.generate(1024, e=5)
+        self.pub_key = self.key.publickey().exportKey("PEM")
 
     def decrypt(self, message):
         if message is None:
             return None
         try:
-            return rsa.decrypt(message, self._private)
+            return self.key.decrypt(b64decode(message))
         except Exception:
             return None
 
@@ -54,13 +51,12 @@ class QRProcessing(object):
 
         # cleanup
         del image
-        return _last_qr
+        return _last_qr.strip()
 
     def decrypt_pil(self, pil):
         qr_string = self._decode_pil(pil)
         if not qr_string is None:
-            return self.decrypt(b64decode(qr_string))
-            print 'decryption failed'
+            return self.decrypt(qr_string)
         return None
 
 
