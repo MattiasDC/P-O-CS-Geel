@@ -301,9 +301,6 @@ class Core(object):
 
         self._prev_error_soft = error
 
-        print "Error: " + str(error)
-        print "Derivative: " + str(derivative)
-        print "Integral: " + str(integral)
         return software_pid_error*error + software_pid_integral*0 + software_pid_derivative*derivative
 
     @staticmethod
@@ -413,7 +410,7 @@ class Core(object):
         """
         #Uncomment for connection with campusnet rabbitMQ
        # Thread(target=ssh_connector.initialise_ssh_connection).start()
-        #ReceiverPi.receive(self)
+        ReceiverPi.receive(self)
         sleep(0.1)
         self._senderPi_position = SenderPi.SenderPi()
         self._senderPi_height = SenderPi.SenderPi()
@@ -546,6 +543,7 @@ class Core(object):
         Sets a new position in (x,y)- coordinates
         """
         self._goal_position = (x, y)
+        print 'hey'
         self._senderPi_goal_position.sent_goal_position(x, y)
         self.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Goal position is set to: " + str((x, y)))
 

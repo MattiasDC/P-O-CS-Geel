@@ -22,7 +22,7 @@ def callback(ch, method, properties, body):
         y = body[pos+1:len(body)]
         #Set the new goal-position in the core-class
         _core.set_goal_position((int(x), int(y)))
-        for i in range(0, len(_core.tablets-1)):
+        for i in range(0, len(_core.tablets)-1):
             if x==_core.tablets[i][0] and y==_core.tablets[i][1]:
                 _core.goal_tablet = i+1
                 return 'Move to tablet'

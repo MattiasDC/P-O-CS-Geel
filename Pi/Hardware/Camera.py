@@ -37,11 +37,9 @@ def take_picture():
             #image_height = min(max_height, int(base_height + (max_height - base_height) * (height / maximum_height)))
             #image_width = min(max_width, int(base_width + (max_width - base_width) * (height / maximum_height)))
             stream = io.BytesIO()
-            print 'hey'
             _camera.capture(stream, format='jpeg')
             data = np.fromstring(stream.getvalue(), dtype=np.uint8)
             _last_picture = cv2.imdecode(data, 1)
-            print 'heya'
             _core.add_to_console("[ " + str(datetime.now().time())[:11] + " ] " + "Took a picture")
         except Exception as e:
             print e
