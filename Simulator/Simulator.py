@@ -386,7 +386,7 @@ class Simulator(object):
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
                     zeppelin.set_goal_position(x,y)
-                    self.add_to_console("Move to position " + str(x) + "," + str(y) + "and land")
+                    self.add_to_console("Move to position " + str(x) + "," + str(y) + " and land")
                     #self.add_to_console("Goal position set to:" + str(_our_zeppeln.get_goal_position[0]) + "," + str(_our_zeppeln.get_goal_position[1]))
                     zeppelin.set_goal_tablet(0)
                     zeppelin._last_tablet = True
