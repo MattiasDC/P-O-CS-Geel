@@ -33,7 +33,6 @@ class VirtualZeppelin(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _senderPi_tablets = None        # The sender-object used for sending tablet-messages to the server
-    _senderPi_goal_position = None
 
     qr_processor = None
 
@@ -45,7 +44,6 @@ class VirtualZeppelin(object):
         self._senderPi_height = SenderPi.SenderPi(color)
         self._senderPi_direction = SenderPi.SenderPi(color)
         self._senderPi_tablets = SenderPi.SenderPi(color)
-        self._senderPi_goal_position = SenderPi.SenderPi(color)
         self._current_position = (x, y)
         self._goal_position = (goal_x, goal_y)
         self._goal_tablet = 1
@@ -69,7 +67,6 @@ class VirtualZeppelin(object):
         return self._goal_position
 
     def set_goal_position(self, x, y):
-        self._senderPi_goal_position.sent_goal_position(x, y)
         self._goal_position = (x, y)
 
     def get_goal_tablet(self):
@@ -144,6 +141,7 @@ class Simulator(object):
 
         self._our_zeppelin = VirtualZeppelin(500, 500, 1000, 1000, 1000, 600, 700, team)
         self._our_zeppelin.set_goal_position(tablets[self._our_zeppelin._goal_tablet-1][0], tablets[self._our_zeppelin._goal_tablet-1][1])
+        self.add_to_console("Goal position set to:" + str(_our_zeppelin.get_goal_position[0]) + "," + str(_our_zeppelin.get_goal_position[1]))
 
         ReceiverPi.receive(self._our_zeppelin)
         if not other_zep is None:
@@ -352,14 +350,21 @@ class Simulator(object):
             if (zeppelin._prev_request is None):
                 zeppelin._prev_request = time()
                 zeppelin._senderPi_tablets.sent_tablet(zeppelin.get_goal_tablet(), zeppelin.qr_processor.pub_key)
+                self.add_to_console("QR-code requested")
                 sleep(2)
             if time() - zeppelin._prev_request > 5:
                 zeppelin._prev_request = None
             try:
+                self.add_to_console('Downloading QR-code')
                 uri = "http://" + host + ":5000/static/" + zeppelin.get_color() + str(zeppelin.get_goal_tablet()) + ".png"
                 img = urllib.urlretrieve(uri)[0]
+                self.add_to_console('Parse QR-code')
                 pil = Image.open(img).convert('L')
                 qr_string = zeppelin.qr_processor.decrypt_pil(pil)
+                if not qr_string is None:
+                    self.add_to_console('Command found: ' + str(qr_string))
+                else:
+                    self.add_to_console("No command found")
             except Exception:
                 qr_string = None
             if not (qr_string is None):
@@ -369,12 +374,14 @@ class Simulator(object):
                     x = self._tablets[tablet_number-1][0]
                     y = self._tablets[tablet_number-1][1]
                     zeppelin.set_goal_position(x,y)
+                    self.add_to_console("Goal position set to:" + str(zeppelin.get_goal_position[0]) + "," + str(our_zeppelin.get_goal_position[1]))
                     zeppelin.set_goal_tablet(tablet_number)
                 if (str(qr_string.split(":")[0]) == "position"):
                     #move to position
                     x = int(qr_string.split(":")[1].split(",")[0])
                     y = int(qr_string.split(":")[1].split(",")[1])
                     zeppelin.set_goal_position(x,y)
+                    self.add_to_console("Goal position set to:" + str(_our_zeppeln.get_goal_position[0]) + "," + str(_our_zeppeln.get_goal_position[1]))
                     zeppelin.set_goal_tablet(0)
                     zeppelin._last_tablet = True
 
@@ -432,15 +439,6 @@ class Simulator(object):
         self.set_navigation_mode(False)
 
 # ---------------------------------------------- SETTERS --------------------------------------------------------------
-    def set_goal_height(self, new_height):
-        """
-        Sets a new goal height (in cm)
-        """
-        try:
-            self._our_zeppelin.set_goal_height(new_height)
-            self.add_to_console("Goal height for team " + team + "is set to: " + str(new_height) + " mm")
-        except (ValueError, TypeError) as e:
-            self.add_to_console("Error on new goal height")
 
     def set_height_control(self, flag):
         if flag:
@@ -450,16 +448,6 @@ class Simulator(object):
         else:
             self._stay_on_height_flag = False
             self.add_to_console("Height control is turned off")
-
-    def set_goal_position(self, pos):
-        """
-        Sets a new goal height (in cm)
-        """
-        try:
-            self._our_zeppelin.set_goal_position(pos[0], pos[1])
-            self.add_to_console("Goal position for team " + team + "is set to: " + str(pos[0]) + "","" + str(pos[1]))
-        except (ValueError, TypeError) as e:
-            self.add_to_console("Error on new goal position")
 
     def set_navigation_mode(self, flag):
         if flag:
