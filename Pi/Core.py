@@ -23,13 +23,13 @@ class Core(object):
     _senderPi_height = None         # The sender-object used for sending height-messages to the server
     _senderPi_direction = None      # The sender-object used for sending direction-messages to the server
     _SenderPi_Console = None        # The sender-object used for sending console-messages to the server
+    _senderPi_goal_position = None
     _senderPi_tablets = None
 
     _positioner = None              # Positioner
 
     _last_tablet = False
 
-    _senderPi_goal_position = None
 
     _tablets = None
     qr_processor = QRProcessing.QRProcessing()
@@ -352,10 +352,16 @@ class Core(object):
             if self._prev_request is None:
                 self._prev_request = time()
                 self._senderPi_tablets.sent_tablet(self._goal_tablet, self.qr_processor.pub_key)
+                self.add_to_console("QR-code requested")
                 sleep(1)
             if time() - self._prev_request > 5:
                 self._prev_request = None
+            self.add_to_console("Take picture for QR-code")
             qr_string = self.qr_processor.decrypt_pil(self._camera.take_picture_pil())
+            if not qr_string is None:
+                self.add_to_console("QR-code found:" + str(qr_string))
+            else:
+                self.add_to_console("No QR-code found")
             if not (qr_string is None):
                 if str(qr_string.split(":")[0]) == "tablet":
                      #move to tablet
